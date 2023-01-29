@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import *
-from .models import *
+from .models import Profile
 
 
 def dashboard(request):
