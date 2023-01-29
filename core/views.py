@@ -1,5 +1,8 @@
 from django.shortcuts import render
-from .models import Profile
+from rest_framework import viewsets
+from .serializers import *
+from .models import *
+
 
 def dashboard(request):
     return render(request, 'base.html')
