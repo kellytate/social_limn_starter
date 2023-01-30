@@ -3,5 +3,13 @@
         "core"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./core",
+        "-p",
+        "test_*.py"
+    ],
+    "python.analysis.typeCheckingMode": "off"
 }
