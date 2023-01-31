@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         #will add a user link and profile pic to these later. 
-        fields = ('username')
+        fields = ('username',)
 
 #after alot of reserch I think we may want to call the followers seralizers in the views 
 #and not in the seralizer based on our current structure. 
