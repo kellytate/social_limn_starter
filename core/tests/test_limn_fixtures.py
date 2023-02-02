@@ -1,6 +1,6 @@
 import pytest
 
-from .models import User, Profile
+from core.models import User, Profile
 
 
 @pytest.fixture

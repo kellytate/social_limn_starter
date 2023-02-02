@@ -7,9 +7,9 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./core",
+        ".",
         "-p",
-        "test_*.py"
+        "*_test.py"
     ],
     "python.analysis.typeCheckingMode": "off"
 }
