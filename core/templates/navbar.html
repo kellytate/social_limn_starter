@@ -5,7 +5,10 @@
     <img src="" alt=""/>
     <ul>
         <li>
-            <a href="{% url 'dashboard' %}">Home</a>
+            <a href="{% url 'core:dashboard' %}">Home</a>
+        </li>
+        <li>
+            <a href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
         </li>
         <li>
             <a href="{% url 'logout' %}"><button>Logout</button></a>

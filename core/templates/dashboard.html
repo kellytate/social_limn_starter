@@ -5,6 +5,7 @@
 <section>
     {% if user.is_authenticated %}
         <h3>This is your dashboard!</h3>
+        <a href="{% url 'core:update_profile' %}"><button>Update Profile</button></a>
         <a href="{% url 'logout' %}"><button>Logout</button></a>
     {% else %}
         <a href="{% url 'login' %}"><button>Login</button></a>

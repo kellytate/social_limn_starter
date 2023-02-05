@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{%block content%}
+{% if user_form.errors %}
+    <div role="alert">
+        {%for key, value in user_form.errors.items %}
+            <div>
+                <strong>{{ value  }}</strong>
+            </div>
+        {% endfor %}
+    <button type="button" data-dismiss="alert"></button>
+    </div>
+{% endif %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form_group">
+        <label>Username:</label>
+        {{user_form.username}}
+    </div>
+    <div class="form_group">
+        <label>Email:</label>
+        {{ profile_form.email}}
+        <label>Bio:</label>
+        {{profile_form.bio}}
+        <label>Location:</label>
+        {{profile_form.location}}
+    </div>
+    <button type="submit">Update Profile</button>
+    <button type="reset">Reset</button>
+</form>
+<div>
+    <h2>Delete Account</h2>
+    <a href="{% url 'core:delete_user' pk=request.user.id %}"> <button>Delete</button></a>
+
+</div>
+{%endblock%}

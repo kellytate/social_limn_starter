@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import ContactForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -81,3 +82,39 @@ def profile_list(request):
 def profile(request, pk):
     profile = Profile.objects.get(pk=pk)
     return render(request, 'core/profile.html', {'profile': profile})
+
+#edit user and profile
+@login_required(login_url='login')
+def update_user(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect(to='core:dashboard')
+    else:
+        user_form=UpdateUserForm(instance=request.user)
+        profile_form=UpdateProfileForm()
+    return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form})
+
+@login_required(login_url='login')
+def delete_user(request, pk):
+    # context = {}
+   
+    try:
+        current_user = request.user
+        current_user.delete()
+        #context['message'] = 'User has been deleted'
+        print('User has been deleted')
+        
+        return redirect(to='core:home')
+        # messages.info(request, 'User deleted successfully')
+    except User.DoesNotExist:
+        # context['message'] = 'User does not exist'
+        messages.info(request, 'User does not exist')
+        # return HttpResponse('Something went wrong')
+    # except Exception as e:
+    #     return render(request, 'sitefront/index.html', {'err':e.message})
+   
