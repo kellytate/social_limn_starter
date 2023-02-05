@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<main>
+    <section>
+        <div>
+            <h1>Create New Account</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button>Sign Up</button>
+            </form>
+        </div>
+        <div>
+            <img src="" alt="">
+        </div>
+</section>
+</main>
+{% endblock %}
