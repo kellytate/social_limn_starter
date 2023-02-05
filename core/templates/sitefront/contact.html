@@ -1,2 +1,19 @@
 {% extends 'base.html' %}
-<h1>Contact</h1>
+{%block content%}
+<main>
+    <section>
+        <div>
+            <img src="" alt="">
+        </div>
+        <div>
+            <h1>Contact us</h1>
+            <form method="post">
+                {% csrf_token%}
+                {{form.as_p}}
+                <button type="submit">Send Message</button>
+
+            </form>
+        </div>
+    </section>
+</main>
+{%endblock%}

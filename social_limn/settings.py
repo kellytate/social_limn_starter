@@ -149,3 +149,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = os.path.join(BASE_DIR,'/limn/dashboard')
 LOGOUT_REDIRECT_URL = os.path.join(BASE_DIR,'/accounts/login')
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
