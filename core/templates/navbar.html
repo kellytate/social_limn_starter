@@ -1,0 +1,35 @@
+{% block content %}
+{% if user.is_authenticated %}
+<nav>
+    
+    <img src="" alt=""/>
+    <ul>
+        <li>
+            <a href="{% url 'dashboard' %}">Home</a>
+        </li>
+        <li>
+            <a href="{% url 'logout' %}"><button>Logout</button></a>
+        </li>
+    </ul>
+</nav>
+{% else %}
+<nav>
+<img src="" alt=""/>
+<ul>
+    <li>
+        <a href="{% url 'core:home' %}">Home</a>
+    </li>
+    <li>
+        <a href="{% url 'core:contact' %}">Contact</a>
+    </li>
+    <li>
+        <a href="{% url 'login' %}"><button>Login</button></a>
+    </li>
+    <li>
+        <a href="{% url 'signup' %}"><button>Sign Up</button></a>
+    </li>
+</ul>
+</nav>
+
+{% endif %}
+{% endblock %}

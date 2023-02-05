@@ -44,6 +44,12 @@ def signup(request):
 #     auth.logout(request)
 #     return redirect('login_url')
 
+def home(request):
+    return render(request, 'sitefront/index.html')
+
+def contact(request):
+    return render(request, 'sitefront/contact.html')
+
 def profile_list(request):
     profiles = Profile.objects.exclude(user=request.user)
     return render(request, 'core/profile_list.html', {'profiles': profiles})
