@@ -2,7 +2,7 @@ import pytest
 from core.models import Profile
 from core.models import User as our_user
 from django.contrib.auth.models import User
-from .test_limn_fixtures import create_user,user_one,profile_factory
+from core.tests.test_limn_fixtures import create_user,user_one,profile_factory
 
 @pytest.fixture
 @pytest.mark.django_db

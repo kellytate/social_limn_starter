@@ -28,7 +28,7 @@ class UserViewSet(viewsets.ModelViewSet):
 #     return render(request, 'index.html')
 
 
-# @login_required(login_url='accounts/login')
+# @login_required(login_url='login')
 def dashboard(request):
     return render(request, 'dashboard.html')
 
@@ -70,10 +70,14 @@ def contact(request):
     form = ContactForm()
     return render(request, 'sitefront/contact.html', {'form':form})
 
+# Displays all available user (profiles), excluding the logged-in user
+@login_required(login_url='login')
 def profile_list(request):
     profiles = Profile.objects.exclude(user=request.user)
     return render(request, 'core/profile_list.html', {'profiles': profiles})
 
+# Displays specific profile information by primary key value
+@login_required(login_url='login')
 def profile(request, pk):
     profile = Profile.objects.get(pk=pk)
     return render(request, 'core/profile.html', {'profile': profile})
