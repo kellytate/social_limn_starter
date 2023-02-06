@@ -29,7 +29,11 @@
 </form>
 <div>
     <h2>Delete Account</h2>
-    <a href="{% url 'core:delete_user' pk=request.user.id %}"> <button>Delete</button></a>
+    
+    <form method="post" action="{% url 'core:remove' %}">
+        {% csrf_token %}
+        <button type="submit">deactivate account</button>
+    </form>
 
 </div>
 {%endblock%}

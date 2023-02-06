@@ -9,10 +9,11 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 # from django.contrib import messages
 # from django.http import HttpResponse
-from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
 from .serializers import *
 from .models import Profile
+from rest_framework.decorators import api_view, renderer_classes
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -99,22 +100,39 @@ def update_user(request):
         profile_form=UpdateProfileForm()
     return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form})
 
-@login_required(login_url='login')
-def delete_user(request, pk):
-    # context = {}
+# @api_view(('GET',))
+# @login_required(login_url='login')
+# def delete_user(request, pk):
+#     # context = {}
    
-    try:
-        current_user = request.user
-        current_user.delete()
-        #context['message'] = 'User has been deleted'
-        print('User has been deleted')
-        
-        return redirect(to='core:home')
-        # messages.info(request, 'User deleted successfully')
-    except User.DoesNotExist:
-        # context['message'] = 'User does not exist'
-        messages.info(request, 'User does not exist')
-        # return HttpResponse('Something went wrong')
-    # except Exception as e:
-    #     return render(request, 'sitefront/index.html', {'err':e.message})
-   
+#     try:
+#         current_user = request.user
+#         current_user.delete()
+#         # print('User has been deleted')
+#         return Response({"Success": "User deleted"}, status=status.HTTP_200_OK)
+#     except User.DoesNotExist:
+#         messages.info(request, 'User does not exist')
+#         # return Response({"Success": "msb blablabla"}, status=status.HTTP_201_CREATED, headers=headers)
+
+from django.contrib.auth import logout as auth_logout, get_user_model
+from django.views.decorators.http import require_http_methods
+@login_required
+# @api_view(('POST',))
+# @require_http_methods(['POST'])
+def remove_account(request):
+    user_pk = request.user.pk
+    auth_logout(request)
+    User = get_user_model()
+    User.objects.filter(pk=user_pk).update(is_active=False)
+    return redirect(to='core:dashboard')
+    # return Response({"Success": "User deactivated"}, status=status.HTTP_200_OK)
+
+@login_required
+@api_view(('POST',))
+@require_http_methods(['POST'])
+def delete_account(request):
+    user_pk = request.user.pk
+    auth_logout(request)
+    User = get_user_model()
+    User.objects.filter(pk=user_pk).delete()
+    return Response({"Success": "User deleted"}, status=status.HTTP_200_OK)
