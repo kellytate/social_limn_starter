@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
@@ -89,8 +89,9 @@ def profile(request, pk):
 def update_user(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
-        profile_form = UpdateProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
+        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid() and image_form.is_valid():
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully')
@@ -98,21 +99,33 @@ def update_user(request):
     else:
         user_form=UpdateUserForm(instance=request.user)
         profile_form=UpdateProfileForm()
-    return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form})
+        image_form=ImageForm()
+    return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form,})
+
+@login_required(login_url='login')
+def image_upload(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            img_obj = form.instance
+            return render(request, 'core/image_upload.html', {'form': form, 'img_obj': img_obj})
+    else:
+        form = ImageForm()
+    return render(request, 'core/image_upload.html', {'form': form})
+
 
 # @api_view(('GET',))
 # @login_required(login_url='login')
 # def delete_user(request, pk):
 #     # context = {}
-   
+
 #     try:
 #         current_user = request.user
 #         current_user.delete()
 #         # print('User has been deleted')
-#         return Response({"Success": "User deleted"}, status=status.HTTP_200_OK)
 #     except User.DoesNotExist:
 #         messages.info(request, 'User does not exist')
-#         # return Response({"Success": "msb blablabla"}, status=status.HTTP_201_CREATED, headers=headers)
 
 from django.contrib.auth import logout as auth_logout, get_user_model
 from django.views.decorators.http import require_http_methods
@@ -136,3 +149,4 @@ def delete_account(request):
     User = get_user_model()
     User.objects.filter(pk=user_pk).delete()
     return Response({"Success": "User deleted"}, status=status.HTTP_200_OK)
+

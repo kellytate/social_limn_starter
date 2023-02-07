@@ -18,4 +18,5 @@ urlpatterns = [
     path('remove/', views.remove_account, name='remove'),
     path('delete/', views.delete_account, name='delete'),
     path('update_profile/', views.update_user, name='update_profile'),
+    path('image_upload/', views.image_upload, name='image_upload')
 ]

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Image
 
 #note that this form needs to be set up in the email settings 
 #change backend to 
@@ -33,9 +33,15 @@ class UpdateProfileForm(forms.ModelForm):
     location = forms.CharField(max_length=100,
         required=True, 
         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    profile_img = forms.ImageField(required=False)
     
     class Meta:
         model = Profile
-        fields = ['email', 'bio', 'location']
+        fields = ['email', 'bio', 'location', 'profile_img']
     
     
+class ImageForm(forms.ModelForm):
+    """Form for the image model"""
+    class Meta:
+        model = Image
+        fields = ('image', 'title', 'description')

@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from datetime import datetime
+
 
 # The creation of this User model and profile uses a post_save/Signal to create
 # the profile as soon as a user is saved. If there are strange errors, check that
@@ -30,9 +32,20 @@ class Profile(models.Model):
     )
     email = models.EmailField(blank=False)
     bio = models.TextField(blank=True)
+    profile_img = models.ImageField(upload_to='images/', default='blank-profile-picture.png')
     location = models.CharField(max_length=100, blank=True)
     spotify_auth = models.CharField(max_length=500, blank=True)
+
 
     def __str__(self):
         return self.user.username
 
+class Image(models.Model):
+    image = models.ImageField(upload_to='images/')
+    title = models.CharField(max_length=100, blank=False)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_liked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
