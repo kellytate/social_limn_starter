@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-
 from django.contrib.auth.models import User, auth
 # from django.contrib import messages
 # from django.http import HttpResponse
@@ -82,6 +81,15 @@ def profile_list(request):
 @login_required(login_url='login')
 def profile(request, pk):
     profile = Profile.objects.get(pk=pk)
+    if request.method=="POST":
+        current_user = request.user.profile
+        data=request.POST
+        action = data.get("follow")
+        if action=="follow":
+            current_user.follows.add(profile)
+        elif action=="unfollow":
+            current_user.follows.remove(profile)
+        current_user.save()
     return render(request, 'core/profile.html', {'profile': profile})
 
 #edit user and profile

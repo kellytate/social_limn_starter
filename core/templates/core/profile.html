@@ -12,6 +12,16 @@
         <p>{{profile.bio}}</p>
         <p>{{profile.location}}</p>
         <p><img src="{{ profile.profile_img.url }}"></p>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="buttons">
+                {% if profile in user.profile.follows.all %}
+                <button name="follow" value="unfollow">UnFollow</button>
+                {%else%}
+                <button name="follow" value="follow">Follow</button>
+                {% endif %}
+            </div>
+        </form>
 
         </div>
 
