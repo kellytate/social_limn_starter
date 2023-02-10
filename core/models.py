@@ -49,3 +49,23 @@ class Image(models.Model):
 
     def __str__(self):
         return self.title
+
+class Journal(models.Model):
+    user = models.ForeignKey(User,
+    related_name="user_journals",
+    on_delete=models.DO_NOTHING) 
+    title = models.CharField(max_length=200)
+    metaTitle = models.CharField(max_length=200)
+    location = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+    cover_img = models.ImageField(upload_to='images/')
+    default_privacy = models.IntegerField(default=0)
+    is_liked = models.BooleanField(default=False)
+
+    def _str_(self):
+        return(
+            f"{self.user}"
+            f"{self.title}"
+            f"({self.created_at:%Y-%m-%d %H:%M}:"
+        )

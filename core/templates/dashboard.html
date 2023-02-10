@@ -12,5 +12,31 @@
         <a href="{% url 'signup' %}"><button>Sign Up</button></a>
     {% endif %}
 </section>
+<section>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form_group">
+            <label>Title:</label>
+            {{ form.title}}
+            <label>Location:</label>
+            {{form.location}}
+            <label>Description:</label>
+            {{form.description}}
+            <label>Cover Image:</label>
+            {{form.cover_img}}
+            <label>Privacy:</label>
+            {{form.default_privacy}}
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</section>
+<section>
+    {% for journal in user.user_journals.all %}
+    <div>
+        <img src="{{journal.cover_img.url }}"></p>
+        {{journal.title}}
+    </div>
+    {% endfor %}
+</section>
 
 {% endblock %}

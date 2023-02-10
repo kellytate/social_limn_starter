@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
@@ -11,7 +11,7 @@ from django.contrib.auth.models import User, auth
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile
+from .models import Profile, Journal
 from rest_framework.decorators import api_view, renderer_classes
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -31,7 +31,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # @login_required(login_url='login')
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    user = request.user
+    if request.method=="POST":
+        form = JournalForm(request.POST,request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your journal was created successfully')
+            
+            return redirect("core:dashboard")
+    form =JournalForm()
+    return render(request, 'dashboard.html', {'form':form, 'user':user})
 
 def signup(request):
     if request.method == "POST":
@@ -54,7 +63,7 @@ def home(request):
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() :
             subject = "Limn Message"
             body = {
                 "name": form.cleaned_data['name'],
