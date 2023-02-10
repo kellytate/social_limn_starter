@@ -31,16 +31,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # @login_required(login_url='login')
 def dashboard(request):
-    user = request.user
-    if request.method=="POST":
-        form = JournalForm(request.POST,request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your journal was created successfully')
-            
-            return redirect("core:dashboard")
     form =JournalForm()
-    return render(request, 'dashboard.html', {'form':form, 'user':user})
+    return render(request, 'dashboard.html', {'form':form})
 
 def signup(request):
     if request.method == "POST":
@@ -107,8 +99,8 @@ def update_user(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
-
-        if user_form.is_valid() and profile_form.is_valid() and image_form.is_valid():
+        image_form=ImageForm()
+        if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully')

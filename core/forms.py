@@ -59,4 +59,4 @@ class JournalForm(forms.ModelForm):
 
     class Meta:
         model = Journal
-        fields = ['title', 'metaTitle', 'location', 'location', 'description', 'cover_img', 'default_privacy']
+        fields=['title','location','description', 'cover_img', 'default_privacy']  
