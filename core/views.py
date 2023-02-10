@@ -99,7 +99,7 @@ def update_user(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
-        image_form=ImageForm()
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -108,7 +108,6 @@ def update_user(request):
     else:
         user_form=UpdateUserForm(instance=request.user)
         profile_form=UpdateProfileForm()
-        image_form=ImageForm()
     return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form,})
 
 @login_required(login_url='login')
