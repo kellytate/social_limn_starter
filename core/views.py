@@ -31,7 +31,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # @login_required(login_url='login')
 def dashboard(request):
-    form =JournalForm()
+    if request.method == "POST":
+        form = JournalForm(request.POST, request.FILES)
+        if form.is_valid():
+            journal=form.save(commit=False)
+            journal.user=request.user
+            form.save()
+            return redirect("core:dashboard")
+    form=JournalForm()
     return render(request, 'dashboard.html', {'form':form})
 
 def signup(request):
