@@ -41,6 +41,10 @@ def dashboard(request):
     form=JournalForm()
     return render(request, 'dashboard.html', {'form':form})
 
+##Here I need to go ahead and add journal profile view
+##need to have form to update profile and then also update 
+#need to create journal profile HTML
+##need to create journal entries 
 def signup(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -100,6 +104,15 @@ def profile(request, pk):
         current_user.save()
     return render(request, 'core/profile.html', {'profile': profile})
 
+@login_required(login_url='login')
+def journal_profile(request,pk):
+    journal = Journal.objects.get(pk=pk)
+    return render(request, 'core/journal.html', {'journal': journal})
+
+@login_required(login_url='login')
+def journal_dashboard(request,pk):
+    journal = Journal.objects.get(pk=pk)
+    return render(request, 'core/journal.html', {'journal': journal})
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):

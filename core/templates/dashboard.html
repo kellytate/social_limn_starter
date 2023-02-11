@@ -1,42 +1,50 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Hello, {{ user.username|default:'Guest' }}!</h2>
-<section>
+<main>
+    <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
     {% if user.is_authenticated %}
+        <div>
         <h3>This is your dashboard!</h3>
         <a href="{% url 'core:update_profile' %}"><button>Update Profile</button></a>
         <a href="{% url 'logout' %}"><button>Logout</button></a>
-    {% else %}
-        <a href="{% url 'login' %}"><button>Login</button></a>
-        <a href="{% url 'signup' %}"><button>Sign Up</button></a>
-    {% endif %}
-</section>
-<section>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form_group">
-            <label>Title:</label>
-            {{ form.title}}
-            <label>Location:</label>
-            {{form.location}}
-            <label>Description:</label>
-            {{form.description}}
-            <label>Cover Image:</label>
-            {{form.cover_img}}
-            <label>Privacy:</label>
-            {{form.default_privacy}}
         </div>
-        <button type="submit">Submit</button>
-    </form>
-</section>
-<section>
-    {% for journal in user.user_journals.all %}
-    <div>
-        <img src="{{journal.cover_img.url }}"></p>
-        {{journal.title}}
-    </div>
-    {% endfor %}
-</section>
+        <section>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form_group">
+                    <label>Title:</label>
+                    {{ form.title}}
+                    <label>Location:</label>
+                    {{form.location}}
+                    <label>Description:</label>
+                    {{form.description}}
+                    <label>Cover Image:</label>
+                    {{form.cover_img}}
+                    <label>Privacy:</label>
+                    {{form.default_privacy}}
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <section>
+            {% for journal in user.user_journals.all %}
+            <div>
+                <img src="{{journal.cover_img.url }}"></p>
+                {{journal.title}}
+            </div>
+            {% endfor %}
+        </section>
+
+    {% else %}
+        <div>
+            <a href="{% url 'login' %}"><button>Login</button></a>
+            <a href="{% url 'signup' %}"><button>Sign Up</button></a>
+
+        </div>
+    {% endif %}
+
+</main>
+
 
 {% endblock %}

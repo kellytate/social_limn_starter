@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <header>
+        {{journal.cover_image}}
+        <h1>{{journal.title}}</h1>
+        <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
+        {{journal.description}} 
+    </header>
+</main>
+
+{% endblock %}
