@@ -60,3 +60,18 @@ class JournalForm(forms.ModelForm):
     class Meta:
         model = Journal
         fields=['title','location','description', 'cover_img', 'default_privacy']  
+
+
+class UpdateJournalForm(forms.ModelForm):
+    title = forms.CharField(required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    location = forms.CharField(required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    description = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    cover_img = forms.ImageField(required=False)
+    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
+
+    class Meta:
+        model = Journal
+        fields=['title','location','description', 'cover_img', 'default_privacy']  
+

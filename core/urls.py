@@ -21,5 +21,6 @@ urlpatterns = [
     path('update_profile/', views.update_user, name='update_profile'),
     path('image_upload/', views.image_upload, name='image_upload'),
     path('journals/<int:pk>/', views.journal_profile, name='journal_profile'), 
-    path('journals/<int:pk>/dashboard/', views.journal_dashboard, name='journal_dashboard')
+    path('journals/<int:pk>/dashboard/', views.journal_dashboard, name='journal_dashboard'),
+    path('journals/<int:pk>/update/', views.update_journal, name='update_journal')
 ]

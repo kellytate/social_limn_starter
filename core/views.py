@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
@@ -104,6 +104,7 @@ def profile(request, pk):
         current_user.save()
     return render(request, 'core/profile.html', {'profile': profile})
 
+#journal profile and dashboard views
 @login_required(login_url='login')
 def journal_profile(request,pk):
     journal = Journal.objects.get(pk=pk)
@@ -113,6 +114,17 @@ def journal_profile(request,pk):
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
     return render(request, 'core/journal.html', {'journal': journal})
+
+def update_journal(request, pk):
+    journal = Journal.objects.get(pk=pk)
+    if request.method == "POST":
+        form = UpdateJournalForm(request.POST, request.FILES, instance=journal)
+        if form.is_valid():
+            form.save()
+            return redirect("core:dashboard")
+    form=JournalForm()
+    return render(request, 'core/update_journal.html', {'form':form})
+
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):
