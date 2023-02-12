@@ -69,3 +69,24 @@ class Journal(models.Model):
             f"{self.title}"
             f"({self.created_at:%Y-%m-%d %H:%M}:"
         )
+
+class Entry(models.Model):
+    journal = models.ForeignKey(Journal,
+    related_name="journal_entries",
+    on_delete=models.DO_NOTHING)
+    title = models.CharField(max_length=200)
+    body= models.CharField(max_length=2000)
+    location = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=False)
+    entry_privacy = models.IntegerField(default=0)
+    image = models.ForeignKey(Image,
+    related_name="image_entries",
+    on_delete=models.DO_NOTHING)
+
+    def _str_(self):
+            return(
+                f"{self.journal.user.username}"
+                f"{self.title}"
+                f"({self.created_at:%Y-%m-%d %H:%M}:"
+            )

@@ -139,7 +139,7 @@ def update_user(request):
             return redirect(to='core:dashboard')
     else:
         user_form=UpdateUserForm(instance=request.user)
-        profile_form=UpdateProfileForm()
+        profile_form=UpdateProfileForm(instance=request.user.profile)
     return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form,})
 
 @login_required(login_url='login')
