@@ -88,3 +88,22 @@ class Entry(models.Model):
                 f"{self.title}"
                 f"({self.created_at:%Y-%m-%d %H:%M}:"
             )
+
+class Comment(models.Model):
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User,related_name="user_comments", on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry,related_name="entry_comments", on_delete=models.CASCADE)
+    journal = models.ForeignKey(Journal,related_name="journal_comments", on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='comment_replies')
+
+    @property
+    def children(self):
+        return Comment.objects.filter(parent=self).order_by('-created_at').all()
+
+    @property
+    def is_parent(self):
+        if self.parent is None:
+            return True
+        return False
+

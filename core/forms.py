@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile, Image, Journal, Entry
+from .models import Profile, Image, Journal, Entry, Comment
 
 #note that this form needs to be set up in the email settings 
 #change backend to 
@@ -87,3 +87,10 @@ class EntryForm(forms.ModelForm):
     class Meta: 
         model = Entry
         fields = ['title', 'location', 'body', 'entry_privacy']
+
+class CommentForm(forms.ModelForm):
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Share your thoughts'}))
+
+    class Meta:
+        model = Comment
+        fields = ['comment']
