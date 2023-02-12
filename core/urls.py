@@ -25,4 +25,5 @@ urlpatterns = [
     path('journals/<int:pk>/update/', views.update_journal, name='update_journal'),
     path('journals/<int:pk>/create_entry/', views.create_entry, name='create_entry'), 
     path('entries/<int:pk>/', views.entry_landing, name='entry_landing'),
+    path('entries/<int:pk>/update_entry/', views.update_entry, name='update_entry')
 ]

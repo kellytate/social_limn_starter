@@ -151,6 +151,24 @@ def entry_landing(request, pk):
     entry = Entry.objects.get(pk=pk)
     return render(request, 'core/entry_landing.html', {'entry': entry})
 
+#update entry
+def update_entry(request, pk):
+    entry = Entry.objects.get(pk=pk)
+    if request.method == 'POST':
+        entryForm = EntryForm(request.POST, request.FILES, instance=entry)
+        if entryForm.is_valid():
+
+            new_entry=entryForm.save()
+            files = request.FILES.getlist('image')
+            for f in files:
+                img = Image(image=f)
+                img.save()
+                new_entry.image.add(img)
+                new_entry.save()
+            return redirect(to='core:entry_landing', pk=entry.pk)
+    entryForm = EntryForm(instance=entry)
+    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry})
+
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):
