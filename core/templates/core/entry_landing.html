@@ -16,7 +16,10 @@
     </header>
     {% if request.user == entry.journal.user %}
         <div>
-            <button>Update Entry</button><button>Archive Entry</button>
+            <a href="{% url 'core:update_entry' pk=entry.id %}">
+                <button>Update Entry</button>
+            </a>
+                <button>Archive Entry</button>
         </div>
     {% endif %}
     <section>
