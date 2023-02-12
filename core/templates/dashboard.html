@@ -30,7 +30,7 @@
         <section>
             {% for journal in user.user_journals.all %}
             <div>
-                <img src="{{journal.cover_img.url }}"></p>
+                <img src="{{journal.cover_img.url }}">
                 {{journal.title}}
             </div>
             {% endfor %}

@@ -113,7 +113,7 @@ def journal_profile(request,pk):
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
-    return render(request, 'core/journal.html', {'journal': journal})
+    return render(request, 'core/journal_dashboard.html', {'journal': journal})
 
 def update_journal(request, pk):
     journal = Journal.objects.get(pk=pk)

@@ -3,11 +3,19 @@
 {% block content %}
 <main>
     <header>
-        {{journal.cover_image}}
+        <img src="{{ journal.cover_img.url }}"/>
         <h1>{{journal.title}}</h1>
         <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
         {{journal.description}} 
     </header>
+    <section>
+        <a href="{% url 'core:update_journal' journal.pk %}">
+            <button>
+                Edit Journal
+            </button>
+        </a> 
+    </section>
+
 </main>
 
 {% endblock %}
