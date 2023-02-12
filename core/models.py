@@ -78,11 +78,9 @@ class Entry(models.Model):
     body= models.CharField(max_length=2000)
     location = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=False)
+    updated_at = models.DateTimeField(auto_now_add=True)
     entry_privacy = models.IntegerField(default=0)
-    image = models.ForeignKey(Image,
-    related_name="image_entries",
-    on_delete=models.DO_NOTHING)
+    image = models.ManyToManyField('Image',blank=True)
 
     def _str_(self):
             return(

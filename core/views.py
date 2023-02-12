@@ -11,7 +11,7 @@ from django.contrib.auth.models import User, auth
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile, Journal
+from .models import Profile, Journal, Entry, Image
 from rest_framework.decorators import api_view, renderer_classes
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -113,7 +113,8 @@ def journal_profile(request,pk):
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
-    return render(request, 'core/journal_dashboard.html', {'journal': journal})
+    entries = journal.journal_entries.all
+    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries})
 
 def update_journal(request, pk):
     journal = Journal.objects.get(pk=pk)
@@ -128,7 +129,21 @@ def update_journal(request, pk):
 #entry create:
 @login_required(login_url='login')
 def create_entry(request,pk):
-    return render(request, 'core/create_entry.html')
+    journal= Journal.objects.get(pk=pk)
+    if request == 'POST':
+        entryForm = EntryForm(request.POST,request.FILES, instance=journal)
+        if entryForm.is_valid():
+            new_entry = entryForm.save()
+            new_entry.save()
+            files = request.FILES.getlist('image')
+            for f in files:
+                img = Image(image=f)
+                img.save()
+                new_entry.image.add(img)
+                new_entry.save()
+            return render(request, 'core/journal_dashboard.html',{'journal': journal})
+    entryForm = EntryForm()
+    return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm})
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):

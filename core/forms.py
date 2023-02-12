@@ -81,8 +81,9 @@ class EntryForm(forms.ModelForm):
     location = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     body = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
-    entry_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
-    
+    entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY))
+    image = forms.ImageField(required=False,widget=forms.ClearableFileInput(attrs={
+    'multiple': True}))
     class Meta: 
         model = Entry
         fields = ['title', 'location', 'body', 'entry_privacy']

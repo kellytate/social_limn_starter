@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <h1>Create an Entry for {{journal.title}}</h1>
+    <section>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form_group">
+                <label>Title:</label>
+                {{ entryForm.title}}
+                <label>Location:</label>
+                {{entryForm.location}}
+                <label>Entry:</label>
+                {{entryForm.body}}
+                <label>Privacy:</label>
+                {{entryForm.entry_privacy}}
+                <label>Entry Images:</label>
+                    {{entryForm.image}}
+            </div>
+            <button type="submit">Submit</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+{% endblock %}

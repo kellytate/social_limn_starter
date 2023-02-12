@@ -14,6 +14,27 @@
                 Edit Journal
             </button>
         </a> 
+        <a href="{% url 'core:create_entry' journal.pk %}">
+            <button>
+                Add Journal Entry
+            </button>
+        </a> 
+    </section>
+    <section>
+        {% for entry in entries %}
+            <div>
+            <h4>{{entry.title}}</h4>
+                {% for img in entry.image.all %}
+                    {% if forloop.counter == 1%}
+                        <img src="{{img.image.url}}">
+                    {% endif%}
+                {% endfor %}
+            
+                </div>
+            </div>
+            
+        {% endfor %}
+
     </section>
 
 </main>
