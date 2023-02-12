@@ -122,7 +122,7 @@ def update_journal(request, pk):
         if form.is_valid():
             form.save()
             return redirect("core:dashboard")
-    form=JournalForm()
+    form=JournalForm(instance=journal)
     return render(request, 'core/update_journal.html', {'form':form})
 
 #edit user and profile
