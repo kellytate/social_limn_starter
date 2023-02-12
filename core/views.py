@@ -130,10 +130,11 @@ def update_journal(request, pk):
 @login_required(login_url='login')
 def create_entry(request,pk):
     journal= Journal.objects.get(pk=pk)
-    if request == 'POST':
-        entryForm = EntryForm(request.POST,request.FILES, instance=journal)
+    if request.method == 'POST':
+        entryForm = EntryForm(request.POST,request.FILES)
         if entryForm.is_valid():
-            new_entry = entryForm.save()
+            new_entry = entryForm.save(commit=False)
+            new_entry.journal=journal
             new_entry.save()
             files = request.FILES.getlist('image')
             for f in files:
@@ -141,7 +142,7 @@ def create_entry(request,pk):
                 img.save()
                 new_entry.image.add(img)
                 new_entry.save()
-            return render(request, 'core/journal_dashboard.html',{'journal': journal})
+            return redirect(to= 'core:journal_dashboard', pk=journal.pk)
     entryForm = EntryForm()
     return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm})
 #edit user and profile
