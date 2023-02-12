@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <header>
+        <h1>{{entry.title}}</h1>
+        <a href="{% url 'core:profile' pk=entry.journal.user.id %}">
+            <p>By: {{entry.journal.user.username}}</p>
+        </a>
+        <p>Created On: {{entry.created_at}}</p>
+        <a href="{url 'core:journal' pk=entry.journal.id}">
+            <p>
+                {{entry.journal.title}}
+            </p>
+        </a>
+    </header>
+    {% if request.user == entry.journal.user %}
+        <div>
+            <button>Update Entry</button><button>Archive Entry</button>
+        </div>
+    {% endif %}
+    <section>
+        <h2>Capture:</h2>
+        <p>{{entry.body}}</p>
+    </section>
+    {% if entry.image.count > 0 %}
+    <section>
+        {% for img in entry.image.all %}
+        <img src="{{img.image.url}}"/>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+</main>
+
+{% endblock %}

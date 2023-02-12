@@ -145,6 +145,12 @@ def create_entry(request,pk):
             return redirect(to= 'core:journal_dashboard', pk=journal.pk)
     entryForm = EntryForm()
     return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm})
+
+#view entry 
+def entry_landing(request, pk):
+    entry = Entry.objects.get(pk=pk)
+    return render(request, 'core/entry_landing.html', {'entry': entry})
+
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):
