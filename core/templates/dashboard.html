@@ -9,6 +9,15 @@
         <a href="{% url 'core:update_profile' %}"><button>Update Profile</button></a>
         <a href="{% url 'logout' %}"><button>Logout</button></a>
         </div>
+        <article>
+            {% for entry in entries %}
+            <a href="{% url 'core:entry_landing' pk=entry.id %}">
+                <div>
+                    <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </article>
         <section>
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}

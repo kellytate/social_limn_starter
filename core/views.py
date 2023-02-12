@@ -31,6 +31,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # @login_required(login_url='login')
 def dashboard(request):
+    entries = Entry.objects.filter(
+        journal__user__profile__follows__in=[request.user.id]
+).order_by('-created_at')
     if request.method == "POST":
         form = JournalForm(request.POST, request.FILES)
         if form.is_valid():
@@ -39,7 +42,7 @@ def dashboard(request):
             form.save()
             return redirect("core:dashboard")
     form=JournalForm()
-    return render(request, 'dashboard.html', {'form':form})
+    return render(request, 'dashboard.html', {'form':form, 'entries':entries})
 
 ##Here I need to go ahead and add journal profile view
 ##need to have form to update profile and then also update 
