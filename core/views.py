@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
@@ -125,6 +125,10 @@ def update_journal(request, pk):
     form=JournalForm(instance=journal)
     return render(request, 'core/update_journal.html', {'form':form})
 
+#entry create:
+@login_required(login_url='login')
+def create_entry(request,pk):
+    return render(request, 'core/create_entry.html')
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):

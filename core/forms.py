@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile, Image, Journal
+from .models import Profile, Image, Journal, Entry
 
 #note that this form needs to be set up in the email settings 
 #change backend to 
@@ -75,3 +75,14 @@ class UpdateJournalForm(forms.ModelForm):
         model = Journal
         fields=['title','location','description', 'cover_img', 'default_privacy']  
 
+class EntryForm(forms.ModelForm):
+    title = forms.CharField(required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    location = forms.CharField(required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    entry_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
+    
+    class Meta: 
+        model = Entry
+        fields = ['title', 'location', 'body', 'entry_privacy']
