@@ -22,6 +22,19 @@
                 <button>Archive Entry</button>
         </div>
     {% endif %}
+    <div>
+        <h3>Likes: {{entry.entry_likes.count}}</h3>
+        <form action="{% url 'core:entry_likes' pk=entry.pk %}">
+            {% csrf_token %}
+            <button type="submit">Appreciate Entry</button>
+        </form>
+        {% if request.user in entry.entry_likes%}
+        <form action="{% url 'core:entry_unlike' pk=entry.pk %}">
+            {% csrf_token %}
+            <button type="submit">Undo Appreciation</button>
+        </form>
+        {% endif %}
+    </div>
     <section>
         <h2>Capture:</h2>
         <p>{{entry.body}}</p>

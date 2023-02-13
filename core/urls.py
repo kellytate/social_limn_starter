@@ -26,5 +26,7 @@ urlpatterns = [
     path('journals/<int:pk>/create_entry/', views.create_entry, name='create_entry'), 
     path('entries/<int:pk>/', views.entry_landing, name='entry_landing'),
     path('entries/<int:pk>/update_entry/', views.update_entry, name='update_entry'),
-    path('comments/<int:pk>/edit_comment/', views.edit_comment, name='edit_comment')
+    path('comments/<int:pk>/edit_comment/', views.edit_comment, name='edit_comment'),
+    path('entry/<int:pk>/like/', views.entry_likes, name='entry_likes'),
+    path('entry/<int:pk>/unlike', views.entry_unlike, name='entry_unlike')
 ]

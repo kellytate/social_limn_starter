@@ -11,7 +11,7 @@ from django.contrib.auth.models import User, auth
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile, Journal, Entry, Image, Comment
+from .models import Profile, Journal, Entry, Image, Comment, Like
 from rest_framework.decorators import api_view, renderer_classes
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -237,6 +237,25 @@ def image_upload(request):
     else:
         form = ImageForm()
     return render(request, 'core/image_upload.html', {'form': form})
+
+@login_required(login_url='login')
+def entry_likes(request,pk):
+    entry = Entry.objects.get(pk=pk)
+    for islike in entry.entry_likes.all():
+        if islike.user == request.user:
+            islike.like= True
+            islike.save()
+    else:
+        new_like = Like(like=True, user=request.user, entry=entry)
+        new_like.save()
+    return redirect('core:entry_landing', pk=entry.pk)
+
+def entry_unlike(request,pk):
+    entry = Entry.objects.get(pk=pk)
+    for islike in entry.entry_likes.all():
+        if islike.user == request.user:
+            islike.like= False
+    return redirect('core:entry_landing', pk=entry.pk) 
 
 
 # @api_view(('GET',))

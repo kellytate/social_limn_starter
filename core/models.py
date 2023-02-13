@@ -107,3 +107,13 @@ class Comment(models.Model):
             return True
         return False
 
+class Like(models.Model):
+    like = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User,related_name="user_likes", on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry,related_name="entry_likes", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Journal,related_name="journal_likes", on_delete=models.CASCADE, null=True)
+    comment = models.ForeignKey(Comment, related_name="comment_likes", on_delete=models.CASCADE, null=True)
+    image = models.ForeignKey(Image, related_name="image_likes", on_delete=models.CASCADE, null=True)
+    #add videos when videos. 
+
