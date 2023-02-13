@@ -113,6 +113,10 @@ def profile(request, pk):
 @login_required(login_url='login')
 def journal_profile(request,pk):
     journal = Journal.objects.get(pk=pk)
+
+    # if journal.default_privacy != 2 or journal.default_privacy != 0 and user not in journal.user.follows:
+    #     return(redirect("core:profile", pk=journal.user.pk))
+
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
         if commentForm.is_valid():
@@ -124,16 +128,30 @@ def journal_profile(request,pk):
             return redirect("core:journal_profile", pk=journal.pk)
     comments = Comment.objects.filter(journal=journal).order_by('-created_at')
     commentForm=CommentForm()
-    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments})
+    likeCounts = {}
+    for comment in comments:
+        count = Like.objects.filter(comment=comment).exclude(like = False).count()
+        likeCounts[comment.id] = count
+    likes = Like.objects.filter(journal=journal).exclude(like = False)
+    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts})
 
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
+
+    # if request.user != journal.user:
+    #     return(redirect("core:journal_profile", pk=journal.pk))
+
     entries = journal.journal_entries.all
-    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries})
+    likes = Like.objects.filter(journal=journal).exclude(like = False)
+    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes})
 
 def update_journal(request, pk):
     journal = Journal.objects.get(pk=pk)
+
+    # if request.user != journal.user:
+    #     return(redirect("core:journal_profile", pk=journal.pk))
+
     if request.method == "POST":
         form = UpdateJournalForm(request.POST, request.FILES, instance=journal)
         if form.is_valid():
@@ -165,6 +183,10 @@ def create_entry(request,pk):
 #view entry 
 def entry_landing(request, pk):
     entry = Entry.objects.get(pk=pk)
+
+    # if entry.privacy != 2 or entry.privacy != 0 and user not in entry.journal.user.follows:
+    #     return(redirect("core:profile", pk=entry.journal.user.pk))
+
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
         if commentForm.is_valid():
@@ -176,12 +198,20 @@ def entry_landing(request, pk):
             return redirect("core:entry_landing", pk=entry.pk)
     likes= Like.objects.filter(entry=entry).exclude(like = False)
     comments = Comment.objects.filter(entry=entry).order_by('-created_at')
+    likeCounts = {}
+    for comment in comments:
+        count = Like.objects.filter(comment=comment).exclude(like = False).count()
+        likeCounts[comment.id] = count
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes})
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts})
 
 #update entry
 def update_entry(request, pk):
     entry = Entry.objects.get(pk=pk)
+
+    # if request.user != entry.journal.user:
+    #     return(redirect("core:entry_landing", pk=entry.pk))
+
     if request.method == 'POST':
         entryForm = EntryForm(request.POST, request.FILES, instance=entry)
         if entryForm.is_valid():
@@ -201,6 +231,10 @@ def update_entry(request, pk):
 @login_required(login_url='login')
 def edit_comment(request, pk):
     comment=Comment.objects.get(pk=pk)
+
+    # if request.user != comment.user:
+    #     return
+
     if request.method == 'POST':
         commentForm=CommentForm(request.POST, instance=comment)
         if commentForm.is_valid():
@@ -215,6 +249,7 @@ def edit_comment(request, pk):
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):
+
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
@@ -261,13 +296,13 @@ def entry_unlike(request,pk):
         if islike.user == request.user:
             islike.like= False
             islike.save()
-    return redirect('core:entry_landing', pk=entry.pk)
+    return redirect('core:entry_profile', pk=entry.pk)
 
 @login_required(login_url='login')
 def journal_likes(request,pk):
     journal = Journal.objects.get(pk=pk)
     new_like=None
-    for islike in journal.entry_likes.all():
+    for islike in journal.journal_likes.all():
         if islike.user == request.user:
             islike.like= True
             islike.save()
@@ -275,7 +310,7 @@ def journal_likes(request,pk):
     if not new_like:
         new_like = Like(like=True, user=request.user, journal=journal)
         new_like.save()
-    return redirect('core:journal_landing', pk=journal.pk)
+    return redirect('core:journal_profile', pk=journal.pk)
 
 def journal_unlike(request,pk):
     journal = Journal.objects.get(pk=pk)
@@ -283,9 +318,33 @@ def journal_unlike(request,pk):
         if islike.user == request.user:
             islike.like= False
             islike.save()
-    return redirect('core:entry_landing', pk=journal.pk)  
+    return redirect('core:journal_profile', pk=journal.pk)  
 
+@login_required(login_url='login')
+def comment_likes(request,pk):
+    comment = Comment.objects.get(pk=pk)
+    new_like=None
+    for islike in comment.comment_likes.all():
+        if islike.user == request.user:
+            islike.like= True
+            islike.save()
+            new_like=islike
+    if not new_like:
+        new_like = Like(like=True, user=request.user, comment=comment)
+        new_like.save()
+    if comment.entry:
+        return redirect('core:entry_landing', pk=comment.entry.pk)
+    return redirect('core:journal_profile', pk=comment.journal.pk)
 
+def comment_unlike(request,pk):
+    comment = Comment.objects.get(pk=pk)
+    for islike in comment.comment_likes.all():
+        if islike.user == request.user:
+            islike.like= False
+            islike.save()
+    if comment.entry:
+        return redirect('core:entry_landing', pk=comment.entry.pk) 
+    return redirect('core:journal_profile', pk=comment.journal.pk)
 # @api_view(('GET',))
 # @login_required(login_url='login')
 # def delete_user(request, pk):

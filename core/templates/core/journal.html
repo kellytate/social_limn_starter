@@ -3,11 +3,40 @@
 {% block content %}
 <main>
     <header>
-        <img src="{{ journal.cover_img.url }}"/>
+        {% if journal.cover_img %}
+            <img src="{{ journal.cover_img.url }}"/>
+        {%endif%}
         <h1>{{journal.title}}</h1>
         <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
         {{journal.description}} 
     </header>
+    <div>
+        <h3>Likes: {{likes.count}}</h3>
+        <form action="{% url 'core:journal_likes' pk=journal.pk %}">
+            {% csrf_token %}
+            <button type="submit">Appreciate Journal</button>
+        </form>
+        <form action="{% url 'core:journal_unlike' pk=journal.pk %}">
+            {% csrf_token %}
+        <button type="submit">Undo Appreciation</button>
+        </form>
+    </div>
+    <section>
+        {% for entry in entries %}
+            <div>
+            <h4>{{entry.title}}</h4>
+                {% for img in entry.image.all %}
+                    {% if forloop.counter == 1%}
+                        <img src="{{img.image.url}}">
+                    {% endif%}
+                {% endfor %}
+            
+                </div>
+            </div>
+            
+        {% endfor %}
+
+    </section>
     <section>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -15,6 +44,14 @@
             <input type="submit" value="Submit" />
         </form>
     </section>
+    <section>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{commentForm.as_p}}
+            <input type="submit" value="Submit" />
+        </form>
+    </section>
+    <section>
     {% if comments.count > 0 %}
         {% for comment in comments %}
         <div>  
@@ -24,16 +61,32 @@
             <p>{{ comment.created_at }}</p>
             </div>
             <p>{{comment.comment}}</p>
+            <div>
+                {% for key, value in likeCounts.items %}
+                {% if key == comment.id %}
+                <h3>Likes: {{value}}</h3>
+                {% endif %}
+                {% endfor %}
+                <form action="{% url 'core:comment_likes' pk=comment.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Appreciate Comment</button>
+                </form>
+                <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
+                    {% csrf_token %}
+                <button type="submit">Undo Appreciation</button>
+                </form>
+            </div>
             {% if request.user == comment.user %}
 
                 <div>
-                <button>Delete Comment</button><a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit Comment</button></a>
+                <button>Delete Comment</button> <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit Comment</button></a>
                 </div>
             {%endif%}
             <button>Reply to Comment</button>
         </div>  
         {% endfor %}
     {% endif %}
+</section>
 
 </main>
 

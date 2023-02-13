@@ -27,6 +27,10 @@ urlpatterns = [
     path('entries/<int:pk>/', views.entry_landing, name='entry_landing'),
     path('entries/<int:pk>/update_entry/', views.update_entry, name='update_entry'),
     path('comments/<int:pk>/edit_comment/', views.edit_comment, name='edit_comment'),
-    path('entry/<int:pk>/like/', views.entry_likes, name='entry_likes'),
-    path('entry/<int:pk>/unlike', views.entry_unlike, name='entry_unlike')
+    path('entries/<int:pk>/like/', views.entry_likes, name='entry_likes'),
+    path('entries/<int:pk>/unlike/', views.entry_unlike, name='entry_unlike'),
+    path('journals/<int:pk>/like/', views.journal_likes, name='journal_likes'),
+    path('journals/<int:pk>/unlike/', views.journal_unlike, name='journal_unlike'),
+    path('comments/<int:pk>/like/', views.comment_likes, name='comment_likes'),
+    path('comments/<int:pk>/unlike/', views.comment_unlike, name='comment_unlike'),
 ]

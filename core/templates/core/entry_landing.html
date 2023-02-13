@@ -8,7 +8,7 @@
             <p>By: {{entry.journal.user.username}}</p>
         </a>
         <p>Created On: {{entry.created_at}}</p>
-        <a href="{url 'core:journal' pk=entry.journal.id}">
+        <a href="{url 'core:journal_profile' pk=entry.journal.pk}">
             <p>
                 {{entry.journal.title}}
             </p>
@@ -23,17 +23,16 @@
         </div>
     {% endif %}
     <div>
-        <h3>Likes: {{entry.entry_likes.count}}</h3>
+        <h3>Likes: {{likes.count}}</h3>
         <form action="{% url 'core:entry_likes' pk=entry.pk %}">
             {% csrf_token %}
             <button type="submit">Appreciate Entry</button>
         </form>
-        {% if request.user in entry.entry_likes%}
         <form action="{% url 'core:entry_unlike' pk=entry.pk %}">
             {% csrf_token %}
-            <button type="submit">Undo Appreciation</button>
+        <button type="submit">Undo Appreciation</button>
         </form>
-        {% endif %}
+
     </div>
     <section>
         <h2>Capture:</h2>
@@ -53,6 +52,7 @@
             <input type="submit" value="Submit" />
         </form>
     </section>
+    <section>
     {% if comments.count > 0 %}
         {% for comment in comments %}
         <div>  
@@ -62,6 +62,21 @@
             <p>{{ comment.created_at }}</p>
             </div>
             <p>{{comment.comment}}</p>
+            <div>
+                {% for key, value in likeCounts.items %}
+                {% if key == comment.id %}
+                <h3>Likes: {{value}}</h3>
+                {% endif %}
+                {% endfor %}
+                <form action="{% url 'core:comment_likes' pk=comment.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Appreciate Comment</button>
+                </form>
+                <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
+                    {% csrf_token %}
+                <button type="submit">Undo Appreciation</button>
+                </form>
+            </div>
             {% if request.user == comment.user %}
 
                 <div>
@@ -72,6 +87,7 @@
         </div>  
         {% endfor %}
     {% endif %}
+</section>
 
 </main>
 

@@ -3,7 +3,9 @@
 {% block content %}
 <main>
     <header>
-        <img src="{{ journal.cover_img.url }}"/>
+        {% if journal.cover_img %}
+            <img src="{{ journal.cover_img.url }}"/>
+        {% endif %}
         <h1>{{journal.title}}</h1>
         <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
         {{journal.description}} 

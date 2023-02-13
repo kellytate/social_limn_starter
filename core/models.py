@@ -51,6 +51,10 @@ class Image(models.Model):
         return self.title
 
 class Journal(models.Model):
+    '''
+    default privacy: 0 - private; 1 - followers; 2 - public
+    '''
+
     user = models.ForeignKey(User,
     related_name="user_journals",
     on_delete=models.DO_NOTHING) 
