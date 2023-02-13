@@ -27,7 +27,7 @@
             {% if request.user == comment.user %}
 
                 <div>
-                <button>Delete Comment</button><button>Edit Comment</button>
+                <button>Delete Comment</button><a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit Comment</button></a>
                 </div>
             {%endif%}
             <button>Reply to Comment</button>

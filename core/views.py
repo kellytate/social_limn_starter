@@ -194,6 +194,21 @@ def update_entry(request, pk):
     entryForm = EntryForm(instance=entry)
     return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry})
 
+#edit comment
+@login_required(login_url='login')
+def edit_comment(request, pk):
+    comment=Comment.objects.get(pk=pk)
+    if request.method == 'POST':
+        commentForm=CommentForm(request.POST, instance=comment)
+        if commentForm.is_valid():
+            commentForm.save()
+            if comment.journal:
+                return redirect('core:journal_profile', pk=comment.journal.pk)
+            else:
+                return redirect('core:entry_landing', pk=comment.entry.pk)
+    commentForm = CommentForm(instance=comment)
+    return render(request, 'core/edit_comment.html', {'commentForm':commentForm, 'comment': comment})
+
 #edit user and profile
 @login_required(login_url='login')
 def update_user(request):
