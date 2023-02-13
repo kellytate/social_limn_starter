@@ -7,5 +7,6 @@ def is_follower_of_user(function=None, redirect_field_name=REDIRECT_FIELD_NAME, 
     '''
 
     actual_decorator = user_passes_test(
+        
         lambda u: u.is_active and u.is_authenticated and u is in 
     )
