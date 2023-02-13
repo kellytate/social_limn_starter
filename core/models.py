@@ -93,8 +93,8 @@ class Comment(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,related_name="user_comments", on_delete=models.CASCADE)
-    entry = models.ForeignKey(Entry,related_name="entry_comments", on_delete=models.CASCADE)
-    journal = models.ForeignKey(Journal,related_name="journal_comments", on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry,related_name="entry_comments", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Journal,related_name="journal_comments", on_delete=models.CASCADE, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='comment_replies')
 
     @property
