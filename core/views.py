@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import Profile, Journal, Entry, Image, Comment, Like
 from rest_framework.decorators import api_view, renderer_classes
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -30,6 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 # @login_required(login_url='login')
+
 def dashboard(request):
     entries = Entry.objects.filter(
         journal__user__profile__follows__in=[request.user.id]
@@ -172,9 +174,10 @@ def entry_landing(request, pk):
             comment.entry=entry
             comment.save()
             return redirect("core:entry_landing", pk=entry.pk)
+    likes= Like.objects.filter(entry=entry).exclude(like = False)
     comments = Comment.objects.filter(entry=entry).order_by('-created_at')
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments})
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes})
 
 #update entry
 def update_entry(request, pk):
@@ -241,11 +244,13 @@ def image_upload(request):
 @login_required(login_url='login')
 def entry_likes(request,pk):
     entry = Entry.objects.get(pk=pk)
+    new_like=None
     for islike in entry.entry_likes.all():
         if islike.user == request.user:
             islike.like= True
             islike.save()
-    else:
+            new_like=islike
+    if not new_like:
         new_like = Like(like=True, user=request.user, entry=entry)
         new_like.save()
     return redirect('core:entry_landing', pk=entry.pk)
@@ -255,7 +260,30 @@ def entry_unlike(request,pk):
     for islike in entry.entry_likes.all():
         if islike.user == request.user:
             islike.like= False
-    return redirect('core:entry_landing', pk=entry.pk) 
+            islike.save()
+    return redirect('core:entry_landing', pk=entry.pk)
+
+@login_required(login_url='login')
+def journal_likes(request,pk):
+    journal = Journal.objects.get(pk=pk)
+    new_like=None
+    for islike in journal.entry_likes.all():
+        if islike.user == request.user:
+            islike.like= True
+            islike.save()
+            new_like=islike
+    if not new_like:
+        new_like = Like(like=True, user=request.user, journal=journal)
+        new_like.save()
+    return redirect('core:journal_landing', pk=journal.pk)
+
+def journal_unlike(request,pk):
+    journal = Journal.objects.get(pk=pk)
+    for islike in journal.journal_likes.all():
+        if islike.user == request.user:
+            islike.like= False
+            islike.save()
+    return redirect('core:entry_landing', pk=journal.pk)  
 
 
 # @api_view(('GET',))
