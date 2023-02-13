@@ -162,7 +162,17 @@ def create_entry(request,pk):
 #view entry 
 def entry_landing(request, pk):
     entry = Entry.objects.get(pk=pk)
-    return render(request, 'core/entry_landing.html', {'entry': entry})
+    if request.method=='POST':
+        commentForm=CommentForm(request.POST)
+        if commentForm.is_valid():
+            user = request.user
+            comment = commentForm.save(commit=False)
+            comment.user=user
+            comment.entry=entry
+            comment.save()
+            return redirect("core:entry_landing", pk=entry.pk)
+    commentForm=CommentForm()
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm})
 
 #update entry
 def update_entry(request, pk):
