@@ -15,8 +15,8 @@
             <input type="submit" value="Submit" />
         </form>
     </section>
-    {% if journal.journal_comments.count > 0 %}
-        {% for comment in journal.journal_comments.all %}
+    {% if comments.count > 0 %}
+        {% for comment in comments %}
         <div>  
             <div>
             <a href="{% url 'core:profile' pk=comment.user.profile.pk %}"><img src="{{comment.user.profile_img.url}}"></a>
@@ -24,10 +24,17 @@
             <p>{{ comment.created_at }}</p>
             </div>
             <p>{{comment.comment}}</p>
-            <button>Delete Comment</button><button>Edit Comment</button><button>Reply to Comment</button>
+            {% if request.user == comment.user %}
+
+                <div>
+                <button>Delete Comment</button><button>Edit Comment</button>
+                </div>
+            {%endif%}
+            <button>Reply to Comment</button>
         </div>  
         {% endfor %}
     {% endif %}
+
 </main>
 
 {% endblock %}

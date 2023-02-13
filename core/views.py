@@ -120,8 +120,9 @@ def journal_profile(request,pk):
             comment.journal=journal
             comment.save()
             return redirect("core:journal_profile", pk=journal.pk)
+    comments = Comment.objects.filter(journal=journal).order_by('-created_at')
     commentForm=CommentForm()
-    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm})
+    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments})
 
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
@@ -171,8 +172,9 @@ def entry_landing(request, pk):
             comment.entry=entry
             comment.save()
             return redirect("core:entry_landing", pk=entry.pk)
+    comments = Comment.objects.filter(entry=entry).order_by('-created_at')
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm})
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments})
 
 #update entry
 def update_entry(request, pk):
