@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
@@ -11,7 +11,7 @@ from django.contrib.auth.models import User, auth
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile, Journal, Entry, Image
+from .models import Profile, Journal, Entry, Image, Comment
 from rest_framework.decorators import api_view, renderer_classes
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -111,7 +111,17 @@ def profile(request, pk):
 @login_required(login_url='login')
 def journal_profile(request,pk):
     journal = Journal.objects.get(pk=pk)
-    return render(request, 'core/journal.html', {'journal': journal})
+    if request.method=='POST':
+        commentForm=CommentForm(request.POST)
+        if commentForm.is_valid():
+            user = request.user
+            comment = commentForm.save(commit=False)
+            comment.user=user
+            comment.journal=journal
+            comment.save()
+            return redirect("core:journal_profile", pk=journal.pk)
+    commentForm=CommentForm()
+    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm})
 
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
