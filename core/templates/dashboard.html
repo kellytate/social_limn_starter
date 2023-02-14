@@ -10,13 +10,15 @@
         <a href="{% url 'logout' %}"><button>Logout</button></a>
         </div>
         <article>
-            {% for entry in entries %}
-            <a href="{% url 'core:entry_landing' pk=entry.id %}">
-                <div>
-                    <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
-                </div>
-            </a>
-            {% endfor %}
+                {% for entry in entries %}
+                    {% if entry.entry_privacy != 0 or user == entry.journal.user %}
+                        <a href="{% url 'core:entry_landing' pk=entry.id %}">
+                        <div>
+                            <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+                        </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
         </article>
         <section>
             <form method="POST" enctype="multipart/form-data">
