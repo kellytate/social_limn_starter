@@ -22,19 +22,19 @@
         </form>
     </div>
     <section>
-        {% for entry in journal.journal_entries.all %}
-            <div>
-                <h4><a href="{% url 'core:entry_landing' pk=entry.pk %}">{{entry.title}}</a></h4>
-                {% for img in entry.image.all %}
-                    {% if forloop.counter == 1%}
-                        <img src="{{img.image.url}}">
-                    {% endif%}
-                {% endfor %}
-            
-                </div>
-            </div>
-            
-        {% endfor %}
+        <div>
+            {% for entry in journal.journal_entries.all %}
+                {% if entry.entry_privacy != 0 %}
+                    <h4><a href="{% url 'core:entry_landing' pk=entry.pk %}">{{entry.title}}</a></h4>
+                    {% for img in entry.image.all %}
+                        {% if forloop.counter == 1%}
+                            <img src="{{img.image.url}}">
+                        {% endif%}
+                    {% endfor %}
+                {% endif %}
+                    
+            {% endfor %}
+        </div>
 
     </section>
     <section>
