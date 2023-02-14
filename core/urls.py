@@ -31,6 +31,7 @@ urlpatterns = [
     path('images/<int:pk>/archive/<int:ok>', views.delete_image, name='archive_image'),
     path('comments/<int:pk>/edit_comment/', views.edit_comment, name='edit_comment'),
     path('comments/<int:pk>/archive_comment/', views.delete_comment, name='archive_comment'),
+    path('comments/<int:pk>/reply/', views.reply_comment, name='reply_comment'),
     path('entries/<int:pk>/like/', views.entry_likes, name='entry_likes'),
     path('entries/<int:pk>/unlike/', views.entry_unlike, name='entry_unlike'),
     path('journals/<int:pk>/like/', views.journal_likes, name='journal_likes'),

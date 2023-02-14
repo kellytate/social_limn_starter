@@ -1,10 +1,10 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="16b3fc31b76a48e6a169df7206ceccad"),
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id="16b3fc31b76a48e6a169df7206ceccad",
                                                 client_secret="96b200204f794de48df1ba62c4c99be9",
                                                 redirect_uri="http://localhost:1234",
-                                                scope="user-library-read")
+                                                scope="user-library-read"))
 
 taylor_uri = 'spotify:artist:06HL4z0CvFAxyc27GXpf02'
 

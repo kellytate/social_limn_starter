@@ -299,6 +299,23 @@ def delete_comment(request, pk):
         else:
                 return redirect('core:entry_landing', pk=comment.entry.pk)
 
+def reply_comment(request, pk):
+    parent_comment = Comment.objects.get(pk=pk)
+    if request.method == 'POST':
+        commentForm=CommentForm(request.POST)
+        if commentForm.is_valid():
+            comment = commentForm.save(commit=False)
+            comment.user = request.user
+            comment.parent = parent_comment
+            comment.save()
+            if parent_comment.journal:
+                comment.journal=parent_comment.journal
+                comment.save()
+                return redirect('core:journal_profile', pk=parent_comment.journal.pk)
+            else:
+                comment.entry=parent_comment.entry
+                comment.save()
+                return redirect('core:entry_landing', pk=parent_comment.entry.pk)
 
 #edit user and profile
 @login_required(login_url='login')
