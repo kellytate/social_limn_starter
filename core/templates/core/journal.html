@@ -22,9 +22,9 @@
         </form>
     </div>
     <section>
-        {% for entry in entries %}
+        {% for entry in journal.journal_entries.all %}
             <div>
-            <h4>{{entry.title}}</h4>
+                <h4><a href="{% url 'core:entry_landing' pk=entry.pk %}">{{entry.title}}</a></h4>
                 {% for img in entry.image.all %}
                     {% if forloop.counter == 1%}
                         <img src="{{img.image.url}}">
@@ -44,13 +44,13 @@
             <input type="submit" value="Submit" />
         </form>
     </section>
-    <section>
+    <!-- <section>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{commentForm.as_p}}
             <input type="submit" value="Submit" />
         </form>
-    </section>
+    </section> -->
     <section>
     {% if comments.count > 0 %}
         {% for comment in comments %}
