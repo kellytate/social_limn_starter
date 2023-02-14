@@ -384,7 +384,7 @@ def delete_account(request):
 
 def search_page(request):
     return render(request, 'core/search.html')
-    
+
 def searchUsers(request):
     if request.method=='GET':
         query=request.GET.get('q')
@@ -399,7 +399,17 @@ def searchUsers(request):
     return render(request, 'core/search.html')
 
 def searchUserEntries(request):
-    return
+    if request.method=='GET':
+        query=request.GET.get('q')
+
+        submitButton = request.GET.get('submit')
+        
+        if query is not None:
+            checking = Q(username__icontains=query)
+            results=Entry.objects.filter(user=request.user).filter(checking)
+            return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
+
+    return render(request, 'core/search.html')
 
 def searchUserJournals(request):
     return
