@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.db.models import Q
 from django.contrib.auth.models import User, auth
 # from django.contrib import messages
 # from django.http import HttpResponse
@@ -114,8 +115,8 @@ def profile(request, pk):
 def journal_profile(request,pk):
     journal = Journal.objects.get(pk=pk)
 
-    # if journal.default_privacy != 2 or journal.default_privacy != 0 and user not in journal.user.follows:
-    #     return(redirect("core:profile", pk=journal.user.pk))
+    if journal.default_privacy != 2 or journal.default_privacy != 0 and user not in journal.user.followed_by:
+        return(redirect("core:profile", pk=journal.user.pk))
 
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
@@ -139,8 +140,8 @@ def journal_profile(request,pk):
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
 
-    # if request.user != journal.user:
-    #     return(redirect("core:journal_profile", pk=journal.pk))
+    if request.user != journal.user:
+        return(redirect("core:journal_profile", pk=journal.pk))
 
     entries = journal.journal_entries.all
     likes = Like.objects.filter(journal=journal).exclude(like = False)
@@ -149,8 +150,8 @@ def journal_dashboard(request,pk):
 def update_journal(request, pk):
     journal = Journal.objects.get(pk=pk)
 
-    # if request.user != journal.user:
-    #     return(redirect("core:journal_profile", pk=journal.pk))
+    if request.user != journal.user:
+        return(redirect("core:journal_profile", pk=journal.pk))
 
     if request.method == "POST":
         form = UpdateJournalForm(request.POST, request.FILES, instance=journal)
@@ -184,8 +185,8 @@ def create_entry(request,pk):
 def entry_landing(request, pk):
     entry = Entry.objects.get(pk=pk)
 
-    # if entry.privacy != 2 or entry.privacy != 0 and user not in entry.journal.user.follows:
-    #     return(redirect("core:profile", pk=entry.journal.user.pk))
+    if entry.privacy != 2 or entry.privacy != 0 and user not in entry.journal.user.followed_by:
+        return(redirect("core:profile", pk=entry.journal.user.pk))
 
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
@@ -209,8 +210,8 @@ def entry_landing(request, pk):
 def update_entry(request, pk):
     entry = Entry.objects.get(pk=pk)
 
-    # if request.user != entry.journal.user:
-    #     return(redirect("core:entry_landing", pk=entry.pk))
+    if request.user != entry.journal.user:
+        return(redirect("core:entry_landing", pk=entry.pk))
 
     if request.method == 'POST':
         entryForm = EntryForm(request.POST, request.FILES, instance=entry)
@@ -232,8 +233,8 @@ def update_entry(request, pk):
 def edit_comment(request, pk):
     comment=Comment.objects.get(pk=pk)
 
-    # if request.user != comment.user:
-    #     return
+    if request.user != comment.user:
+        return
 
     if request.method == 'POST':
         commentForm=CommentForm(request.POST, instance=comment)
@@ -380,3 +381,31 @@ def delete_account(request):
     User.objects.filter(pk=user_pk).delete()
     return Response({"Success": "User deleted"}, status=status.HTTP_200_OK)
 
+
+def search_page(request):
+    return render(request, 'core/search.html')
+    
+def searchUsers(request):
+    if request.method=='GET':
+        query=request.GET.get('q')
+
+        submitButton = request.GET.get('submit')
+        
+        if query is not None:
+            checking = Q(username__icontains=query)
+            results=User.objects.filter(checking)
+            return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
+
+    return render(request, 'core/search.html')
+
+def searchUserEntries(request):
+    return
+
+def searchUserJournals(request):
+    return
+
+def searchAllEntries(request):
+    return
+
+def searchAllJournals(request):
+    return 

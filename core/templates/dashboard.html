@@ -39,8 +39,10 @@
         <section>
             {% for journal in user.user_journals.all %}
             <div>
-                <img src="{{journal.cover_img.url }}">
-                {{journal.title}}
+                {% if journal.cover_img %}
+                    <img src="{{journal.cover_img.url }}">
+                {% endif %}
+                <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">{{journal.title}}</a>
             </div>
             {% endfor %}
         </section>

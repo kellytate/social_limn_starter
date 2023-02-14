@@ -29,7 +29,18 @@
     <h1 class="title is-1">
         {{profile.user.username|upper}}'s Journals
     </h1>
+    <div>
+        
+        {% for journal in profile.user.user_journals.all %}
+            <div>
+                {% if journal.cover_img %}
+                    <img src="{{ journal.cover_img.url }}">
+                {% endif %}
+                {{journal.title}}
+            </div>
+        {% endfor %}
     </div>
+        </div>
 
 </div>
 
@@ -51,7 +62,7 @@
             <ul>
             {% for following in profile.follows.all %}
                 <li>
-                    <a href="#">
+                    <a href="{% url 'core:profile' pk=following.user.profile.pk %}">
                         {{ following }}
                     </a>
                 </li>
@@ -68,7 +79,7 @@
             <ul>
             {% for follower in profile.followed_by.all %}
                 <li>
-                    <a href="#">
+                    <a href="{% url 'core:profile' pk=follower.user.profile.pk %}">
                         {{ follower }}
                     </a>
                 </li>

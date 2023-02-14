@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <h1>Search Page</h1>
+    <section>
+        <form action="{% url 'core:search_users' %}" method="GET" value="{{request.GET.q}}">
+            <label>Search Users</label>
+            <input type="text" name="q" value="{{request.GET.q}}" placeholder="Search Users">
+            <input type="submit" name="submit" value="User Search"/>
+        </form>
+    </section>
+    {% if submitButton == 'User Search' %}
+        {% if results %}
+            <h2>Results for {{ request.GET.q}}</h2>
+            {% for result in results %}
+                <img src="{{ result.profile.profile_img.url }}"/>
+                <a href="{% url 'core:profile' pk=user.profile.id %}">
+                    <p>{{result.username}}</p>
+                </a>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+</main>
+
+
+
+{% endblock %}
