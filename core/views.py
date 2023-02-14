@@ -115,8 +115,10 @@ def profile(request, pk):
 def journal_profile(request,pk):
     journal = Journal.objects.get(pk=pk)
 
-    if journal.default_privacy != 2 or journal.default_privacy != 0 and user not in journal.user.followed_by:
-        return(redirect("core:profile", pk=journal.user.pk))
+    # if journal.default_privacy == 1 and journal.user.profile not in request.user.profile.follows.all:
+    #     return(redirect("core:profile", pk=journal.user.pk))
+    # if journal.default_privacy == 0:
+    #     return(redirect("core:profile", pk=journal.user.pk))
 
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
@@ -185,8 +187,8 @@ def create_entry(request,pk):
 def entry_landing(request, pk):
     entry = Entry.objects.get(pk=pk)
 
-    if entry.privacy != 2 or entry.privacy != 0 and user not in entry.journal.user.followed_by:
-        return(redirect("core:profile", pk=entry.journal.user.pk))
+    # if entry.privacy != 2 or entry.privacy != 0 and user not in entry.journal.user.followed_by:
+    #     return(redirect("core:profile", pk=entry.journal.user.pk))
 
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
@@ -400,19 +402,28 @@ def searchUsers(request):
 
 def searchUserEntries(request):
     if request.method=='GET':
-        query=request.GET.get('q')
+        query=request.GET.get('a')
 
         submitButton = request.GET.get('submit')
         
         if query is not None:
-            checking = Q(username__icontains=query)
-            results=Entry.objects.filter(user=request.user).filter(checking)
+            checking = Q(title__icontains=query) | Q(body__icontains=query)
+            results=Entry.objects.filter(journal__user=request.user).filter(checking)
             return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
 
     return render(request, 'core/search.html')
 
 def searchUserJournals(request):
-    return
+    if request.method=='GET':
+        query=request.GET.get('j')
+
+        submitButton = request.GET.get('submit')
+        
+        if query is not None:
+            checking = Q(title__icontains=query) | Q(description__icontains=query)
+            results=Journal.objects.filter(user=request.user).filter(checking)
+            return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
+    return render(request, 'core/search.html')
 
 def searchAllEntries(request):
     return

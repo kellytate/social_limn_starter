@@ -11,19 +11,65 @@
         </form>
     </section>
     <section>
-        
+        <form action="{% url 'core:search_user_entries' %}" method="GET" value="{{request.GET.a}}">
+            <label>Search Your Entries</label>
+            <input type="text" name="a" value="{{request.GET.a}}" placeholder="Search Your Entries">
+            <input type="submit" name="submit" value="User Entry Search"/>
+        </form>
     </section>
+    <section>
+        <form action="{% url 'core:search_user_journals' %}" method="GET" value="{{request.GET.j}}">
+            <label>Search Your Journals</label>
+            <input type="text" name="j" value="{{request.GET.j}}" placeholder="Search Your Journals">
+            <input type="submit" name="submit" value="User Journal Search"/>
+        </form>
+    </section>
+    
+
+    <section>
     {% if submitButton == 'User Search' %}
         {% if results %}
             <h2>Results for {{ request.GET.q}}</h2>
             {% for result in results %}
                 <img src="{{ result.profile.profile_img.url }}"/>
-                <a href="{% url 'core:profile' pk=user.profile.id %}">
+                <a href="{% url 'core:profile' pk=result.profile.id %}">
                     <p>{{result.username}}</p>
                 </a>
             {% endfor %}
         {% endif %}
     {% endif %}
+    {% if submitButton == 'User Entry Search' %}
+        {% if results %}
+            <h2>Results for {{ request.GET.a}}</h2>
+            {% for result in results %}
+                <a href="{% url 'core:entry_landing' pk=result.pk %}">  
+                <div>
+                        <h4>{{result.title}}</h4>
+                            {% for img in result.image.all %}
+                                {% if forloop.counter == 1%}
+                                    <img src="{{img.image.url}}">
+                                {% endif%}
+                            {% endfor %}     
+                </div>
+                </a>  
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+    {% if submitButton == 'User Journal Search' %}
+    {% if results %}
+            <h2>Results for {{request.GET.j}}</h2>
+            {% for result in results %}
+                <a href="{% url 'core:journal_profile' pk=result.pk %}">  
+                <div>
+                        <h4>{{result.title}}</h4>
+                        <img src="{{result.cover_img.url}}">
+                </div>
+                </a>  
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+    </section>
+
 </main>
 
 
