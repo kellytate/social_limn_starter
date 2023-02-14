@@ -426,7 +426,28 @@ def searchUserJournals(request):
     return render(request, 'core/search.html')
 
 def searchAllEntries(request):
-    return
+    if request.method=='GET':
+        query=request.GET.get('aa')
+
+        submitButton = request.GET.get('submit')
+        
+        if query is not None:
+            checking = Q(title__icontains=query) | Q(body__icontains=query)
+            results=Entry.objects.filter(checking)
+            return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
+
+    return render(request, 'core/search.html')
+
 
 def searchAllJournals(request):
-    return 
+    if request.method=='GET':
+        query=request.GET.get('jj')
+
+        submitButton = request.GET.get('submit')
+        
+        if query is not None:
+            checking = Q(title__icontains=query) | Q(description__icontains=query)
+            results=Journal.objects.filter(checking)
+            return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
+    return render(request, 'core/search.html')
+

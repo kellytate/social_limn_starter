@@ -35,7 +35,9 @@ urlpatterns = [
     path('comments/<int:pk>/unlike/', views.comment_unlike, name='comment_unlike'),
     path('search/users/', views.searchUsers, name='search_users'),
     path('search/', views.search_page, name='search_page'),
-    path('search/user/entries', views.searchUserEntries, name='search_user_entries'),
-    path('search/user/journals', views.searchUserJournals, name='search_user_journals'),
+    path('search/user/entries/', views.searchUserEntries, name='search_user_entries'),
+    path('search/user/journals/', views.searchUserJournals, name='search_user_journals'),
+    path('search/entries/', views.searchAllEntries, name='search_all_entries'),
+    path('search/journals/', views.searchAllJournals, name='search_all_journals'),
 
 ]
