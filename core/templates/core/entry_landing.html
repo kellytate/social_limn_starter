@@ -44,9 +44,9 @@
         <h2>Capture:</h2>
         <p>{{entry.body}}</p>
     </section>
-    {% if entry.image.count > 0 %}
+    {% if images.count > 0 %}
     <section>
-        {% for img in entry.image.all %}
+        {% for img in images %}
         <img src="{{img.image.url}}"/>
         {% endfor %}
     </section>

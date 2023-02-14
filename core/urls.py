@@ -28,6 +28,7 @@ urlpatterns = [
     path('entries/<int:pk>/', views.entry_landing, name='entry_landing'),
     path('entries/<int:pk>/update_entry/', views.update_entry, name='update_entry'),
     path('entries/<int:pk>/archive/', views.delete_entry, name='archive_entry'),
+    path('images/<int:pk>/archive/<int:ok>', views.delete_image, name='archive_image'),
     path('comments/<int:pk>/edit_comment/', views.edit_comment, name='edit_comment'),
     path('comments/<int:pk>/archive_comment/', views.delete_comment, name='archive_comment'),
     path('entries/<int:pk>/like/', views.entry_likes, name='entry_likes'),

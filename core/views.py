@@ -221,12 +221,13 @@ def entry_landing(request, pk):
             return redirect("core:entry_landing", pk=entry.pk)
     likes= Like.objects.filter(entry=entry).exclude(like = False)
     comments = Comment.objects.filter(entry=entry).order_by('-created_at')
+    images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     likeCounts = {}
     for comment in comments:
         count = Like.objects.filter(comment=comment).exclude(like = False).count()
         likeCounts[comment.id] = count
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts})
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'images':images})
 
 #update entry
 def update_entry(request, pk):
@@ -251,6 +252,13 @@ def update_entry(request, pk):
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images})
 #delete image:
+def delete_image(request, pk,ok):
+    image = Image.objects.get(pk=pk)
+    if request.method=="POST":
+        image.is_archived = True
+        image.save()
+    return redirect('core:update_entry', pk=ok)
+
 
 #delete entry
 def delete_entry(request, pk):
