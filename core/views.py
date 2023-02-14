@@ -31,12 +31,12 @@ class UserViewSet(viewsets.ModelViewSet):
 #     return render(request, 'index.html')
 
 
-# @login_required(login_url='login')
+@login_required(login_url='login')
 
 def dashboard(request):
     entries = Entry.objects.filter(
         journal__user__profile__follows__in=[request.user.id]
-).order_by('-created_at')
+).exclude(is_archived=True).order_by('-created_at')
     if request.method == "POST":
         form = JournalForm(request.POST, request.FILES)
         if form.is_valid():
@@ -45,7 +45,8 @@ def dashboard(request):
             form.save()
             return redirect("core:dashboard")
     form=JournalForm()
-    return render(request, 'dashboard.html', {'form':form, 'entries':entries})
+    journals = Journal.objects.filter(user=request.user).exclude(is_archived=True)
+    return render(request, 'dashboard.html', {'form':form, 'entries':entries, 'journals':journals})
 
 ##Here I need to go ahead and add journal profile view
 ##need to have form to update profile and then also update 
@@ -99,6 +100,18 @@ def profile_list(request):
 @login_required(login_url='login')
 def profile(request, pk):
     profile = Profile.objects.get(pk=pk)
+
+    # entries = Entry.objects.filter(
+    #     journal__user__profile__follows__in=[request.user.id]).exclude(is_archived=True).order_by('-created_at')
+
+    journals_followers = Journal.objects.filter(user__profile__follows__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0)
+    journals_public = Journal.objects.filter(user__profile__follows__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0).exclude(default_privacy=1).order_by('-created_at')
+
+    journals = journals_public
+    
+    if journals_followers:
+        journals = journals_followers
+
     if request.method=="POST":
         current_user = request.user.profile
         data=request.POST
@@ -108,18 +121,13 @@ def profile(request, pk):
         elif action=="unfollow":
             current_user.follows.remove(profile)
         current_user.save()
-    return render(request, 'core/profile.html', {'profile': profile})
+    return render(request, 'core/profile.html', {'profile': profile, 'journals': journals})
 
 #journal profile and dashboard views
 @login_required(login_url='login')
 def journal_profile(request,pk):
     journal = Journal.objects.get(pk=pk)
-
-    # if journal.default_privacy == 1 and journal.user.profile not in request.user.profile.follows.all:
-    #     return(redirect("core:profile", pk=journal.user.pk))
-    # if journal.default_privacy == 0:
-    #     return(redirect("core:profile", pk=journal.user.pk))
-
+    
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
         if commentForm.is_valid():
@@ -136,7 +144,8 @@ def journal_profile(request,pk):
         count = Like.objects.filter(comment=comment).exclude(like = False).count()
         likeCounts[comment.id] = count
     likes = Like.objects.filter(journal=journal).exclude(like = False)
-    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts})
+    entries = Entry.objects.filter(journal=journal).exclude(is_archived=True).exclude(entry_privacy=0)
+    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'entries': entries})
 
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
@@ -145,7 +154,7 @@ def journal_dashboard(request,pk):
     if request.user != journal.user:
         return(redirect("core:journal_profile", pk=journal.pk))
 
-    entries = journal.journal_entries.all
+    entries = Entry.objects.filter(journal=journal).exclude(is_archived=True)
     likes = Like.objects.filter(journal=journal).exclude(like = False)
     return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes})
 
@@ -162,6 +171,17 @@ def update_journal(request, pk):
             return redirect("core:dashboard")
     form=JournalForm(instance=journal)
     return render(request, 'core/update_journal.html', {'form':form})
+
+def delete_journal(request, pk):
+    journal = Journal.objects.get(pk=pk)
+    if request.method=="POST":
+        journal.is_archived = True
+        journal.save()
+        for entry in journal.journal_entries.all():
+            entry.is_archived = True
+            entry.save()
+    
+        return redirect('core:dashboard')
 
 #entry create:
 @login_required(login_url='login')
@@ -228,7 +248,18 @@ def update_entry(request, pk):
                 new_entry.save()
             return redirect(to='core:entry_landing', pk=entry.pk)
     entryForm = EntryForm(instance=entry)
-    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry})
+    images = Image.objects.filter(entry=entry).exclude(is_archived=True)
+    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images})
+#delete image:
+
+#delete entry
+def delete_entry(request, pk):
+    entry = Entry.objects.get(pk=pk)
+    if request.method=="POST":
+        entry.is_archived = True
+        entry.save()
+    
+        return redirect('core:journal_dashboard', pk=entry.journal.pk)
 
 #edit comment
 @login_required(login_url='login')
@@ -248,6 +279,18 @@ def edit_comment(request, pk):
                 return redirect('core:entry_landing', pk=comment.entry.pk)
     commentForm = CommentForm(instance=comment)
     return render(request, 'core/edit_comment.html', {'commentForm':commentForm, 'comment': comment})
+
+#delete Comment:
+def delete_comment(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    if request.method=="POST":
+        comment.is_archived = True
+        comment.save()
+        if comment.journal:
+                return redirect('core:journal_profile', pk=comment.journal.pk)
+        else:
+                return redirect('core:entry_landing', pk=comment.entry.pk)
+
 
 #edit user and profile
 @login_required(login_url='login')

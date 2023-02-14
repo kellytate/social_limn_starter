@@ -2,42 +2,52 @@
 
 {% block content %}
 <main>
-    <header>
-        {% if journal.cover_img %}
-            <img src="{{ journal.cover_img.url }}"/>
-        {% endif %}
-        <h1>{{journal.title}}</h1>
-        <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
-        {{journal.description}} 
-    </header>
-    <section>
-        <a href="{% url 'core:update_journal' journal.pk %}">
-            <button>
-                Edit Journal
-            </button>
-        </a> 
-        <a href="{% url 'core:create_entry' journal.pk %}">
-            <button>
-                Add Journal Entry
-            </button>
-        </a> 
-    </section>
-    <section>
-        {% for entry in entries %}
-            <div>
-            <h4>{{entry.title}}</h4>
-                {% for img in entry.image.all %}
-                    {% if forloop.counter == 1%}
-                        <img src="{{img.image.url}}">
-                    {% endif%}
-                {% endfor %}
-            
-                </div>
-            </div>
-            
-        {% endfor %}
+    {% if journal.is_archived is True %}
 
-    </section>
+        <h1>This journal is no longer available</h1>
+    
+        {% else %}
+        <header>
+            {% if journal.cover_img %}
+                <img src="{{ journal.cover_img.url }}"/>
+            {% endif %}
+            <h1>{{journal.title}}</h1>
+            <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
+            {{journal.description}} 
+        </header>
+        <section>
+            <a href="{% url 'core:update_journal' journal.pk %}">
+                <button>
+                    Edit Journal
+                </button>
+            </a> 
+            <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
+                {% csrf_token %}
+                <button name="archive" value="archive">Delete Journal</button>
+            </form>
+            <a href="{% url 'core:create_entry' journal.pk %}">
+                <button>
+                    Add Journal Entry
+                </button>
+            </a> 
+        </section>
+        <section>
+            {% for entry in entries %}
+                <a href="{% url 'core:entry_landing' pk=entry.pk %}"><div>
+                <h4>{{entry.title}}</h4>
+                    {% for img in entry.image.all %}
+                        {% if forloop.counter == 1%}
+                            <img src="{{img.image.url}}">
+                        {% endif%}
+                    {% endfor %}
+                
+                    </div>
+                </div></a>
+                
+            {% endfor %}
+
+        </section>
+    {% endif %}
 
 </main>
 
