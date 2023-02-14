@@ -33,6 +33,9 @@ urlpatterns = [
     path('journals/<int:pk>/unlike/', views.journal_unlike, name='journal_unlike'),
     path('comments/<int:pk>/like/', views.comment_likes, name='comment_likes'),
     path('comments/<int:pk>/unlike/', views.comment_unlike, name='comment_unlike'),
-    path('searchusers/', views.searchUsers, name='search_users'),
-    path('search/', views.search_page, name='search_page')
+    path('search/users/', views.searchUsers, name='search_users'),
+    path('search/', views.search_page, name='search_page'),
+    path('search/user/entries', views.searchUserEntries, name='search_user_entries'),
+    path('search/user/journals', views.searchUserJournals, name='search_user_journals'),
+
 ]
