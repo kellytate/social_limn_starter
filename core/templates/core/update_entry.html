@@ -23,6 +23,14 @@
             </div>
         </form>
     </section>
+    <section>
+        {% for image in images %}
+        <img src="{{image.image.url}}">
+        <form action="{% url 'core:archive_comment' pk=image.pk %}" method="POST">
+            {% csrf_token %}
+            <button name="archive" value="archive">Remove Image From Entry</button>
+        </form>
+    </section>
 </main>
 
 {% endblock %}

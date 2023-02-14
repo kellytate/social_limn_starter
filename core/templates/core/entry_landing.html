@@ -2,13 +2,16 @@
 
 {% block content %}
 <main>
+    {% if entry.is_archived is True%}
+        <h1>This Entry is no longer available</h1>
+    {% else %}
     <header>
         <h1>{{entry.title}}</h1>
         <a href="{% url 'core:profile' pk=entry.journal.user.id %}">
             <p>By: {{entry.journal.user.username}}</p>
         </a>
         <p>Created On: {{entry.created_at}}</p>
-        <a href="{url 'core:journal_profile' pk=entry.journal.pk}">
+        <a href="{% url 'core:journal_profile' pk=entry.journal.id %}">
             <p>
                 {{entry.journal.title}}
             </p>
@@ -19,7 +22,10 @@
             <a href="{% url 'core:update_entry' pk=entry.id %}">
                 <button>Update Entry</button>
             </a>
-                <button>Archive Entry</button>
+            <form action="{% url 'core:archive_entry' pk=entry.pk %}" method="POST">
+                {% csrf_token %}
+                <button name="archive" value="archive">Archive Entry</button>
+            </form>
         </div>
     {% endif %}
     <div>
@@ -56,38 +62,47 @@
     {% if comments.count > 0 %}
         {% for comment in comments %}
         <div>  
-            <div>
-            <a href="{% url 'core:profile' pk=comment.user.profile.pk %}"><img src="{{comment.user.profile_img.url}}"></a>
-            <h4>{{comment.user.username}}</h4>
-            <p>{{ comment.created_at }}</p>
-            </div>
-            <p>{{comment.comment}}</p>
-            <div>
-                {% for key, value in likeCounts.items %}
-                {% if key == comment.id %}
-                <h3>Likes: {{value}}</h3>
-                {% endif %}
-                {% endfor %}
-                <form action="{% url 'core:comment_likes' pk=comment.pk %}">
-                    {% csrf_token %}
-                    <button type="submit">Appreciate Comment</button>
-                </form>
-                <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
-                    {% csrf_token %}
-                <button type="submit">Undo Appreciation</button>
-                </form>
-            </div>
-            {% if request.user == comment.user %}
+            {% if comment.is_archived is True %}
+                <h4>This comment has been deleted</h4>
+                {%else%}
+                    <div>
+                    <a href="{% url 'core:profile' pk=comment.user.profile.pk %}"><img src="{{comment.user.profile_img.url}}"></a>
+                    <h4>{{comment.user.username}}</h4>
+                    <p>{{ comment.created_at }}</p>
+                    </div>
+                    <p>{{comment.comment}}</p>
+                    <div>
+                        {% for key, value in likeCounts.items %}
+                        {% if key == comment.id %}
+                        <h3>Likes: {{value}}</h3>
+                        {% endif %}
+                        {% endfor %}
+                        <form action="{% url 'core:comment_likes' pk=comment.pk %}">
+                            {% csrf_token %}
+                            <button type="submit">Appreciate Comment</button>
+                        </form>
+                        <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
+                            {% csrf_token %}
+                        <button type="submit">Undo Appreciation</button>
+                        </form>
+                    </div>
+                    {% if request.user == comment.user %}
 
-                <div>
-                <button>Delete Comment</button> <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit Comment</button></a>
-                </div>
-            {%endif%}
+                        <div>
+                            <form action="{% url 'core:archive_comment' pk=comment.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button name="archive" value="archive">Archive Comment</button>
+                            </form>
+                        <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit Comment</button></a>
+                        </div>
+                    {%endif%}
+                {% endif %}
             <button>Reply to Comment</button>
         </div>  
         {% endfor %}
     {% endif %}
 </section>
+{% endif %}
 
 </main>
 

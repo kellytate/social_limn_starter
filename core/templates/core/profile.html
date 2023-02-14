@@ -30,16 +30,12 @@
         {{profile.user.username|upper}}'s Journals
     </h1>
     <div>
-        {% if profile in user.profile.follows.all %}
-            {% for journal in profile.user.user_journals.all %}
-                {% if journal.default_privacy != 0 %}
-                    {% if journal.cover_img %}
-                        <img src="{{ journal.cover_img.url }}">
-                    {% endif %}
-                    <a href="{% url 'core:journal_profile' pk=journal.pk %}">{{journal.title}}</a>
+            {% for journal in journals %}
+                {% if journal.cover_img %}
+                    <img src="{{ journal.cover_img.url }}">
                 {% endif %}
+                <a href="{% url 'core:journal_profile' pk=journal.pk %}">{{journal.title}}</a>
             {% endfor %}
-        {% endif %}
     </div>
         </div>
 
