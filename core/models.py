@@ -35,6 +35,7 @@ class Profile(models.Model):
     profile_img = models.ImageField(upload_to='images/', default='blank-profile-picture.png')
     location = models.CharField(max_length=100, blank=True)
     spotify_auth = models.CharField(max_length=500, blank=True)
+    is_archived = models.BooleanField(default=False)
 
 
     def __str__(self):
@@ -46,6 +47,7 @@ class Image(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_liked = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -66,6 +68,7 @@ class Journal(models.Model):
     cover_img = models.ImageField(upload_to='images/')
     default_privacy = models.IntegerField(default=0)
     is_liked = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
 
     def _str_(self):
         return(
@@ -85,6 +88,7 @@ class Entry(models.Model):
     updated_at = models.DateTimeField(auto_now_add=True)
     entry_privacy = models.IntegerField(default=0)
     image = models.ManyToManyField('Image',blank=True)
+    is_archived = models.BooleanField(default=False)
 
     def _str_(self):
             return(
@@ -100,6 +104,7 @@ class Comment(models.Model):
     entry = models.ForeignKey(Entry,related_name="entry_comments", on_delete=models.CASCADE, null=True)
     journal = models.ForeignKey(Journal,related_name="journal_comments", on_delete=models.CASCADE, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='comment_replies')
+    is_archived = models.BooleanField(default=False)
 
     @property
     def children(self):
