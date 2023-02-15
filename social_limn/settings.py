@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
+    'crispy_forms',
+    'crispy_bulma',
 ]
 
 MIDDLEWARE = [
@@ -75,9 +77,19 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
             ],
+            'loaders': [
+            ('django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'path.to.custom.Loader',
+                ]),
+            ],
         },
     },
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS =('bulma',)
+CRISPY_TEMPLATE_PACK = 'bulma'
 
 WSGI_APPLICATION = 'social_limn.wsgi.application'
 

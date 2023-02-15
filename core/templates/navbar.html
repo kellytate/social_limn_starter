@@ -1,6 +1,36 @@
 {% block content %}
 {% if user.is_authenticated %}
-<nav>
+
+<!-- .hero -->
+<section class="hero">
+
+<!-- .hero-head -->
+<div class="hero-head">
+    <div class="columns is-mobile is-marginless">
+        <div class="column left">
+            <p class="navbar-item">Limn</p>
+        </div>
+        <div class="column right">
+            
+            <a class="navbar-item" href="{% url 'core:dashboard' %}">Home</a>
+        
+            <a class="navbar-item" href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
+        
+            <a class="navbar-item" href="{% url 'logout' %}"><button>Logout</button></a>
+                
+        </div>
+    </div>
+</div>
+</section>
+
+
+
+
+
+
+
+
+<!-- <nav>
     
     <img src="" alt=""/>
     <ul>
@@ -14,9 +44,36 @@
             <a href="{% url 'logout' %}"><button>Logout</button></a>
         </li>
     </ul>
-</nav>
+</nav> -->
 {% else %}
-<nav>
+
+<!-- .hero -->
+<section class="hero">
+
+    <!-- .hero-head -->
+    <div class="hero-head">
+        <div class="columns is-mobile is-marginless">
+            <div class="column left">
+                <p class="navbar-item">Limn</p>
+            </div>
+            <div class="column right">
+                
+                <a class="navbar-item" href="{% url 'core:home' %}">Home</a>
+            
+                <a class="navbar-item" href="{% url 'core:contact' %}">Contact</a>
+            
+                <a class="navbar-item" href="{% url 'login' %}">Login</a>
+            
+                <a class="navbar-item" href="{% url 'signup' %}"><button>Sign Up</button></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!-- <nav>
 <img src="" alt=""/>
 <ul>
     <li>
@@ -32,7 +89,7 @@
         <a href="{% url 'signup' %}"><button>Sign Up</button></a>
     </li>
 </ul>
-</nav>
+</nav> -->
 
 {% endif %}
 {% endblock %}
