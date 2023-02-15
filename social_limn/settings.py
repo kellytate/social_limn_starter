@@ -77,13 +77,13 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
             ],
-            'loaders': [
-            ('django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                'path.to.custom.Loader',
-                ]),
-            ],
+            # 'loaders': [
+            # ('django.template.loaders.cached.Loader', [
+            #     'django.template.loaders.filesystem.Loader',
+            #     'django.template.loaders.app_directories.Loader',
+            #     'path.to.custom.Loader',
+            #     ]),
+            # ],
         },
     },
 ]

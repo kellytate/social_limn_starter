@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main>
+<section class="hero">
+
+    <!-- .hero-head -->
+    <div class="hero center">
+
     <h1>Limn Login</h1>
     <form method="POST">
         {% csrf_token %}
         {{form.as_p}}
         <button>Login</button>
     </form>
-</main>
+    </div>
+</section>
 {% endblock %}
