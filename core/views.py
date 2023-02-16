@@ -1,6 +1,9 @@
 import requests
 import json
+import os
+from .utils import Calendar
 import spotipy
+import datetime
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
 from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm
@@ -157,7 +160,7 @@ def journal_profile(request,pk):
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
-
+    d=d = datetime.date.today()
     if request.user != journal.user:
         return(redirect("core:journal_profile", pk=journal.pk))
 
@@ -258,7 +261,7 @@ def update_entry(request, pk):
                 new_entry.save()
             return redirect(to='core:entry_landing', pk=entry.pk)
     entryForm = EntryForm(instance=entry)
-    song=Song.objects.filter(entry=entry)
+    song=Song.objects.filter(entry=entry).exclude(is_archived=True)
     frame_key = settings.IFRAME_KEY
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key})
@@ -544,6 +547,9 @@ def search_spotify(request, pk):
     # One way of keeping this data is to add it to a session
     # Make sure we only add this data when we're actually using pagination
     # ('page' in request.GET)
+    spotipyid = settings.SPOTIPY_CLIENT_ID
+    spotipySecret = settings.SPOTIPY_CLIENT_SECRET
+    my_creds = SpotifyClientCredentials(client_id=spotipyid, client_secret=spotipySecret)
     if not request.method == 'POST' and 'page' in request.GET:
         if 'search-post' in request.session:
             request.POST = request.session['search-post']
@@ -558,7 +564,7 @@ def search_spotify(request, pk):
             search_string = form.cleaned_data['search_string']
 
             spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
-            response_content = spotify.search(q=search_type + search_string, type=search_type, limit=20)
+            response_content = spotify.search(q=search_string, type=search_type, limit=20)
             # Deal with any strange responses from Spotify
             #
             print(response_content)

@@ -15,6 +15,11 @@
             <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
             {{journal.description}} 
         </header>
+        <div>
+            <h3>Entry Dates</h3>
+            <div id="my-element"></div>
+        </div>
+        
         <section class="column left">
             <a href="{% url 'core:update_journal' journal.pk %}">
                 <button class="button is-small is-rounded">
@@ -50,5 +55,6 @@
     {% endif %}
 
 </main>
+<script src="~bulma-calendar/dist/js/bulma-calendar.min.js"></script>
 
 {% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import datetime
+from django.urls import reverse
 
 
 # The creation of this User model and profile uses a post_save/Signal to create
@@ -84,12 +85,18 @@ class Entry(models.Model):
     title = models.CharField(max_length=200)
     body= models.CharField(max_length=2000)
     location = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=datetime.date.today)
     updated_at = models.DateTimeField(auto_now_add=True)
     entry_privacy = models.IntegerField(default=0)
     image = models.ManyToManyField('Image',blank=True)
     is_archived = models.BooleanField(default=False)
 
+    @property
+    def get_html_url(self):
+        url = reverse('core:entry_landing', args=(self.id,))
+        return f'<p>{self.title}</p><a href="{url}">edit</a>'
+
+    
     def _str_(self):
             return(
                 f"{self.journal.user.username}"

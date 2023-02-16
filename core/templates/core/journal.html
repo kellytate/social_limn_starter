@@ -17,11 +17,11 @@
         <h3>Likes: {{likes.count}}</h3>
         <form action="{% url 'core:journal_likes' pk=journal.pk %}">
             {% csrf_token %}
-            <button type="submit">Appreciate Journal</button>
+            <button class="button is-small is-rounded" type="submit">Appreciate Journal</button>
         </form>
         <form action="{% url 'core:journal_unlike' pk=journal.pk %}">
             {% csrf_token %}
-        <button type="submit">Undo Appreciation</button>
+        <button class="button is-small is-rounded" type="submit">Undo Appreciation</button>
         </form>
     </div>
     <section>
@@ -73,7 +73,7 @@
                             {% endfor %}
                             <form action="{% url 'core:comment_likes' pk=comment.pk %}">
                                 {% csrf_token %}
-                                <button type="submit">Appreciate Comment</button>
+                                <button class="button is-small is-rounded" type="submit">Appreciate Comment</button>
                             </form>
                             <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
                                 {% csrf_token %}
@@ -84,9 +84,9 @@
                             <div>
                                 <form action="{% url 'core:archive_comment' pk=comment.pk %}" method="POST">
                                     {% csrf_token %}
-                                    <button name="archive" value="archive">Archive Comment</button>
+                                    <button class="button is-small is-rounded" name="archive" value="archive">Archive Comment</button>
                                 </form>
-                                <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit Comment</button></a>
+                                <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button class="button is-small is-rounded">Edit Comment</button></a>
                             </div>
                         {% endif %}
                 {%endif%}
@@ -113,7 +113,7 @@
                         {% endfor %}
                         <form action="{% url 'core:comment_likes' pk=child_comment.pk %}">
                             {% csrf_token %}
-                            <button type="submit">Appreciate Comment</button>
+                            <button class="button is-small is-rounded" type="submit">Appreciate Comment</button>
                         </form>
                         <form action="{% url 'core:comment_unlike' pk=child_comment.pk %}">
                             {% csrf_token %}
@@ -125,9 +125,9 @@
                         <div>
                             <form action="{% url 'core:archive_comment' pk=child_comment.pk %}" method="POST">
                                 {% csrf_token %}
-                                <button name="archive" value="archive">Archive Comment</button>
+                                <button class="button is-small is-rounded" name="archive" value="archive">Archive Comment</button>
                             </form>
-                            <a href="{% url 'core:edit_comment' pk=child_comment.pk %}"><button>Edit Comment</button></a>
+                            <a href="{% url 'core:edit_comment' pk=child_comment.pk %}"><button class="button is-small is-rounded">Edit Comment</button></a>
                         </div>
                     {%endif%}
                 {% endif %}
