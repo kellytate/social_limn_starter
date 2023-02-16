@@ -155,9 +155,21 @@
         {% endfor %}
         
     {% endif %}
+    <div id="embed-iframe"></div>
 </section>
 {% endif %}
 <script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
+<!-- <script src="https://open.spotify.com/embed-podcast/iframe-api/v1" async></script>
+<script>
+    window.onSpotifyIframeApiReady = (IFrameAPI) => {
+  let element = document.getElementById('embed-iframe');
+  let options = {
+    uri: 'spotify:track:1H4Y9uW4N0LsxJUz0VnaPJ'
+    };
+  let callback = (EmbedController) => {};
+  IFrameAPI.createController(element, options, callback);
+};
+</script> -->
 </main>
 
 {% endblock %}

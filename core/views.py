@@ -560,7 +560,8 @@ def search_spotify(request, pk):
             spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
             response_content = spotify.search(q=search_type + search_string, type=search_type, limit=20)
             # Deal with any strange responses from Spotify
-            #print(response_content)
+            #
+            print(response_content)
             result_key = dict(RESULT_KEY_MAP)[search_type]
             search_results=[]
             if result_key == 'artist':
