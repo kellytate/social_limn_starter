@@ -33,5 +33,19 @@
         {% endfor %}
     </section>
 </main>
+{% if song %}
+<div class="iframely-embed">
+    <div class="iframely-responsive">
+        <a data-iframely-url href="{{song.source_url}}"></a>
+    </div>
+</div>
+<a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Entry Song</button></a>
+{% else %}
+<a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Entry Song</button></a>
+{% endif %}
+
+<script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
+    
+</main>
 
 {% endblock %}

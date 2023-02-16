@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import environ
 from pathlib import Path
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -168,3 +170,9 @@ LOGIN_REDIRECT_URL = os.path.join(BASE_DIR,'/limn/dashboard')
 LOGOUT_REDIRECT_URL = os.path.join(BASE_DIR,'/accounts/login')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SEARCH_RESULTS_PER_PAGE = 10  # The number of search results to show per page
+SPOTIFY_BASE_URL = "https://api.spotify.com/v1/search?q"
+SPOTIFY_LIMIT = 50
+
+IFRAME_KEY = env('IFRAME_KEY')

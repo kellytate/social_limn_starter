@@ -126,3 +126,12 @@ class Like(models.Model):
     image = models.ForeignKey(Image, related_name="image_likes", on_delete=models.CASCADE, null=True)
     #add videos when videos. 
 
+class Song(models.Model):
+    source_url = models.CharField(max_length=1000)
+    entry = models.ForeignKey(Entry,related_name="entry_song", on_delete=models.CASCADE, null=True)
+    Journal = models.ForeignKey(Entry,related_name="journal_song", on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=200)
+    artist = models.CharField(max_length=200)
+    album = models.CharField(max_length=200)
+    is_archived = models.BooleanField(default=False)
+

@@ -28,6 +28,15 @@
             </form>
         </div>
     {% endif %}
+    {% if song %}
+    {% with song.all|first as entrySong %}
+        <div class="iframely-embed">
+            <div class="iframely-responsive">
+                <a data-iframely-url href="{{entrySong.source_url}}"></a>
+            </div>
+        </div>
+        {% endwith %}
+    {% endif %}
     <div>
         <h3>Likes: {{likes.count}}</h3>
         <form action="{% url 'core:entry_likes' pk=entry.pk %}">
@@ -148,7 +157,7 @@
     {% endif %}
 </section>
 {% endif %}
-
+<script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
 </main>
 
 {% endblock %}

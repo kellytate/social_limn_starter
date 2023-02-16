@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Submit"/>
+</form>
+
+{%for item in search_results%}
+<div>
+    <div>
+        {% if item.images %}
+        {% for image in item.images %}
+            {% if image.height == 64 and image.width == 64 %}
+            <a target="_blank" href="{{ item.external_urls.spotify }}">
+                <img src="{{image.url}}">
+            </a>
+            {% endif %}
+        {% endfor %}
+        {%else%}
+        {% for image in item.album.images %}
+            {% if image.height == 64 and image.width == 64 %}
+            <a target="_blank" href="{{ item.external_urls.spotify }}">
+                <img src="{{image.url}}">
+            </a>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <a  href="{{ item.external_urls.spotify }}">
+        {{ item.name }}
+    </a>
+    <form action="{% url 'core:add_song' pk=entry.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="title" value="{{item.name}}">
+        <button value="{{item.external_urls.spotify}}" name="source">Add Song To Entry</button>
+    </form>
+    {%empty%}
+    <h2>No results</h2>
+</div>
+{% endfor %}
+{% if result_count%}
+<ul>
+    {%if search_results.has_previous %}
+    <li><a href="?page={{search_results.prev_page_number}}">Previous</a></li>
+    {%endif%}
+    <li>Page {{search_results.number}} of {{search_results.paginator.num_pages }}</li>
+    {% if search_results.has_next%}
+    <li><a href="?page={{ search_results.next_page_number }}">Next</a></li>
+    {%endif%}
+</ul>
+{%endif%}
+
+{% endblock %}

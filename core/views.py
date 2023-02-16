@@ -1,7 +1,14 @@
+import requests
+import json
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm
+from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
+from django.conf import settings
+
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -12,7 +19,7 @@ from django.contrib.auth.models import User, auth
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile, Journal, Entry, Image, Comment, Like
+from .models import Profile, Journal, Entry, Image, Comment, Like, Song
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
@@ -223,11 +230,13 @@ def entry_landing(request, pk):
     comments = Comment.objects.filter(entry=entry).order_by('-created_at')
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     likeCounts = {}
+    song = Song.objects.filter(entry=entry).exclude(is_archived=True)
+    frame_key = settings.IFRAME_KEY
     for comment in comments:
         count = Like.objects.filter(comment=comment).exclude(like = False).count()
         likeCounts[comment.id] = count
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'images':images})
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key})
 
 #update entry
 def update_entry(request, pk):
@@ -249,8 +258,10 @@ def update_entry(request, pk):
                 new_entry.save()
             return redirect(to='core:entry_landing', pk=entry.pk)
     entryForm = EntryForm(instance=entry)
+    song=Song.objects.filter(entry=entry)
+    frame_key = settings.IFRAME_KEY
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
-    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images})
+    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key})
 #delete image:
 def delete_image(request, pk,ok):
     image = Image.objects.get(pk=pk)
@@ -519,3 +530,90 @@ def searchAllJournals(request):
             return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
     return render(request, 'core/search.html')
 
+RESULT_KEY_MAP = (
+    ('artist', 'artists',),
+    ('album', 'albums',),
+    ('playlist', 'playlists',),
+    ('track', 'tracks',),
+)
+
+def search_spotify(request, pk):
+    results = None
+    result_count = None
+    # We will lose the POST data every time we use pagination
+    # One way of keeping this data is to add it to a session
+    # Make sure we only add this data when we're actually using pagination
+    # ('page' in request.GET)
+    if not request.method == 'POST' and 'page' in request.GET:
+        if 'search-post' in request.session:
+            request.POST = request.session['search-post']
+            request.method = 'POST'
+
+    if request.method == 'POST':
+        form = SpotifySearchForm(request.POST)
+        request.session['search-post'] = request.POST
+
+        if form.is_valid():
+            search_type = form.cleaned_data['search_type']
+            search_string = form.cleaned_data['search_string']
+
+            spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
+            response_content = spotify.search(q=search_type + search_string, type=search_type, limit=20)
+            # Deal with any strange responses from Spotify
+            #print(response_content)
+            result_key = dict(RESULT_KEY_MAP)[search_type]
+            search_results=[]
+            if result_key == 'artist':
+                for artist in response_content[result_key]['items']:
+                    result = spotify.artist_top_tracks(artist['uri'])
+                    search_results.extend(result['tracks'][:10])
+            
+            elif result_key == 'album':
+                for album in response_content[result_key]['items']:
+                    results = spotify.album_tracks(album['uri'])
+                    search_results.extend(results['items'])
+            else:
+                search_results = response_content[result_key]['items']
+        
+            result_count = response_content[result_key]['total']
+            paginator = Paginator(
+                search_results, settings.SEARCH_RESULTS_PER_PAGE
+            )
+
+            page = request.GET.get('page')
+            try:
+                results = paginator.page(page)
+            except PageNotAnInteger:
+                results = paginator.page(1)
+            except EmptyPage:
+                results = paginator.page(paginator.num_pages)
+    else:
+        form = SpotifySearchForm()
+
+    
+    #player =requests.get('iframe.ly/api/iframely?url=https://open.spotify.com/album/4E4NBueuClmsr8tVkZgV0K&api_key=7c27dc4b622df14eeffcf7')
+
+    context = {
+        'search_results': results,
+        'form': form,
+        'result_count': result_count,
+        'search_limit': settings.SPOTIFY_LIMIT,
+        'entry': Entry.objects.get(pk=pk)
+    }
+    return render(request, 'core/spotify_search.html', context)
+
+@login_required(login_url='login')
+def add_song(request,pk):
+    entry = Entry.objects.get(pk=pk)
+    songs = Song.objects.filter(entry=entry).exclude(is_archived=True)
+    if songs:
+        for song in songs:
+            song.is_archived=True
+            song.save()
+    if request.method=="POST":
+        new_song = Song()
+        new_song.entry=entry
+        new_song.title = request.POST.get('title')
+        new_song.source_url = request.POST.get('source')
+        new_song.save()
+    return redirect('core:entry_landing', pk=entry.pk)
