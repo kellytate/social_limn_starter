@@ -85,7 +85,7 @@ class Entry(models.Model):
     title = models.CharField(max_length=200)
     body= models.CharField(max_length=2000)
     location = models.CharField(max_length=100)
-    created_at = models.DateTimeField(default=datetime.date.today)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     entry_privacy = models.IntegerField(default=0)
     image = models.ManyToManyField('Image',blank=True)
@@ -94,7 +94,7 @@ class Entry(models.Model):
     @property
     def get_html_url(self):
         url = reverse('core:entry_landing', args=(self.id,))
-        return f'<p>{self.title}</p><a href="{url}">edit</a>'
+        return url
 
     
     def _str_(self):
@@ -136,9 +136,15 @@ class Like(models.Model):
 class Song(models.Model):
     source_url = models.CharField(max_length=1000)
     entry = models.ForeignKey(Entry,related_name="entry_song", on_delete=models.CASCADE, null=True)
-    Journal = models.ForeignKey(Entry,related_name="journal_song", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Entry,related_name="journal_song", on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
     is_archived = models.BooleanField(default=False)
 
+class Video(models.Model):
+    source_url = models.CharField(max_length=1000)
+    entry = models.ForeignKey(Entry,related_name="entry_videos", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Entry,related_name="journal_videos", on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=200)
+    is_archived = models.BooleanField(default=False)

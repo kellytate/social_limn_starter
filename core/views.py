@@ -6,11 +6,11 @@ import spotipy
 import datetime
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
-
+from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -22,7 +22,7 @@ from django.contrib.auth.models import User, auth
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile, Journal, Entry, Image, Comment, Like, Song
+from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Video
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
@@ -160,13 +160,20 @@ def journal_profile(request,pk):
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
     journal = Journal.objects.get(pk=pk)
-    d=d = datetime.date.today()
+    
     if request.user != journal.user:
         return(redirect("core:journal_profile", pk=journal.pk))
 
     entries = Entry.objects.filter(journal=journal).exclude(is_archived=True)
+    cal= []
+    for entry in entries:
+        cal.append({'id': entry.pk,
+        'title': entry.title,
+        'start':entry.created_at.strftime('%Y-%m-%d'),
+        'url': entry.get_html_url})
+        
     likes = Like.objects.filter(journal=journal).exclude(like = False)
-    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes})
+    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes, 'cal':cal})
 
 def update_journal(request, pk):
     journal = Journal.objects.get(pk=pk)
@@ -199,9 +206,14 @@ def create_entry(request,pk):
     journal= Journal.objects.get(pk=pk)
     if request.method == 'POST':
         entryForm = EntryForm(request.POST,request.FILES)
+        videoForm = VideoForm(request.POST)
         if entryForm.is_valid():
             new_entry = entryForm.save(commit=False)
             new_entry.journal=journal
+            new_entry.save()
+            new_video = videoForm.save(commit=False)
+            new_video.entry=new_entry
+            new_video.save()
             new_entry.save()
             files = request.FILES.getlist('image')
             for f in files:
@@ -211,7 +223,8 @@ def create_entry(request,pk):
                 new_entry.save()
             return redirect(to= 'core:journal_dashboard', pk=journal.pk)
     entryForm = EntryForm()
-    return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm})
+    videoForm = VideoForm()
+    return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm, "videoForm":videoForm})
 
 #view entry 
 def entry_landing(request, pk):
@@ -234,12 +247,13 @@ def entry_landing(request, pk):
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     likeCounts = {}
     song = Song.objects.filter(entry=entry).exclude(is_archived=True)
+    videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
     frame_key = settings.IFRAME_KEY
     for comment in comments:
         count = Like.objects.filter(comment=comment).exclude(like = False).count()
         likeCounts[comment.id] = count
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key})
+    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos})
 
 #update entry
 def update_entry(request, pk):
@@ -624,3 +638,6 @@ def add_song(request,pk):
         new_song.source_url = request.POST.get('source')
         new_song.save()
     return redirect('core:entry_landing', pk=entry.pk)
+
+def notify_endpoint():
+    return

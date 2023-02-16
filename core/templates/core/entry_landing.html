@@ -60,6 +60,15 @@
         {% endfor %}
     </section>
     {% endif %}
+    {% if videos %}
+    {% for video in videos %}
+        <div class="iframely-embed">
+            <div class="iframely-responsive">
+                <a data-iframely-url href="{{video.source_url}}"></a>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
     <section>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}

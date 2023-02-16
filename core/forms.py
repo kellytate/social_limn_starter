@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile, Image, Journal, Entry, Comment
+from .models import Profile, Image, Journal, Entry, Comment, Video
 
 #note that this form needs to be set up in the email settings 
 #change backend to 
@@ -145,3 +145,13 @@ class SpotifySearchForm(forms.Form):
     search_type = forms.ChoiceField(label='Filter',required=True,
                                     choices=SEARCH_TYPES)
     search_string = forms.CharField(label='',max_length=100)
+
+class VideoForm(forms.ModelForm):
+    title = forms.CharField(required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    source_url = forms.CharField(required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
+    class Meta:
+        model = Video
+        fields = ['title', 'source_url']

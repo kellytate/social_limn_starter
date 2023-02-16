@@ -16,8 +16,8 @@
             {{journal.description}} 
         </header>
         <div>
-            <h3>Entry Dates</h3>
-            <div id="my-element"></div>
+            <h3>Entry Log</h3>
+            <div id='calendar'></div>
         </div>
         
         <section class="column left">
@@ -55,6 +55,20 @@
     {% endif %}
 
 </main>
-<script src="~bulma-calendar/dist/js/bulma-calendar.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js'></script>
+    <script  type="text/javascript">
+
+    var a = {{cal|safe}};
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth', 
+        events: a
+        });
+        calendar.render();
+    });
+
+    </script>
 
 {% endblock %}
