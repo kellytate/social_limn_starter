@@ -11,6 +11,8 @@ img {
     width: 200px;
 }
 
+
+
 .navbar, .footer {
     background-color: #262523;
     color: #d3d9d9;
@@ -29,7 +31,7 @@ a:hover, .navbar a:hover, .footer a:hover {
     color: #92A7A0; 
 }
 
-button {
+/* button {
     background-color: black;
     color: white;
     border: none;
@@ -38,8 +40,43 @@ button {
     text-decoration: none;
     display: inline-block;
     
-}
+} */
 
 #wrapper {
     flex: 1;
 }
+
+
+input {
+	outline: none;
+	border: none;
+}
+
+textarea {
+    outline: none;
+    border: none;
+}
+
+textarea:focus, input:focus {
+    border-color: transparent !important;
+}
+
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; }
+input:focus::-moz-placeholder { color:transparent; }
+input:focus:-ms-input-placeholder { color:transparent; }
+
+textarea:focus::-webkit-input-placeholder { color:transparent; }
+textarea:focus:-moz-placeholder { color:transparent; }
+textarea:focus::-moz-placeholder { color:transparent; }
+textarea:focus:-ms-input-placeholder { color:transparent; }
+
+input::-webkit-input-placeholder { color: #555555;}
+input:-moz-placeholder { color: #555555;}
+input::-moz-placeholder { color: #555555;}
+input:-ms-input-placeholder { color: #555555;}
+
+textarea::-webkit-input-placeholder { color: #555555;}
+textarea:-moz-placeholder { color: #555555;}
+textarea::-moz-placeholder { color: #555555;}
+textarea:-ms-input-placeholder { color: #555555;}

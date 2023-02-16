@@ -41,3 +41,26 @@
         display: none;
     }
 }
+
+.box {
+    background-color: #1f1e1d;
+    border-radius: 8px;
+}
+
+
+/* button {
+    background-color: #92A7A0;
+    color: #d3d9d9;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 8px;   
+} */
+
+.button {
+    background-color: #92A7A0;
+    color: #1f1e1d;
+    border: none; 
+}

@@ -12,7 +12,7 @@
         <div class="navbar-end">
             <a class="navbar-item" href="{% url 'core:dashboard' %}">Home</a>
             <a class="navbar-item" href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
-            <a class="navbar-item" href="{% url 'logout' %}"><button class="button is-small is-black">Logout</button></a>
+            <a class="navbar-item" href="{% url 'logout' %}"><button class="button is-small is-rounded">Logout</button></a>
         </div>
     </div>
 </nav>
@@ -30,7 +30,7 @@
             <a class="navbar-item" href="{% url 'core:home' %}">Home</a>
             <a class="navbar-item" href="{% url 'core:contact' %}">Contact</a>
             <a class="navbar-item" href="{% url 'login' %}">Login</a>
-            <a class="navbar-item" href="{% url 'signup' %}"><button class="button is-small is-black">Sign Up</button></a>
+            <a class="navbar-item" href="{% url 'signup' %}"><button class="button is-small is-rounded">Sign Up</button></a>
         </div>
     </div>
 </nav>

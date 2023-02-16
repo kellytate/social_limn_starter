@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
 <main>
     <section class="section">
         <div class="container">
@@ -11,8 +12,8 @@
 
                         <h2>Hello, {{ user.username }}!</h2>
                         <h3>This is your dashboard!</h3>
-                        <a href="{% url 'core:update_profile' %}"><button>Update Profile</button></a>
-                        <a href="{% url 'logout' %}"><button>Logout</button></a>
+                        <a href="{% url 'core:update_profile' %}"><button class="button is-small is-rounded">Update Profile</button></a>
+                        <a href="{% url 'logout' %}"><button class="button is-small is-rounded">Logout</button></a>
                     </p>
                 
                     <article class="column is-one-forth">
@@ -27,28 +28,29 @@
                 </div>
 
                 <div class="column is-half center">
-                    <form class="control" method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                         <div class="form_group">
-                            <div>
+                            <div class="box">
                                 {{ form.title}}
                                 {{ form.location }}
                             </div>
                             <div>
-                            <div>
+                            <div class="box">
                             {{form.description}}
                             </div>
-                            <div>
+                            <div class="box">
                             
                                 <label>Cover Image:</label>{{form.cover_img}}
                             
                                 <label>Privacy:</label>{{form.default_privacy}}
                             
                             </div>
-                        </div>
-                        <button class="button is-small is-black" type="submit">Submit</button>
                         
+                        
+                        <button class="button is-small is-rounded" type="submit">Submit</button>
+                        </div>
                     </form>
                 </div>
                 </div>

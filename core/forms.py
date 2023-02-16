@@ -67,12 +67,22 @@ PRIVACY = [(0,"Private"),(1,"Followers Only"), (2,"Public")]
 
 class JournalForm(forms.ModelForm):
     title = forms.CharField(required=True, 
-        widget=forms.TextInput(attrs={'placeholder': 'Title', 'class': 'form-control',}))
+        widget=forms.TextInput(attrs={
+                                    'placeholder': 'Title', 
+                                    'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'class': 'form-control',}))
     location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'placeholder': 'Location', 'class': 'form-control'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Description', 'class': 'form-control', 'style': 'height:60px; width:500px'}))
-    cover_img = forms.ImageField(required=False)
-    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
+        widget=forms.TextInput(attrs={
+                                    'placeholder': 'Location',
+                                    'style': 'display: inline-block; width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'class': 'form-control'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={
+                                    'placeholder': 'Description', 
+                                    'class': 'form-control', 
+                                    'style': 'height:60px; width:504px; color: #92A7A0; background-color: #1f1e1d; border: 1; padding: 5px; border-radius: 8px'}))
+    cover_img = forms.ImageField(required=False, widget=forms.FileInput(attrs={
+                                    'style': 'color: #262523; background-color: #92A7A0}'}))
+    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'style': 'color: #d3d9d9; border: none; background-color: #262523'}))
 
     class Meta:
         model = Journal
