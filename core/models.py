@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import datetime
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
 
 
 # The creation of this User model and profile uses a post_save/Signal to create
@@ -43,7 +44,8 @@ class Profile(models.Model):
         return self.user.username
 
 class Image(models.Model):
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    # image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image = CloudinaryField('image')
     title = models.CharField(max_length=100, blank=False)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

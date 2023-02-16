@@ -90,8 +90,8 @@ TEMPLATES = [
     },
 ]
 
-CRISPY_ALLOWED_TEMPLATE_PACKS =('bulma',)
-CRISPY_TEMPLATE_PACK = 'bulma'
+# CRISPY_ALLOWED_TEMPLATE_PACKS =('bulma',)
+# CRISPY_TEMPLATE_PACK = 'bulma'
 
 WSGI_APPLICATION = 'social_limn.wsgi.application'
 
@@ -158,7 +158,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -178,3 +178,11 @@ SPOTIFY_LIMIT = 50
 IFRAME_KEY = env('IFRAME_KEY')
 SPOTIPY_CLIENT_ID = env('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = env('SPOTIPY_CLIENT_SECRET')
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env('CLOUD_NAME'),
+    'API_KEY': env('API_KEY'),
+    'API_SECRET': env('API_SECRET') 
+}

@@ -17,14 +17,15 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.models import User, auth
-# from django.contrib import messages
-# from django.http import HttpResponse
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
 from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Video
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+
+from cloudinary.forms import cl_init_js_callbacks
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -638,6 +639,17 @@ def add_song(request,pk):
         new_song.source_url = request.POST.get('source')
         new_song.save()
     return redirect('core:entry_landing', pk=entry.pk)
+
+def upload(request):
+    context = dict(backend_form = ImageForm())
+
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        context['posted'] = form.instance
+        if form.is_valid():
+            form.save()
+
+    return render(request, 'core/upload.html', context)
 
 def notify_endpoint():
     return

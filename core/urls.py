@@ -46,6 +46,7 @@ urlpatterns = [
     path('search/journals/', views.searchAllJournals, name='search_all_journals'),
     path('<int:pk>/search/spotify/', views.search_spotify, name='search_spotify'),
     path('entries/<int:pk>/song/', views.add_song, name='add_song'),
-    path('notify_endpoint', views.notify_endpoint, name='notify_endpoint'),
+    path('notify_endpoint/', views.notify_endpoint, name='notify_endpoint'),
+    path('upload/', views.upload, name='upload'),
 
 ]
