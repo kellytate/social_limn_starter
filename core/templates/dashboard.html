@@ -30,31 +30,24 @@
                 <div class="column is-half center">
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
                         <div class="form_group">
                             <div class="box">
                                 {{ form.title}}
                                 {{ form.location }}
                             </div>
                             <div>
-                            <div class="box">
-                            {{form.description}}
+                                <div class="box">
+                                    {{form.description}}
+                                </div>
+                                <div class="box">
+                                    <label>Cover Image:</label>{{form.cover_img}}
+                                    <label>Privacy:</label>{{form.default_privacy}}
+                                </div>
+                                <button class="button is-small is-rounded" type="submit">Submit</button>
                             </div>
-                            <div class="box">
-                            
-                                <label>Cover Image:</label>{{form.cover_img}}
-                            
-                                <label>Privacy:</label>{{form.default_privacy}}
-                            
-                            </div>
-                        
-                        
-                        <button class="button is-small is-rounded" type="submit">Submit</button>
                         </div>
                     </form>
                 </div>
-                </div>
-    
                 <div class="column is-one-fourth">
                     <div>
                         Your Journals:
