@@ -10,8 +10,11 @@ Django==4.1.5
 django-cors-headers==3.13.0
 django-crispy-bulma==0.2
 django-crispy-forms==2.0
+<<<<<<< HEAD
 django-environ==0.9.0
 django-extensions==3.2.1
+=======
+>>>>>>> 6fb59329f1ce607393b03c05bed3e981d3d21703
 django-simple-bulma==2.5.0
 djangorestframework==3.14.0
 exceptiongroup==1.1.0
