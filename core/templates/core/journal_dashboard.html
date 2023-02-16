@@ -15,18 +15,18 @@
             <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a>
             {{journal.description}} 
         </header>
-        <section>
+        <section class="column left">
             <a href="{% url 'core:update_journal' journal.pk %}">
-                <button>
+                <button class="button is-small is-rounded">
                     Edit Journal
                 </button>
             </a> 
             <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
                 {% csrf_token %}
-                <button name="archive" value="archive">Delete Journal</button>
+                <button class="button is-small is-rounded" name="archive" value="archive">Delete Journal</button>
             </form>
             <a href="{% url 'core:create_entry' journal.pk %}">
-                <button>
+                <button class="button is-small is-rounded">
                     Add Journal Entry
                 </button>
             </a> 
