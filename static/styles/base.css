@@ -47,12 +47,12 @@ a:hover, .navbar a:hover, .footer a:hover {
 }
 
 
-/* input {
+input {
 	outline: none;
 	border: none;
-} */
+}
 
-/* textarea {
+textarea {
     outline: none;
     border: none;
 }
@@ -79,4 +79,4 @@ input:-ms-input-placeholder { color: #555555;}
 textarea::-webkit-input-placeholder { color: #555555;}
 textarea:-moz-placeholder { color: #555555;}
 textarea::-moz-placeholder { color: #555555;}
-textarea:-ms-input-placeholder { color: #555555;} */
+textarea:-ms-input-placeholder { color: #555555;}
