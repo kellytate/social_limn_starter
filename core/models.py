@@ -45,7 +45,7 @@ class Profile(models.Model):
 
 class Image(models.Model):
     # image = models.ImageField(upload_to='images/', blank=True, null=True)
-    image = CloudinaryField('image')
+    image = CloudinaryField('image', blank=True, null=True)
     title = models.CharField(max_length=100, blank=False)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
