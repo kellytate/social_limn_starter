@@ -6,6 +6,25 @@
 
 .center-column {
     flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.main_section {
+    flex-direction: row;
+}
+
+.left_side {
+    flex-direction: column;
+}
+
+.right_side {
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.journal_form {
+    flex-direction: column;
+    justify-content: center;
 }
 
 .top    { align-items:      flex-start; }

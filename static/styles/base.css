@@ -1,0 +1,45 @@
+body {
+    background-color: #262523;
+    color: #d3d9d9;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+img {
+    border-radius: 8px;
+    width: 200px;
+}
+
+.navbar, .footer {
+    background-color: #262523;
+    color: #d3d9d9;
+}
+
+a {
+    color: #d3d9d9;
+}
+
+.navbar a, .footer a {
+    color: #d3d9d9;
+}
+
+a:hover, .navbar a:hover, .footer a:hover {
+    background-color: #262523;
+    color: #92A7A0; 
+}
+
+button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    
+}
+
+#wrapper {
+    flex: 1;
+}

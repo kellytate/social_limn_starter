@@ -1,51 +1,73 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 <main>
-    <h2>Hello, {{ user.username|default:'Guest' }}!</h2>
-    {% if user.is_authenticated %}
-        <div>
-        <h3>This is your dashboard!</h3>
-        <a href="{% url 'core:update_profile' %}"><button>Update Profile</button></a>
-        <a href="{% url 'logout' %}"><button>Logout</button></a>
-        </div>
-        <article>
-            {% for entry in entries %}
-            <a href="{% url 'core:entry_landing' pk=entry.id %}">
-                <div>
-                    <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-one-fourth">
+                    <p class="is-size-5">
+                        {% if user.is_authenticated %}
+
+                        <h2>Hello, {{ user.username }}!</h2>
+                        <h3>This is your dashboard!</h3>
+                        <a href="{% url 'core:update_profile' %}"><button>Update Profile</button></a>
+                        <a href="{% url 'logout' %}"><button>Logout</button></a>
+                    </p>
+                
+                    <article class="column is-one-forth">
+                        {% for entry in entries %}
+                            <a href="{% url 'core:entry_landing' pk=entry.id %}">
+                                <div>
+                                    <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </article>
                 </div>
-            </a>
-            {% endfor %}
-        </article>
-        <section>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form_group">
-                    <label>Title:</label>
-                    {{ form.title}}
-                    <label>Location:</label>
-                    {{form.location}}
-                    <label>Description:</label>
-                    {{form.description}}
-                    <label>Cover Image:</label>
-                    {{form.cover_img}}
-                    <label>Privacy:</label>
-                    {{form.default_privacy}}
+
+                <div class="column is-half center">
+                    <form class="control" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form_group">
+                            <div>
+                                {{ form.title}}
+                                {{ form.location }}
+                            </div>
+                            <div>
+                            <div>
+                            {{form.description}}
+                            </div>
+                            <div>
+                            
+                                <label>Cover Image:</label>{{form.cover_img}}
+                            
+                                <label>Privacy:</label>{{form.default_privacy}}
+                            
+                            </div>
+                        </div>
+                        <button class="button is-small is-black" type="submit">Submit</button>
+                        
+                    </form>
                 </div>
-                <button type="submit">Submit</button>
-            </form>
-        </section>
-        <section>
-            <div>
-            {% for journal in journals %}
-                {% if journal.cover_img %}
-                    <img src="{{ journal.cover_img.url }}">
-                {% endif %}
-                <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">{{journal.title}}</a>
-            {% endfor %}
+                </div>
+    
+                <div class="column is-one-fourth">
+                    <div>
+                        Your Journals:
+                        <br />
+                        {% for journal in journals %}
+                            {% if journal.cover_img %}
+                                <img src="{{ journal.cover_img.url }}">
+                            {% endif %}
+                            <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">{{journal.title}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>    
+    </section>
 
     {% else %}
         <div>

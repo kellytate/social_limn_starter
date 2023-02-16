@@ -3,7 +3,7 @@ import json
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -61,12 +61,12 @@ def dashboard(request):
 ##need to create journal entries 
 def signup(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = RegisterUserForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = RegisterUserForm()
     return render(request, 'registration/signup.html', {'form':form})
 
 # @login_required(login_url='login_url')

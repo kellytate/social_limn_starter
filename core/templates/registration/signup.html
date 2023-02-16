@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <main>
-    <section>
-        <div>
-            <h1>Create New Account</h1>
-            <form method="POST">
-                {% csrf_token %}
-                {{form.as_p}}
-                <button>Sign Up</button>
-            </form>
+    <section class="hero is-mobile is-marginless">
+
+            <div class="center-column">
+                <h1>Create New Account</h1>
+                <div>
+                    <!-- <div class="center-column"> -->
+                        <form class="center-column" method="POST">
+                            {% csrf_token %}
+                            <ul>
+                            <li>{{form.username}}</li>
+                            <li>{{form.email}}</li>
+                            <li>{{form.password1}}</li>
+                            <li>{{form.password2}}</li>
+                            <li><button class="button is-small is-black">Sign Up</button></li>
+                            </ul>
+                        </form>
+                    <!-- </div> -->
+            
+            </div>
         </div>
         <div>
             <img src="" alt="">

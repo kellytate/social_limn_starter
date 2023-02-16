@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
-    'crispy_forms',
-    'crispy_bulma',
 ]
 
 MIDDLEWARE = [

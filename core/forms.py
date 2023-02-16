@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import Profile, Image, Journal, Entry, Comment
 
 #note that this form needs to be set up in the email settings 
@@ -15,6 +16,22 @@ class ContactForm(forms.Form):
     subject = forms.CharField(max_length = 50)
     email_address = forms.EmailField(max_length = 150)
     message = forms.CharField(widget = forms.Textarea, max_length = 2000)
+
+class RegisterUserForm(UserCreationForm):
+    # email = forms.EmailField(max_length=254,
+    #     help_text='Required. Enter a valid email address.',
+    #     widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget=forms.TextInput(attrs={'placeholder': 'username','class': 'form-control'})
+        self.fields['email'].widget=forms.TextInput(attrs={'placeholder': 'email','class': 'form-control'})
+        self.fields['password1'].widget=forms.PasswordInput(attrs={'placeholder': 'password', 'class': 'form-control'})
+        self.fields['password2'].widget=forms.PasswordInput(attrs={'placeholder': 'confirm password', 'class': 'form-control'})
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
 
 class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100,
@@ -50,16 +67,17 @@ PRIVACY = [(0,"Private"),(1,"Followers Only"), (2,"Public")]
 
 class JournalForm(forms.ModelForm):
     title = forms.CharField(required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Title', 'class': 'form-control',}))
     location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+        widget=forms.TextInput(attrs={'placeholder': 'Location', 'class': 'form-control'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Description', 'class': 'form-control', 'style': 'height:60px; width:500px'}))
     cover_img = forms.ImageField(required=False)
     default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
 
     class Meta:
         model = Journal
         fields=['title','location','description', 'cover_img', 'default_privacy']  
+
 
 
 class UpdateJournalForm(forms.ModelForm):
