@@ -43,12 +43,12 @@ class UpdateUserForm(forms.ModelForm):
         fields = ['username']
 
 class UpdateProfileForm(forms.ModelForm):
-    email = forms.EmailField(required=True, 
+    email = forms.EmailField(required=False, 
         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    bio = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
     location = forms.CharField(max_length=100,
-        required=True, 
+        required=False, 
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     profile_img = forms.ImageField(required=False)
     
