@@ -4,7 +4,6 @@
 <main>
     <h1>Edit {{entry.title}}</h1>
     <section>
-
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form_group">
@@ -45,6 +44,37 @@
 {% else %}
 <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Entry Song</button></a>
 {% endif %}
+{% if place %}
+{% endif %}
+<div>
+    <h3>
+        Add a Video
+    </h3>
+    <form action="{% url 'core:add_video' pk=entry.pk %}" method="POST">
+        {% csrf_token %}
+        <div class="form_group">
+            <label>Video Title:</label>
+            {{ videoForm.title}}
+            <label>Video URL</label>
+            {{videoForm.source_url}}
+        </div>
+        <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+{% if videos %}
+    {% for video in videos %}
+        <div class="iframely-embed">
+            <div class="iframely-responsive">
+                <a data-iframely-url href="{{video.source_url}}"></a>
+            </div>
+        </div>
+        <form action="{% url 'core:archive_video' pk=video.pk ok=entry.pk %}" method="POST">
+            {% csrf_token %}
+            <button name="archive" value="archive">Remove Video From Entry</button>
+        </form>
+        {% endfor %}
+    {% endif %}
 
 <script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
     

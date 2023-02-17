@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from datetime import datetime
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
-
+from location_field.models.plain import PlainLocationField
 
 # The creation of this User model and profile uses a post_save/Signal to create
 # the profile as soon as a user is saved. If there are strange errors, check that
@@ -138,7 +138,7 @@ class Like(models.Model):
 class Song(models.Model):
     source_url = models.CharField(max_length=1000)
     entry = models.ForeignKey(Entry,related_name="entry_song", on_delete=models.CASCADE, null=True)
-    journal = models.ForeignKey(Entry,related_name="journal_song", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Journal,related_name="journal_song", on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
@@ -147,6 +147,14 @@ class Song(models.Model):
 class Video(models.Model):
     source_url = models.CharField(max_length=1000)
     entry = models.ForeignKey(Entry,related_name="entry_videos", on_delete=models.CASCADE, null=True)
-    journal = models.ForeignKey(Entry,related_name="journal_videos", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Journal,related_name="journal_videos", on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=200)
+    is_archived = models.BooleanField(default=False)
+
+class Place(models.Model):
+    name = models.CharField(max_length=255)
+    location = PlainLocationField(based_fields=['name'], zoom=7)
+    entry = models.ForeignKey(Entry,related_name="entry_location", on_delete=models.CASCADE, null=True)
+    journal = models.ForeignKey(Journal,related_name="journal_location", on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey(Profile,related_name="profile_location", on_delete=models.CASCADE, null=True)
     is_archived = models.BooleanField(default=False)

@@ -48,5 +48,7 @@ urlpatterns = [
     path('entries/<int:pk>/song/', views.add_song, name='add_song'),
     path('notify_endpoint/', views.notify_endpoint, name='notify_endpoint'),
     path('upload/', views.upload, name='upload'),
-
+    path('videos/<int:pk>/archive/<int:ok>/', views.delete_video, name='archive_video'),
+    path('entries/<int:pk>/addVideo/', views.another_video, name='add_video'),
+    
 ]

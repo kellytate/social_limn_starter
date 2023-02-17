@@ -21,7 +21,7 @@ from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .serializers import *
-from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Video
+from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Video, Place
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
@@ -262,11 +262,9 @@ def update_entry(request, pk):
 
     if request.user != entry.journal.user:
         return(redirect("core:entry_landing", pk=entry.pk))
-
     if request.method == 'POST':
         entryForm = EntryForm(request.POST, request.FILES, instance=entry)
         if entryForm.is_valid():
-
             new_entry=entryForm.save()
             files = request.FILES.getlist('image')
             for f in files:
@@ -279,7 +277,21 @@ def update_entry(request, pk):
     song=Song.objects.filter(entry=entry).exclude(is_archived=True)
     frame_key = settings.IFRAME_KEY
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
-    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key})
+    videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
+    videoForm=VideoForm()
+    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm})
+
+## add a delete video button.
+def another_video(request, pk):
+    if request.method=="POST":
+        videoForm = VideoForm(request.POST)
+        if videoForm.is_valid():
+            video = videoForm.save(commit=False)
+            entry = Entry.objects.get(pk=pk)
+            video.entry=entry
+            video.save()
+            entry.save()
+    return redirect('core:update_entry', pk=pk)
 #delete image:
 def delete_image(request, pk,ok):
     image = Image.objects.get(pk=pk)
@@ -288,6 +300,13 @@ def delete_image(request, pk,ok):
         image.save()
     return redirect('core:update_entry', pk=ok)
 
+#video
+def delete_video(request, pk,ok):
+    video = Video.objects.get(pk=pk)
+    if request.method=="POST":
+        video.is_archived = True
+        video.save()
+    return redirect('core:update_entry', pk=ok)
 
 #delete entry
 def delete_entry(request, pk):
