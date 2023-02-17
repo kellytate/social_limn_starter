@@ -20,7 +20,7 @@ class ContactForm(forms.Form):
 class RegisterUserForm(UserCreationForm):
     # email = forms.EmailField(max_length=254,
     #     help_text='Required. Enter a valid email address.',
-    #     widget=forms.TextInput(attrs={'class': 'form-control'}))
+    #     widget=forms.TextInput(attrs={'class': 'control'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,7 +48,7 @@ class RegisterUserForm(UserCreationForm):
 class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100,
         required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
 
     class Meta:
         model = User
@@ -56,12 +56,12 @@ class UpdateUserForm(forms.ModelForm):
 
 class UpdateProfileForm(forms.ModelForm):
     email = forms.EmailField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
 
-    bio = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    bio = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'control', 'rows': 5}))
     location = forms.CharField(max_length=100,
         required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
     profile_img = forms.ImageField(required=False)
     
     class Meta:
@@ -104,10 +104,10 @@ class JournalForm(forms.ModelForm):
 
 class UpdateJournalForm(forms.ModelForm):
     title = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
     location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    description = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
+    description = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'control', 'rows': 5}))
     cover_img = forms.ImageField(required=False)
     default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
 
@@ -117,10 +117,10 @@ class UpdateJournalForm(forms.ModelForm):
 
 class EntryForm(forms.ModelForm):
     title = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
     location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
+    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'control', 'rows': 5}))
     entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY))
     image = forms.ImageField(required=False,widget=forms.ClearableFileInput(attrs={
     'multiple': True}))
@@ -129,7 +129,7 @@ class EntryForm(forms.ModelForm):
         fields = ['title', 'location', 'body', 'entry_privacy']
 
 class CommentForm(forms.ModelForm):
-    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Share your thoughts'}))
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Share your thoughts', 'class': 'control', 'style': 'color: 92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
 
     class Meta:
         model = Comment
@@ -147,9 +147,9 @@ class SpotifySearchForm(forms.Form):
 
 class VideoForm(forms.ModelForm):
     title = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
     source_url = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'control'}))
     
     class Meta:
         model = Video
