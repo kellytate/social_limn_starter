@@ -16,6 +16,7 @@ img {
 .navbar, .footer {
     background-color: #262523;
     color: #d3d9d9;
+
 }
 
 a {
@@ -28,8 +29,9 @@ a {
 
 a:hover, .navbar a:hover, .footer a:hover {
     background-color: #262523;
-    color: #92A7A0; 
+    color: #92A7A0;
 }
+
 
 
 
@@ -57,13 +59,14 @@ a:hover, .navbar a:hover, .footer a:hover {
 textarea {
     outline: none;
     border: none;
-}
-
+} */
+/* 
 textarea:focus, input:focus {
     border-color: transparent !important;
-}
+} */
 
-input:focus::-webkit-input-placeholder { color:transparent; }
+
+/* input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; }
 input:focus::-moz-placeholder { color:transparent; }
 input:focus:-ms-input-placeholder { color:transparent; }
@@ -81,4 +84,4 @@ input:-ms-input-placeholder { color: #555555;}
 textarea::-webkit-input-placeholder { color: #555555;}
 textarea:-moz-placeholder { color: #555555;}
 textarea::-moz-placeholder { color: #555555;}
-textarea:-ms-input-placeholder { color: #555555;} */
+textarea:-ms-input-placeholder { color: #555555;}  */

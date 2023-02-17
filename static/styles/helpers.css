@@ -44,7 +44,8 @@
 
 .box {
     background-color: #1f1e1d;
-    border-radius: 8px;
+    /* border-radius: 2px; */
+    /* border-color: #1f1e1d; */
 }
 
 
@@ -64,3 +65,4 @@
     color: #1f1e1d;
     border: none; 
 }
+

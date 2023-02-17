@@ -12,10 +12,22 @@ from mapbox_location_field.forms import LocationField as FormLocationField
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 class ContactForm(forms.Form):
-    name = forms.CharField(max_length = 50)
-    subject = forms.CharField(max_length = 50)
-    email_address = forms.EmailField(max_length = 150)
-    message = forms.CharField(widget = forms.Textarea, max_length = 2000)
+    name = forms.CharField(max_length = 50, widget=forms.TextInput(attrs={
+            'placeholder': 'Name',
+            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'class': 'control'}))
+    subject = forms.CharField(max_length = 50, widget=forms.TextInput(attrs={
+            'placeholder': 'Subject',
+            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'class': 'control'}))
+    email_address = forms.EmailField(max_length = 150, widget=forms.TextInput(attrs={
+            'placeholder': 'Email',
+            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'class': 'control'}))
+    message = forms.CharField(max_length = 2000, widget=forms.Textarea(attrs={
+                                    'placeholder': 'Share your thoughts...', 
+                                    'class': 'control', 
+                                    'style': 'height:60px; width:400px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
 
 class RegisterUserForm(UserCreationForm):
     # email = forms.EmailField(max_length=254,
@@ -124,7 +136,7 @@ class EntryForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'placeholder': 'Location', 
                                     'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
                                     'class': 'control'}))
-    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'What is your story?', 
+    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'Tell your story...', 
                                     'class': 'control', 
                                     'style': 'height:60px; width:504px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
     entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY))

@@ -8,15 +8,15 @@
                 <h1>Create New Account</h1>
                 <div>
                     <!-- <div class="center-column"> -->
-                        <form class="box control center-column" method="POST">
+                        <form class="control center-column" method="POST">
+                            <div class="box center-column">
                             {% csrf_token %}
-                            <form class="form-group">
                             {{form.username}}
                             {{form.email}}
                             {{form.password1}}
-                            {{form.password2}}</form>
-
-                            <button class="button is-small is-rounded">Sign Up</button>
+                            {{form.password2}}
+                            </div>
+                            <button class="button is-small ">Sign Up</button>
                             
                         </form>
                     <!-- </div> -->
