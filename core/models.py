@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from datetime import datetime
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
-from mapbox_location_field.spatial.models import SpatialLocationField  
+from mapbox_location_field.models import LocationField 
 
 # The creation of this User model and profile uses a post_save/Signal to create
 # the profile as soon as a user is saved. If there are strange errors, check that
@@ -153,7 +153,8 @@ class Video(models.Model):
 
 class Place(models.Model):
     name = models.CharField(max_length=255)
-    location =SpatialLocationField() 
+    longitude = models.CharField(max_length=255)
+    latitude = models.CharField(max_length=255)
     entry = models.ForeignKey(Entry,related_name="entry_location", on_delete=models.CASCADE, null=True)
     journal = models.ForeignKey(Journal,related_name="journal_location", on_delete=models.CASCADE, null=True)
     profile = models.ForeignKey(Profile,related_name="profile_location", on_delete=models.CASCADE, null=True)
