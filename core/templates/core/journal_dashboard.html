@@ -22,16 +22,16 @@
         
         <section class="column left">
             <a href="{% url 'core:update_journal' journal.pk %}">
-                <button class="button is-small is-rounded">
+                <button class="button is-small ">
                     Edit Journal
                 </button>
             </a> 
             <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
                 {% csrf_token %}
-                <button class="button is-small is-rounded" name="archive" value="archive">Delete Journal</button>
+                <button class="button is-small " name="archive" value="archive">Delete Journal</button>
             </form>
             <a href="{% url 'core:create_entry' journal.pk %}">
-                <button class="button is-small is-rounded">
+                <button class="button is-small ">
                     Add Journal Entry
                 </button>
             </a> 

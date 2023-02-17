@@ -1,17 +1,21 @@
 {% extends 'base.html' %}
 {%block content%}
 <main>
-    <section>
+    <section class="hero center">
         <div>
             <img src="" alt="">
         </div>
         <div>
-            <h1>Contact us</h1>
-            <form method="post">
+            <h1 class="center">Contact us</h1>
+            <form class="control center-column" method="post">
+                <div class="box center-column">
                 {% csrf_token%}
-                {{form.as_p}}
-                <button type="submit">Send Message</button>
-
+                {{form.name}}
+                {{form.email_address}}
+                {{form.subject}}
+                {{form.message}}
+                </div>
+                <button class="button is-small" type="submit">Send Message</button>
             </form>
         </div>
     </section>

@@ -34,7 +34,7 @@ class Profile(models.Model):
     )
     email = models.EmailField(blank=False)
     bio = models.TextField(blank=True)
-    profile_img = models.ImageField(upload_to='images/', default='blank-profile-picture.png')
+    profile_img = models.ImageField(upload_to='images/', default='images/blank-profile-picture.png')
     location = models.CharField(max_length=100, blank=True)
     spotify_auth = models.CharField(max_length=500, blank=True)
     is_archived = models.BooleanField(default=False)
