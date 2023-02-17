@@ -290,7 +290,7 @@ def update_entry(request, pk):
     place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
     placeMap=None
     if place:
-        placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{int(place.latitude)},{int(place.longitude)}'
+        placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{place.latitude},{place.longitude}'
     return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm, "place":place, "placeMap":placeMap})
 
 ## add a delete video button.
