@@ -10,12 +10,13 @@
                     <!-- <div class="center-column"> -->
                         <form class="box control center-column" method="POST">
                             {% csrf_token %}
+                            <form class="form-group">
                             {{form.username}}
                             {{form.email}}
                             {{form.password1}}
-                            {{form.password2}}
+                            {{form.password2}}</form>
 
-                            <button class="button is-small is-rounded">Sign Up</button></li>
+                            <button class="button is-small is-rounded">Sign Up</button>
                             
                         </form>
                     <!-- </div> -->
