@@ -1,11 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main>
+<main class="hero center">
     <h1>Create an Entry for {{journal.title}}</h1>
     <section>
 
-        <form method="POST" enctype="multipart/form-data">
+        <div class="center-column">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form_group">
+                    <div class="box">
+                        {{ entryForm.title}}
+                        {{ entryForm.location }}
+                    </div>
+                    <div>
+                        <div class="box">
+                            {{entryForm.body}}
+                        </div>
+                        <div class="box">
+                            {{ videoForm.title}}
+                            {{videoForm.source_url}}
+                        </div>
+                        <div class="box">
+                            {{entryForm.image}}
+                            <label>Privacy:</label>{{entryForm.entry_privacy}}
+                        </div>
+                        <button class="button is-small is-rounded" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+
+
+
+        <!-- <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form_group">
                 <label>Title:</label>
@@ -27,7 +58,7 @@
             </div>
             <button type="submit">Submit</button>
             </div>
-        </form>
+        </form> -->
     </section>
 </main>
 
