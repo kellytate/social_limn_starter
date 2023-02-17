@@ -109,7 +109,7 @@ class UpdateJournalForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'control'}))
     description = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'control', 'rows': 5}))
     cover_img = forms.ImageField(required=False)
-    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY))
+    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'control','style': 'color: #d3d9d9; border: none; background-color: #262523'}))
 
     class Meta:
         model = Journal
@@ -117,13 +117,19 @@ class UpdateJournalForm(forms.ModelForm):
 
 class EntryForm(forms.ModelForm):
     title = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'control'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Title', 
+                                    'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'class': 'control'}))
     location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'control'}))
-    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'control', 'rows': 5}))
+        widget=forms.TextInput(attrs={'placeholder': 'Location', 
+                                    'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'class': 'control'}))
+    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'What is your story?', 
+                                    'class': 'control', 
+                                    'style': 'height:60px; width:504px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
     entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY))
     image = forms.ImageField(required=False,widget=forms.ClearableFileInput(attrs={
-    'multiple': True}))
+    'multiple': True, 'style': 'background-color: #1f1e1d; class: button' }))
     class Meta: 
         model = Entry
         fields = ['title', 'location', 'body', 'entry_privacy']
@@ -147,9 +153,13 @@ class SpotifySearchForm(forms.Form):
 
 class VideoForm(forms.ModelForm):
     title = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'control'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Title', 
+                                    'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'class': 'control'}))
     source_url = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'control'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Video URL', 
+                                    'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'class': 'control'}))
     
     class Meta:
         model = Video
