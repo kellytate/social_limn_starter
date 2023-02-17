@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'location_field.apps.DefaultConfig',
     "mapbox_location_field",
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Profile, Image, Journal, Entry, Comment, Video, Place
 from mapbox_location_field.forms import LocationField as FormLocationField
 #note that this form needs to be set up in the email settings 
@@ -27,19 +27,19 @@ class RegisterUserForm(UserCreationForm):
         self.fields['username'].widget=forms.TextInput(attrs={
             'placeholder': 'username',
             'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
-            'class': 'form-control'})
+            'class': 'control'})
         self.fields['email'].widget=forms.TextInput(attrs={
             'placeholder': 'email',
             'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
-            'class': 'form-control'})
+            'class': 'control'})
         self.fields['password1'].widget=forms.PasswordInput(attrs={
             'placeholder': 'password',
             'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
-            'class': 'form-control'})
+            'class': 'control'})
         self.fields['password2'].widget=forms.PasswordInput(attrs={
             'placeholder': 'confirm password',
             'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
-            'class': 'form-control'})
+            'class': 'control'})
     
     class Meta:
         model = User
@@ -82,20 +82,19 @@ class JournalForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
                                     'placeholder': 'Title', 
                                     'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
-                                    'class': 'form-control',}))
+                                    'class': 'control',}))
     location = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={
                                     'placeholder': 'Location',
                                     'style': 'display: inline-block; width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
-                                    'class': 'form-control'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={
+                                    'class': 'control'}))
+    description = forms.CharField(required=False, widget=forms.Textarea(attrs={
                                     'placeholder': 'Description', 
-                                    'class': 'form-control', 
-                                    'style': 'height:60px; width:504px; color: #92A7A0; background-color: #1f1e1d; border: 1; padding: 5px; border-radius: 8px'}))
+                                    'class': 'control', 
+                                    'style': 'height:60px; width:504px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
     cover_img = forms.ImageField(required=False, widget=forms.FileInput(attrs={
-                                    
-                                    'style': 'background-color: #1f1e1d}'}))
-    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'style': 'color: #d3d9d9; border: none; background-color: #262523'}))
+                                    'style': 'background-color: #1f1e1d; class: button' }))
+    default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'control','style': 'color: #d3d9d9; border: none; background-color: #262523'}))
 
     class Meta:
         model = Journal
