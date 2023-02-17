@@ -17,7 +17,7 @@
                         <a href="{% url 'logout' %}"><button class="button is-small is-rounded">Logout</button></a>
                     </p>
                 
-                    <article class="column is-one-forth">
+                    <article class="column is-one-fourth">
                         {% for entry in entries %}
                             <a href="{% url 'core:entry_landing' pk=entry.id %}">
                                 <div>
@@ -53,12 +53,15 @@
                     <div>
                         Your Journals:
                         <br />
+                        <ul>
                         {% for journal in journals %}
-                            {% if journal.cover_img %}
+                            <li>{% if journal.cover_img %}
                                 <img src="{{ journal.cover_img.url }}">
                             {% endif %}
                             <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">{{journal.title}}</a>
+                            </li>
                         {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>

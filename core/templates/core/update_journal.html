@@ -1,22 +1,58 @@
 {% extends 'base.html' %}
 {%block content%}
+{% load cloudinary %}
 
 <section>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form_group">
-            <label>Title:</label>
-            {{ form.title}}
-            <label>Location:</label>
-            {{form.location}}
-            <label>Description:</label>
-            {{form.description}}
-            <label>Cover Image:</label>
-            {{form.cover_img}}
-            <label>Privacy:</label>
-            {{form.default_privacy}}
-        </div>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="column is-one-fourth"></div>
+    <div class="column is-half center">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form_group">
+                <div class="box">
+                    {{ form.title}}
+                    {{ form.location }}
+                </div>
+                <div>
+                    <div class="box">
+                        {{form.description}}
+                    </div>
+                    <div class="box">
+                        {{form.cover_img}}
+                        <label>Privacy:</label>{{form.default_privacy}}
+                    </div>
+                    <button class="button is-small is-rounded" type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}
+
+<script type="text/javascript">
+    const url = "https://api.cloudinary.com/v1_1/demo/image/upload";
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+    const files = document.querySelector("[type=file]").files;
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+        formData.append("file", file);
+        formData.append("upload_preset", "docs_upload_example_us_preset");
+
+    fetch(url, {
+        method: "POST",
+        body: formData
+    })
+    .then((response) => {
+        return response.text();
+    })
+    .then((data) => {
+        document.getElementById("data").innerHTML += data;
+    });
+    }
+});
+</script>
