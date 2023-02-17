@@ -320,6 +320,22 @@ def delete_video(request, pk,ok):
         video.save()
     return redirect('core:update_entry', pk=ok)
 
+#delete place:
+def delete_place(request, pk,ok):
+    image = Image.objects.get(pk=pk)
+    if request.method=="POST":
+        image.is_archived = True
+        image.save()
+    return redirect('core:update_entry', pk=ok)
+
+#delete image:
+def delete_song(request, pk,ok):
+    image = Image.objects.get(pk=pk)
+    if request.method=="POST":
+        image.is_archived = True
+        image.save()
+    return redirect('core:update_entry', pk=ok)
+
 #delete entry
 def delete_entry(request, pk):
     entry = Entry.objects.get(pk=pk)
