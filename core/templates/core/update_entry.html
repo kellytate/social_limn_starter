@@ -23,6 +23,14 @@
         </form>
     </section>
     <section>
+        {% if place %}
+        <img src="{{placeMap}}">
+<a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Entry Location</button></a>
+{% else %}
+<a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Entry Location</button></a>
+{% endif %}
+    </section>
+    <section>
         {% for image in images %}
         <img src="{{image.image.url}}">
         <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">

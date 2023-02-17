@@ -47,8 +47,10 @@
             {% csrf_token %}
         <button type="submit">Undo Appreciation</button>
         </form>
-
     </div>
+    {% if place %}
+        <img src="{{placeMap}}">
+    {% endif %}
     <section>
         <h2>Capture:</h2>
         <p>{{entry.body}}</p>

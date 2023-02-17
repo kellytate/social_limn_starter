@@ -6,7 +6,7 @@ import spotipy
 import datetime
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -250,11 +250,19 @@ def entry_landing(request, pk):
     song = Song.objects.filter(entry=entry).exclude(is_archived=True)
     videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
     frame_key = settings.IFRAME_KEY
+    place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
+    placeMap=None
+    if place:
+        placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{place.latitude},{place.longitude}'
+
     for comment in comments:
         count = Like.objects.filter(comment=comment).exclude(like = False).count()
         likeCounts[comment.id] = count
     commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos})
+    return render(request, 'core/entry_landing.html', 
+        {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 
+        'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos, 
+        "place":place, 'placeMap':placeMap})
 
 #update entry
 def update_entry(request, pk):
@@ -279,9 +287,11 @@ def update_entry(request, pk):
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
     videoForm=VideoForm()
-    placeForm = PlaceForm()
-    placeForm.fields["location"].widget.map_attrs['center'] = (0, 0)
-    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm, "placeForm": placeForm})
+    place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
+    placeMap=None
+    if place:
+        placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{int(place.latitude)},{int(place.longitude)}'
+    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm, "place":place, "placeMap":placeMap})
 
 ## add a delete video button.
 def another_video(request, pk):
@@ -671,6 +681,81 @@ def upload(request):
             form.save()
 
     return render(request, 'core/upload.html', context)
+
+def location_search(request, pk):
+    
+    results = None
+    result_count = None
+    # We will lose the POST data every time we use pagination
+    # One way of keeping this data is to add it to a session
+    # Make sure we only add this data when we're actually using pagination
+    ## ('page' in request.GET)
+    if not request.method == 'POST' and 'page' in request.GET:
+        if 'search-post' in request.session:
+            request.POST = request.session['search-post']
+            request.method = 'POST'
+
+    if request.method == 'POST':
+        form = LocationForm(request.POST)
+
+        if form.is_valid():
+            search_string = form.cleaned_data['search_string']
+
+            path = "https://us1.locationiq.com/v1/search.php"
+            query_params = {
+                "key": settings.LOCATIONIQ_API_KEY,
+                "q": search_string,
+                "format": "json"
+            }
+
+            response = requests.get(path, params=query_params)
+            response_content = response.json()
+            results=response_content
+            # Deal with any strange responses from Spotify
+            #
+            print(response_content)
+        
+            result_count = len(response_content)
+            paginator = Paginator(
+                results, settings.SEARCH_RESULTS_PER_PAGE
+            )
+
+            page = request.GET.get('page')
+            try:
+                results = paginator.page(page)
+            except PageNotAnInteger:
+                results = paginator.page(1)
+            except EmptyPage:
+                results = paginator.page(paginator.num_pages)
+    else:
+        form = LocationForm()
+
+    
+    #player =requests.get('iframe.ly/api/iframely?url=https://open.spotify.com/album/4E4NBueuClmsr8tVkZgV0K&api_key=7c27dc4b622df14eeffcf7')
+
+    context = {
+        'search_results': results,
+        'form': form,
+        'result_count': result_count,
+        'entry': Entry.objects.get(pk=pk)
+    }
+    return render(request, 'core/location_search.html', context)
+
+def add_place(request,pk):
+    entry = Entry.objects.get(pk=pk)
+    places = Place.objects.filter(entry=entry).exclude(is_archived=True)
+    if places:
+        for place in places:
+            place.is_archived=True
+            place.save()
+    if request.method=="POST":
+        new_place=Place()
+        new_place.entry=entry
+        new_place.name = request.POST.get('name')
+        new_place.longitude = request.POST.get('lon')
+        new_place.latitude = request.POST.get('lat')
+        new_place.save()
+    return redirect('core:entry_landing', pk=entry.pk)
 
 def notify_endpoint():
     return

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" value="Submit"/>
+</form>
+{%for item in search_results%}
+<div>
+    <div>      
+        {{ item.display_name }}
+    <form action="{% url 'core:add_place' pk=entry.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="title" value="{{item.display_name}}">
+        <input type="hidden" name="lon" value="{{item.lon}}">
+        <input type="hidden" name="lat" value="{{item.lat}}">
+
+        <button name="source">Add Place To Entry</button>
+    </form>
+    {%empty%}
+    <h2>No results</h2>
+</div>
+{% endfor %}
+{% if result_count%}
+<ul>
+    {%if search_results.has_previous %}
+    <li><a href="?page={{search_results.prev_page_number}}">Previous</a></li>
+    {%endif%}
+    <li>Page {{search_results.number}} of {{search_results.paginator.num_pages }}</li>
+    {% if search_results.has_next%}
+    <li><a href="?page={{ search_results.next_page_number }}">Next</a></li>
+    {%endif%}
+</ul>
+{%endif%}
+
+{% endblock %}
+

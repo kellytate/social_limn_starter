@@ -152,9 +152,9 @@ class Video(models.Model):
     is_archived = models.BooleanField(default=False)
 
 class Place(models.Model):
-    name = models.CharField(max_length=255)
-    longitude = models.CharField(max_length=255)
-    latitude = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
+    longitude = models.CharField(max_length=255, default="0", null=True)
+    latitude = models.CharField(max_length=255, default="0", null=True)
     entry = models.ForeignKey(Entry,related_name="entry_location", on_delete=models.CASCADE, null=True)
     journal = models.ForeignKey(Journal,related_name="journal_location", on_delete=models.CASCADE, null=True)
     profile = models.ForeignKey(Profile,related_name="profile_location", on_delete=models.CASCADE, null=True)

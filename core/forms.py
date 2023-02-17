@@ -156,6 +156,10 @@ class VideoForm(forms.ModelForm):
         fields = ['title', 'source_url']
 
 
+class LocationForm(forms.Form):
+    search_string = forms.CharField(label='',max_length=100)
+
+    
 class PlaceForm(forms.ModelForm):
     class Meta:
         model = Place

@@ -50,5 +50,7 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
     path('videos/<int:pk>/archive/<int:ok>/', views.delete_video, name='archive_video'),
     path('entries/<int:pk>/addVideo/', views.another_video, name='add_video'),
+    path('<int:pk>/search/location/', views.location_search, name='search_location'),
+    path('entries/<int:pk>/place/', views.add_place, name='add_place'),
     
 ]
