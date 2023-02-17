@@ -139,7 +139,8 @@ class EntryForm(forms.ModelForm):
     body = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'Tell your story...', 
                                     'class': 'control', 
                                     'style': 'height:60px; width:504px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
-    entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY))
+    entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'control','style': 'color: #d3d9d9; border: none; background-color: #262523'}))
+
     image = forms.ImageField(required=False,widget=forms.ClearableFileInput(attrs={
     'multiple': True, 'style': 'background-color: #1f1e1d; class: button' }))
     class Meta: 
