@@ -6,7 +6,7 @@ import spotipy
 import datetime
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -279,7 +279,9 @@ def update_entry(request, pk):
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
     videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
     videoForm=VideoForm()
-    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm})
+    placeForm = PlaceForm()
+    placeForm.fields["location"].widget.map_attrs['center'] = (0, 0)
+    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm, "placeForm": placeForm})
 
 ## add a delete video button.
 def another_video(request, pk):

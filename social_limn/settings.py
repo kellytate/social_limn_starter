@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'location_field.apps.DefaultConfig',
+    "mapbox_location_field",
 ]
 
 MIDDLEWARE = [
@@ -196,3 +197,5 @@ LOCATION_FIELD = {
     'provider.mapbox.max_zoom': 18,
     'provider.mapbox.id': 'mapbox.streets',
 }
+
+MAPBOX_KEY = env('MAP_KEY')

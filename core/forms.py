@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile, Image, Journal, Entry, Comment, Video
-from location_field.forms.plain import PlainLocationField
+from .models import Profile, Image, Journal, Entry, Comment, Video, Place
+from mapbox_location_field.forms import LocationField as FormLocationField
 #note that this form needs to be set up in the email settings 
 #change backend to 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -158,6 +158,8 @@ class VideoForm(forms.ModelForm):
 
 
 class PlaceForm(forms.ModelForm):
-    name = forms.CharField()
-    location = PlainLocationField(based_fields=['city'],)
-    
+    class Meta:
+        model = Place
+        fields = "__all__" 
+
+        

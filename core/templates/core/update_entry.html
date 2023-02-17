@@ -44,8 +44,17 @@
 {% else %}
 <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Entry Song</button></a>
 {% endif %}
+<div>
+    <form action="POST">
+        {% csrf_token %}
+        {{placeForm.as_p}}
+        <button>Submit</button>
+    </form>
+    {{form.media}}
+</div>
 {% if place %}
 {% endif %}
+
 <div>
     <h3>
         Add a Video
