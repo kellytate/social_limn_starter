@@ -40,7 +40,7 @@ class RegisterUserForm(UserCreationForm):
             'placeholder': 'username',
             'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
             'class': 'control'})
-        self.fields['email'].widget=forms.TextInput(attrs={
+        self.fields['email'].widget=forms.EmailInput(attrs={
             'placeholder': 'email',
             'style': 'width: 250px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
             'class': 'control'})
