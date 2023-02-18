@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h2>Select Report Type</h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{reportsForm}}
+        <input type="submit" value="Submit"/>
+    </form>
+</main>
+
+{% endblock %}

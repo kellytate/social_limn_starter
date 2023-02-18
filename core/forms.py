@@ -188,4 +188,16 @@ class PlaceForm(forms.ModelForm):
         model = Place
         fields = "__all__" 
 
-        
+REPORT_TYPES = (
+    ('onThisDay', 'Memories for this Day',),
+)
+
+class ReportsForm(forms.Form):
+    search_type = forms.ChoiceField(label='Filter',required=True,
+                                    choices=REPORT_TYPES)
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class OnThisDayForm(forms.Form):
+    memory_date = forms.DateField(widget=DateInput)

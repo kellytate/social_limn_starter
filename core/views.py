@@ -6,7 +6,7 @@ import spotipy
 import datetime
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -790,5 +790,14 @@ def add_place(request,pk):
 def notify_endpoint():
     return
 
-def image(request, pk):
-    image = Image.object.get(pk=pk)
+# def image(request, pk):
+#     image = Image.objects.get(pk=pk)
+
+def reports(request, pk):
+    profile = Profile.objects.get(pk=pk)
+    reportsForm = ReportsForm()
+    return render(request, 'core/reports.html', {"reportsForm": reportsForm})
+
+def onThisDayReport(request,pk):
+    profile = Profile.objects.get(pk=pk)
+    

@@ -54,5 +54,6 @@ urlpatterns = [
     path('entries/<int:pk>/addVideo/', views.another_video, name='add_video'),
     path('<int:pk>/search/location/', views.location_search, name='search_location'),
     path('entries/<int:pk>/place/', views.add_place, name='add_place'),
-    path('images/<int:pk>/image/', views.image, name='image'),
+    path('profiles/<int:pk>/reports/', views.reports, name='reports'),
+    path('profiles/<int:pk>/reports/entries_by_day', views.onThisDayReport, name='day_reports'),
 ]
