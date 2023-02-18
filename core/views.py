@@ -211,11 +211,14 @@ def create_entry(request,pk):
         if entryForm.is_valid():
             new_entry = entryForm.save(commit=False)
             new_entry.journal=journal
+            new_entry.title = entryForm.cleaned_data["title"]
             new_entry.save()
-            new_video = videoForm.save(commit=False)
-            new_video.entry=new_entry
-            new_video.save()
-            new_entry.save()
+            if videoForm.is_valid():
+                url = videoForm.cleaned_data["source_url"]
+                if url:
+                    title = request.POST.get('videoTitle')
+                    newVideo = Video(title=title, entry=new_entry, source_url=url)
+                    new_entry.save()
             files = request.FILES.getlist('image')
             for f in files:
                 img = Image(image=f)
@@ -246,9 +249,20 @@ def entry_landing(request, pk):
     likes= Like.objects.filter(entry=entry).exclude(like = False)
     comments = Comment.objects.filter(entry=entry).order_by('-created_at')
     images = Image.objects.filter(entry=entry).exclude(is_archived=True)
+    items = []
+    if images:
+        for image in images:
+            items.append(json.dumps({
+                "src": image.image.url,
+            }))
     likeCounts = {}
     song = Song.objects.filter(entry=entry).exclude(is_archived=True)
     videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
+    if videos:
+        for video in videos:
+            items.append(json.dumps({
+                "src": video.source_url
+            }))
     frame_key = settings.IFRAME_KEY
     place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
     placeMap=None
@@ -262,7 +276,7 @@ def entry_landing(request, pk):
     return render(request, 'core/entry_landing.html', 
         {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 
         'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos, 
-        "place":place, 'placeMap':placeMap})
+        "place":place, 'placeMap':placeMap, "items":items})
 
 #update entry
 def update_entry(request, pk):
@@ -321,19 +335,19 @@ def delete_video(request, pk,ok):
     return redirect('core:update_entry', pk=ok)
 
 #delete place:
-def delete_place(request, pk,ok):
-    image = Image.objects.get(pk=pk)
+def delete_song(request, pk,ok):
+    song = Song.objects.get(pk=pk)
     if request.method=="POST":
-        image.is_archived = True
-        image.save()
+        song.is_archived = True
+        song.save()
     return redirect('core:update_entry', pk=ok)
 
 #delete image:
-def delete_song(request, pk,ok):
-    image = Image.objects.get(pk=pk)
+def delete_place(request, pk,ok):
+    place = Place.objects.get(pk=pk)
     if request.method=="POST":
-        image.is_archived = True
-        image.save()
+        place.is_archived = True
+        place.save()
     return redirect('core:update_entry', pk=ok)
 
 #delete entry
@@ -775,3 +789,6 @@ def add_place(request,pk):
 
 def notify_endpoint():
     return
+
+def image(request, pk):
+    image = Image.object.get(pk=pk)

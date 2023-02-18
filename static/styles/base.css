@@ -1,9 +1,12 @@
+
+
 body {
     background-color: #262523;
     color: #d3d9d9;
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    scrollbar-color: auto;
 }
 
 img {
@@ -51,15 +54,18 @@ a:hover, .navbar a:hover, .footer a:hover {
 }
 
 
-/* input {
-	outline: none;
-	border: none;
+input[type=text]{
+	width: 250px; 
+    color: #92A7A0; 
+    background-color: #1f1e1d; 
+    border-radius: 8px; padding: 5px; 
+    border: none;
 }
 
-textarea {
+input{
     outline: none;
     border: none;
-} */
+} 
 /* 
 textarea:focus, input:focus {
     border-color: transparent !important;

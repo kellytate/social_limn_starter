@@ -4,9 +4,12 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import datetime
+from django.conf import settings
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
 from mapbox_location_field.models import LocationField 
+from django.core.files.storage import get_storage_class
+
 
 # The creation of this User model and profile uses a post_save/Signal to create
 # the profile as soon as a user is saved. If there are strange errors, check that
@@ -52,9 +55,15 @@ class Image(models.Model):
     is_liked = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
 
+    @property
+    def get_html_url(self):
+        return'{}{}'.format(settings.CLOUDINARY_ROOT_URL,self.image)
+        
+
+    
     def __str__(self):
         return self.title
-
+    
 class Journal(models.Model):
     '''
     default privacy: 0 - private; 1 - followers; 2 - public

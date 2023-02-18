@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
-from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Place
+from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Place, Video
 
 class ProfileInline(admin.StackedInline):
     model = Profile
@@ -21,4 +21,5 @@ admin.site.register(Comment)
 admin.site.register(Like)
 admin.site.register(Song)
 admin.site.register(Place)
+admin.site.register(Video)
 

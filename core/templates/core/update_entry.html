@@ -26,6 +26,10 @@
         {% if place %}
         <img src="{{placeMap}}">
 <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Entry Location</button></a>
+<form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
+    {% csrf_token %}
+    <button name="archive" value="archive">Remove Place From Entry</button>
+</form>
 {% else %}
 <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Entry Location</button></a>
 {% endif %}
@@ -47,6 +51,10 @@
                 <a data-iframely-url href="{{entrySong.source_url}}"></a>
             </div>
         </div>
+        <form action="{% url 'core:archive_song' pk=entrySong.id ok=entry.pk %}" method="POST">
+            {% csrf_token %}
+            <button name="archive" value="archive">Remove Song From Entry</button>
+        </form>
 {% endwith %}
 <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Entry Song</button></a>
 {% else %}

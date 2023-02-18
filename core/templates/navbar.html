@@ -1,16 +1,20 @@
 {% load static %}
 {% block content %}
-{% if user.is_authenticated %}
-
 <nav class="navbar">
-    <div class="navbar-brand">
-    </div>
     <div class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item" href="{% url 'core:home' %}">Limn</a>
+            <a class="navbar-item" href="{% url 'core:home' %}">
+                <div class="navbar-brand">
+                    <figure class="image">
+                        <img src="https://res.cloudinary.com/limn/image/upload/v1676663186/media/logo/limn-light-logo-120.png">
+                    </figure>
+                </div>
+            </a>
         </div>
+{% if user.is_authenticated %}
+
         <div class="navbar-end">
-            <a class="navbar-item" href="{% url 'core:dashboard' %}">Home</a>
+            <a class="navbar-item" href="{% url 'core:dashboard' %}">Dashboard</a>
             <a class="navbar-item" href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
             <a class="navbar-item" href="{% url 'logout' %}"><button class="button is-small ">Logout</button></a>
         </div>
@@ -19,13 +23,6 @@
 
 {% else %}
 
-<nav class="navbar is-transparent">
-    <div class="navbar-brand">
-    </div>
-    <div class="navbar-menu">
-        <div class="navbar-start">
-            <a class="navbar-item" href="{% url 'core:home' %}">Limn</a>
-        </div>
         <div class="navbar-end">
             <a class="navbar-item" href="{% url 'core:home' %}">Home</a>
             <a class="navbar-item" href="{% url 'core:contact' %}">Contact</a>

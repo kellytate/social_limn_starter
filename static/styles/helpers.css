@@ -66,3 +66,13 @@
     border: none; 
 }
 
+.navbar {
+    min-height: 120px;
+}
+
+
+
+.navbar-item img {
+    min-height: 100px;
+}
+

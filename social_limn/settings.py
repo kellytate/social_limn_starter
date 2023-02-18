@@ -184,6 +184,8 @@ SPOTIPY_CLIENT_SECRET = env('SPOTIPY_CLIENT_SECRET')
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+CLOUDINARY_ROOT_URL = env('CLOUDINARY_URL')
+
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': env('CLOUD_NAME'),
     'API_KEY': env('API_KEY'),
