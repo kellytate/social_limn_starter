@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'location_field.apps.DefaultConfig',
     "mapbox_location_field",
     'widget_tweaks',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [

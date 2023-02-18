@@ -1,6 +1,6 @@
 
 
-body {
+/* body {
     background-color: #262523;
     color: #d3d9d9;
     display: flex;
@@ -33,7 +33,7 @@ a {
 a:hover, .navbar a:hover, .footer a:hover {
     background-color: #262523;
     color: #92A7A0;
-}
+} */
 
 
 
@@ -49,12 +49,12 @@ a:hover, .navbar a:hover, .footer a:hover {
     
 } */
 
-#wrapper {
+/* #wrapper {
     flex: 1;
-}
+} */
 
 
-input[type=text]{
+/* input[type=text]{
 	width: 250px; 
     color: #92A7A0; 
     background-color: #1f1e1d; 
@@ -65,7 +65,7 @@ input[type=text]{
 input{
     outline: none;
     border: none;
-} 
+}  */
 /* 
 textarea:focus, input:focus {
     border-color: transparent !important;

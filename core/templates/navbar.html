@@ -1,36 +1,30 @@
 {% load static %}
 {% block content %}
-<nav class="navbar">
-    <div class="navbar-menu">
-        <div class="navbar-start">
-            <a class="navbar-item" href="{% url 'core:home' %}">
-                <div class="navbar-brand">
-                    <figure class="image">
-                        <img src="https://res.cloudinary.com/limn/image/upload/v1676663186/media/logo/limn-light-logo-120.png">
-                    </figure>
-                </div>
-            </a>
-        </div>
-{% if user.is_authenticated %}
 
-        <div class="navbar-end">
-            <a class="navbar-item" href="{% url 'core:dashboard' %}">Dashboard</a>
-            <a class="navbar-item" href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
-            <a class="navbar-item" href="{% url 'logout' %}"><button class="button is-small ">Logout</button></a>
-        </div>
-    </div>
-</nav>
-
-{% else %}
-
-        <div class="navbar-end">
-            <a class="navbar-item" href="{% url 'core:home' %}">Home</a>
-            <a class="navbar-item" href="{% url 'core:contact' %}">Contact</a>
-            <a class="navbar-item" href="{% url 'login' %}">Login</a>
-            <a class="navbar-item" href="{% url 'signup' %}"><button class="button is-small ">Sign Up</button></a>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #262523; color: #929292;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'core:home' %}">
+        <img src="https://res.cloudinary.com/limn/image/upload/v1676733492/media/logo/limn-light-logo-svg.svg" height="150">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+            </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        {% if user.is_authenticated %}
+            <div class="navbar-nav">
+                <a class="nav-link active" aria-current="page" href="{% url 'core:dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
+                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </div>
+        {% else %}
+            <div class="navbar-nav">
+                <a class="nav-link active" aria-current="page" href="{% url 'core:home' %}">Home</a>
+                <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+            </div>
+        {% endif %}
         </div>
     </div>
 </nav>
-
-{% endif %}
 {% endblock %}
