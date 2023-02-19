@@ -114,9 +114,6 @@ def profile_list(request):
 def profile(request, pk):
     profile = Profile.objects.get(pk=pk)
 
-    # entries = Entry.objects.filter(
-    #     journal__user__profile__follows__in=[request.user.id]).exclude(is_archived=True).order_by('-created_at')
-
     journals_followers = Journal.objects.filter(user__profile__follows__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0)
     journals_public = Journal.objects.filter(user__profile__follows__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0).exclude(default_privacy=1).order_by('-created_at')
 
@@ -235,9 +232,6 @@ def create_entry(request,pk):
 #view entry 
 def entry_landing(request, pk):
     entry = Entry.objects.get(pk=pk)
-
-    # if entry.privacy != 2 or entry.privacy != 0 and user not in entry.journal.user.followed_by:
-    #     return(redirect("core:profile", pk=entry.journal.user.pk))
 
     if request.method=='POST':
         commentForm=CommentForm(request.POST)

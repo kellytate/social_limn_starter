@@ -11,7 +11,7 @@
         <p>{{profile.email}}</p>
         <p>{{profile.bio}}</p>
         <p>{{profile.location}}</p>
-        <p><img src="{{ profile.profile_img.url }}" class="profile"></p>
+        <p class="profile"><img src="{{ profile.profile_img.url }}"></p>
         <form method="POST">
             {% csrf_token %}
             <div class="buttons">
@@ -45,7 +45,7 @@
 
     <div class="block">
         <a href="#">
-            <button class="button is-dark is-outlined is-fullwidth">
+            <button class="btn btn-outline-light">
                 All Profiles
             </button>
         </a>

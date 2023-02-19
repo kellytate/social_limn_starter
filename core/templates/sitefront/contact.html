@@ -1,23 +1,41 @@
 {% extends 'base.html' %}
 {%block content%}
-<main>
-    <section class="hero center">
-        <div>
-            <img src="" alt="">
+<section class="container">
+
+    <div class="row">
+    <div class="col">
+        <div class="col">
+            <img src="https://res.cloudinary.com/limn/image/upload/v1676651185/media/logo/limn-light-logo.png" alt="Limn logo" height="300">
         </div>
-        <div>
-            <h1 class="center">Contact us</h1>
-            <form class="form-form-control center-column" method="post">
-                <div class="box center-column">
-                {% csrf_token%}
-                {{form.name}}
-                {{form.email_address}}
-                {{form.subject}}
-                {{form.message}}
+    </div>
+    <div class="col">
+        <div class="row text-center">
+            <h2>Contact Us</h2>
+        </div>
+        <div class="row">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{form.name}}
                 </div>
-                <button class="btn btn-outline-light" type="submit">Send Message</button>
+                <div class="mb-3">
+                    {{form.email_address}}
+                </div>
+                <div class="mb-3">
+                    {{form.subject}}
+                </div>
+                <div class="mb-3">
+                    {{form.message}}
+                </div>
+                <div class="mb-3">
+                <button type="submit" class="btn btn-outline-light">Send message</button>
+                </div>
             </form>
         </div>
-    </section>
-</main>
+    </div>
+        <div class="col"></div>
+    </div>
+</section>
 {%endblock%}
+
+

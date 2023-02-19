@@ -9,7 +9,11 @@
         {% else %}
         <header class="container">
             {% if journal.cover_img %}
-                <img src="{{ journal.cover_img.url }}" height="200"/>
+                <div class="col text-center">
+                    <div class="cover">
+                        <img src="{{ journal.cover_img.url }}">
+                    </div>
+                </div>
             {% endif %}
             <h1>{{journal.title}}</h1>
             <p>by <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a></p>

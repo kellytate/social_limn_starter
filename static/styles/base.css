@@ -5,14 +5,23 @@ body {
     color: #d3d9d9;
     display: column;
     min-height: 100vh;
-    flex-direction: row;
     scrollbar-color: black;
+    padding-bottom: 25px;
 }
 
-/* img {
+.cover img {
+    border-radius: 8px;
+    max-height: 200px;
+}
+.profile img {
     border-radius: 8px;
     width: 200px;
-} */
+}
+
+.profile-sm img {
+    border-radius:8px;
+    width: 100px;
+}
 
 li {
     list-style: none;
@@ -27,6 +36,14 @@ li {
 a {
     color: #d3d9d9;
     text-decoration: none;
+}
+
+.footer {
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background-color: #262523;
 }
 
 .footer a {
@@ -61,7 +78,7 @@ a:hover, .navbar a:hover, .footer a:hover {
 #chartdiv {
     width: 60%;
     height: 70vh;
-  }
+    }
 
 
 input[type=text]{

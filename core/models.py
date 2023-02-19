@@ -78,7 +78,7 @@ class Journal(models.Model):
     location = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    cover_img = models.ImageField(upload_to='images/')
+    cover_img = models.ImageField(upload_to='images/', default='images/blank-img.png')
     default_privacy = models.IntegerField(default=0)
     is_liked = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
