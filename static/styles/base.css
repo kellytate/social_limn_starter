@@ -58,6 +58,11 @@ a:hover, .navbar a:hover, .footer a:hover {
     flex: 1;
 }
 
+#chartdiv {
+    width: 60%;
+    height: 70vh;
+  }
+
 
 input[type=text]{
     color: #92A7A0; 

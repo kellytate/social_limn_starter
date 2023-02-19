@@ -822,6 +822,8 @@ def onThisDayReport(request,pk):
     songs = []
     playlist_url = None
     trends = ""
+    map = ''
+    places = []
     if request.method == "POST":
         dateForm = OnThisDayForm(request.POST)
         if dateForm.is_valid():
@@ -833,6 +835,7 @@ def onThisDayReport(request,pk):
                 images = Image.objects.filter(entry=entry)
                 videos = Video.objects.filter(entry=entry)
                 song = Song.objects.filter(entry=entry).exclude(is_archived=True).first()
+                place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
                 trends = trends + " " + entry.body
 
                 if images:
@@ -860,18 +863,21 @@ def onThisDayReport(request,pk):
                                                     "title": entry.title,
                                                     "ID": count,	
                                                     "kind":'album'}))
-
-    
-
                         albums.append(json.dumps({
                             "src": video.source_url, 
                             "albumID": count
                         }))
                 if song:
-            
                     songs.append(song.source_url)
-
+                
+                
+                if place:
+                    if not map:
+                        map = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red'
+                    map = map + f'|{place.latitude},{place.longitude}'
+                
                 count +=1
+
     if trends:
         new = trends.translate(str.maketrans('', '', string.punctuation)).strip()
         new = new.replace('\n', ' ').replace('\r', ' ')
@@ -888,8 +894,8 @@ def onThisDayReport(request,pk):
         playlist = sp.user_playlist_create(user_id, name=f'{request.user.username} {date.strftime("%B %d")} Playlist')
         playlist_id = playlist['id']
         print(playlist_id)
-        # sp.playlist_add_items(playlist_id, songs)
-        # playlist_url = playlist["external_urls"]["spotify"]
+        sp.playlist_add_items(playlist_id, songs)
+        playlist_url = playlist["external_urls"]["spotify"]
     context={
     "dateForm": dateForm, 
     "entries":entries,
@@ -899,7 +905,8 @@ def onThisDayReport(request,pk):
     "token-info":token_info, 
     "playlist_url":playlist_url,
     "frame_key":settings.IFRAME_KEY,
-    "trends": trends
+    "trends": trends,
+    "map": map
     }
 
     return render(request, 'core/on_this_day.html', context)

@@ -25,6 +25,10 @@
         <a href="{% url 'core:entry_landing' pk=entry.pk%}"><p>{{entry.title}} - {{entry.year}}</p></a>
         {% endfor %}
     {% endif %}
+    {% if map %}
+        <h4>On this day you were here.</h4>
+        <img src="{{map}}">
+    {% endif %}
 
         <div id="chartdiv"></div>
 
@@ -37,14 +41,31 @@
 
 
     <script>
-        // Create root
-        am5.ready(function() {
         var root = am5.Root.new("chartdiv");
-        let textSource = '{{trends}}'
+
+
+
+// Set themes
+// https://www.amcharts.com/docs/v5/concepts/themes/
+    root.setThemes([
+      am5themes_Animated.new(root)
+    ]);
+    let textSource = '{{trends}}'
+
+
         // Create series
-        var wc = root.container.children.push(am5wc.WordCloud.new(root, {
-          text: textSource,
-          excludeWords: ["i", "me", "my", "myself", "we", "our", "ours", 
+    var wc = root.container.children.push(am5wc.WordCloud.new(root, {
+      colors: am5.ColorSet.new(root, {
+      colors: [
+        am5.color(0x095256),
+        am5.color(0x087f8c),
+        am5.color(0x5aaa95),
+        am5.color(0x86a873),
+        am5.color(0xbb9f06)
+      ]
+    }),
+      text: textSource,
+      excludeWords: ["i", "me", "my", "myself", "we", "our", "ours", 
     "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", 
     "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", 
     "they", "them", "their", "theirs", "themselves", "what", "which", "who", 
@@ -60,7 +81,25 @@
     "t", "can", "will", "just", "don", "should", "now"],
     
         }));
-        })
+
+// Add series
+// https://www.amcharts.com/docs/v5/charts/word-cloud/
+var series = root.container.children.push(am5wc.WordCloud.new(root, {
+  maxCount: 150,
+  maxFontSize: am5.percent(25),
+  minWordLength: 2,
+  
+}));
+
+
+// Configure labels
+series.labels.template.setAll({
+  paddingTop: 5,
+  paddingBottom: 5,
+  paddingLeft: 5,
+  paddingRight: 5,
+  fontFamily: "Courier New"
+});
         </script>
     <script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
 
