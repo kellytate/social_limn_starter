@@ -16,9 +16,9 @@
             {% csrf_token %}
             <div class="buttons">
                 {% if profile in user.profile.follows.all %}
-                <button class="button is-small " name="follow" value="unfollow">UnFollow</button>
+                <button class="btn btn-outline-light " name="follow" value="unfollow">UnFollow</button>
                 {%else%}
-                <button class="button is-small " name="follow" value="follow">Follow</button>
+                <button class="btn btn-outline-light " name="follow" value="follow">Follow</button>
                 {% endif %}
             </div>
         </form>

@@ -1,49 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main>
-    <h1>Edit {{entry.title}}</h1>
-    <section>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form_group">
-                <label>Title:</label>
-                {{ entryForm.title}}
-                <label>Location:</label>
-                {{entryForm.location}}
-                <label>Entry:</label>
-                {{entryForm.body}}
-                <label>Privacy:</label>
-                {{entryForm.entry_privacy}}
-                <label>Entry Images:</label>
+<main class="text-center">
+    <h1>Edit {{entry.title}} </h1>
+    <section class="container">
+        <div class="col"></div>
+        <div class="col">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ entryForm.title}}
+                </div>
+                    <div class="mb-3">
+                    {{entryForm.location}}
+                </div>
+                <div class="mb-3">
+                    {{entryForm.body}}
+                </div>
+                <div class="mb-3">
+                    {{entryForm.entry_privacy}}
+                </div>
+                <div class="mb-3">
                     {{entryForm.image}}
-            </div>
-            <button type="submit">Submit</button>
-            </div>
-        </form>
+                </div>
+                <div class="mb-3">
+                <button class="btn btn-outline-light" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="mb-3"></div>
     </section>
-    <section>
+    <section class="container">
         {% if place %}
-        <img src="{{placeMap}}">
-<a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Entry Location</button></a>
-<form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
-    {% csrf_token %}
-    <button name="archive" value="archive">Remove Place From Entry</button>
-</form>
-{% else %}
-<a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Entry Location</button></a>
-{% endif %}
+            <img src="{{placeMap}}">
+            <a href="{% url 'core:search_location' pk=entry.pk %}"><button class="btn btn-outline-light">Change Entry Location</button></a>
+            <form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-outline-light" name="archive" value="archive">Remove Place From Entry</button>
+            </form>
+        {% else %}
+            <div class="mb-3">
+                <a href="{% url 'core:search_location' pk=entry.pk %}"><button class="btn btn-outline-light">Add Entry Location</button></a>
+            </div>
+        {% endif %}
     </section>
-    <section>
+    <section class="container">
         {% for image in images %}
-        <img src="{{image.image.url}}">
-        <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
-            {% csrf_token %}
-            <button name="archive" value="archive">Remove Image From Entry</button>
-        </form>
+            <img src="{{image.image.url}}">
+            <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-outline-light" name="archive" value="archive">Remove Image From Entry</button>
+            </form>
         {% endfor %}
     </section>
-</main>
+
 {% if song %}
 {% with song.all|first as entrySong %}
         <div class="iframely-embed">
@@ -53,27 +63,33 @@
         </div>
         <form action="{% url 'core:archive_song' pk=entrySong.id ok=entry.pk %}" method="POST">
             {% csrf_token %}
-            <button name="archive" value="archive">Remove Song From Entry</button>
+            <button class="btn btn-outline-light" name="archive" value="archive">Remove Song From Entry</button>
         </form>
 {% endwith %}
-<a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Entry Song</button></a>
+<div class="mb-3">
+    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button class="btn btn-outline-light">Change Entry Song</button></a>
+</div>
 {% else %}
-<a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Entry Song</button></a>
+<div class="mb-3">
+    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button class="btn btn-outline-light">Add Entry Song</button></a>
+</div>
 {% endif %}
 
-<div>
+<div class="container">
     <h3>
         Add a Video
     </h3>
     <form action="{% url 'core:add_video' pk=entry.pk %}" method="POST">
         {% csrf_token %}
-        <div class="form_group">
-            <label>Video Title:</label>
+        <div class="mb-3">
+            
             {{ videoForm.title}}
-            <label>Video URL</label>
+        </div>
+        <div class="mb-3">
             {{videoForm.source_url}}
         </div>
-        <button type="submit">Submit</button>
+        <div class="mb-3">
+        <button class="btn btn-outline-light" type="submit">Submit</button>
         </div>
     </form>
 </div>
@@ -86,7 +102,7 @@
         </div>
         <form action="{% url 'core:archive_video' pk=video.pk ok=entry.pk %}" method="POST">
             {% csrf_token %}
-            <button name="archive" value="archive">Remove Video From Entry</button>
+            <button class="btn btn-outline-light" name="archive" value="archive">Remove Video From Entry</button>
         </form>
         {% endfor %}
     {% endif %}

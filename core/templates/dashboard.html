@@ -3,66 +3,93 @@
 {% block content %}
 {% load widget_tweaks %}
 
-<main>
-    <section class="section">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-one-fourth">
-                    <p class="is-size-5">
-                        {% if user.is_authenticated %}
-
-                        <h2>Hello, {{ user.username }}!</h2>
-                        <h3>This is your dashboard!</h3>
-                        <a href="{% url 'core:update_profile' %}"><button class="button is-small ">Update Profile</button></a>
-                        <a href="{% url 'logout' %}"><button class="button is-small ">Logout</button></a>
-                    </p>
+<div class="container">
+            <div class="row text-center">
+                {% if user.is_authenticated %}
+                <div class="mb-3">
+                    <h2>Hello, {{ user.username }}!</h2><h4>This is your dashboard!</h4>
+                </div>
+                <div class="mb-3">
+                    <a href="{% url 'core:update_profile' %}"><button class="btn btn-outline-light text-nowrap">Update Profile</button></a>
+                    
+                    <a href="{% url 'logout' %}"><button class="btn btn-outline-light">Logout</button></a>
+                </div>
+            </div>
+            <div class="row"></div>
+            <div class="row">
+                <article class="col">
+                    {% for entry in entries %}
+                        <a href="{% url 'core:entry_landing' pk=entry.id %}">
+                            <div>
+                                <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </article>
                 
-                    <article class="column is-one-fourth">
-                        {% for entry in entries %}
-                            <a href="{% url 'core:entry_landing' pk=entry.id %}">
-                                <div>
-                                    <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+                <div class="col" style="padding: 10px;">
+                    <div class="text-center mb-3">
+                        Create a New Journal
+                    </div>
+                    <div class="row">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                {{ form.title}}
+                                </div>
+                                <div class="mb-3">
+                                {{ form.location }}
+                                </div>
+                            
+                            <div class="mb-3">
+                                {{form.description}}
+                            </div>
+                            <div class="mb-3">
+                                {{form.cover_img}}
+                            </div>
+                            <div class="mb-3">
+                                {{form.default_privacy}}
+                            </div>
+                            <div class="row">
+                            <button class="btn btn-outline-light " type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col col-4 d-flex justify-content-center">
+                    <div class="row">
+                        <h3>Your Journals:</h3>
+                    </div>
+                    <div class="mb-3">
+                    <ul>
+                        {% for journal in journals %}
+                        <li>
+                            
+                                <div class="card" style="width: 10rem; background-color: #1f1e1d;">
+                                    {% if journal.cover_img %}
+                                    <img src="{{ journal.cover_img.url }}" class="card-img-top" alt="Journal cover image">
+                                    {% else %}
+                                    <img src="" class="card-img-top" alt="Journal cover image">
+                                    {% endif %}
+                                    <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{journal.title}}</h5>
+                                        {% if journal.description %}
+                                        <p class="card-text">{{ journal.description }}</p>
+                                        {% else %}
+                                        <p class="card-text">No description</p>
+                                        {% endif %}
+                                        
+                                    </div>
+                                </a>
                                 </div>
                             </a>
+                        </li>
                         {% endfor %}
-                    </article>
+                    </ul>
                 </div>
-
-                <div class="column is-half center">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form_group">
-                            <div class="box">
-                                {{ form.title}}
-                                {{ form.location }}
-                            </div>
-                            <div>
-                                <div class="box">
-                                    {{form.description}}
-                                </div>
-                                <div class="box">
-                                    {{form.cover_img}}
-                                    <label>Privacy:</label>{{form.default_privacy}}
-                                </div>
-                                <button class="button is-small " type="submit">Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="column is-one-fourth">
-                    <div>
-                        Your Journals:
-                        <br />
-                        <ul>
-                        {% for journal in journals %}
-                            <li>{% if journal.cover_img %}
-                                <img src="{{ journal.cover_img.url }}">
-                            {% endif %}
-                            <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">{{journal.title}}</a>
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    </div>
+                    
                 </div>
             </div>
         </div>    
@@ -76,7 +103,7 @@
         </div>
     {% endif %}
 
-</main>
+    </div>
 
 {% endblock %}
 

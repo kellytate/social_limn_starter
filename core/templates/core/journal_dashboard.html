@@ -7,31 +7,38 @@
         <h1>This journal is no longer available</h1>
     
         {% else %}
-        <header class="hero center">
+        <header class="container">
             {% if journal.cover_img %}
-                <img src="{{ journal.cover_img.url }}"/>
+                <img src="{{ journal.cover_img.url }}" height="200"/>
             {% endif %}
             <h1>{{journal.title}}</h1>
             <p>by <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a></p>
             <p>{{journal.description}}</p>
         </header>
-        <section class="column center">
+        <section class="container justify-content-space-evenly">
+            <div class="row">
+                <div class="col">
             <a href="{% url 'core:update_journal' journal.pk %}">
-                <button class="button is-small ">
+                <button class="btn btn-outline-light ">
                     Edit Journal
                 </button>
             </a> 
+        </div>
+        <div class="col">
             <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
                 {% csrf_token %}
-                <button class="button is-small " name="archive" value="archive">Delete Journal</button>
+                <button class="btn btn-outline-light " name="archive" value="archive">Delete Journal</button>
             </form>
+        </div>
+        <div class="col">
             <a href="{% url 'core:create_entry' journal.pk %}">
-                <button class="button is-small ">
+                <button class="btn btn-outline-light ">
                     Add Journal Entry
                 </button>
             </a> 
-        </section>
-        <div>
+        </div>
+        </section class="container">
+        <div class="row">
             <h3>Entry Log:</h3>
             <div id='calendar'></div>
         </div>
@@ -42,7 +49,7 @@
                 <h4>{{entry.title}}</h4>
                     {% for img in entry.image.all %}
                         {% if forloop.counter == 1%}
-                            <img src="{{img.image.url}}">
+                            <img src="{{img.image.url}}" height="200">
                         {% endif%}
                     {% endfor %}
                 

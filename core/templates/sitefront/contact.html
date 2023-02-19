@@ -7,7 +7,7 @@
         </div>
         <div>
             <h1 class="center">Contact us</h1>
-            <form class="control center-column" method="post">
+            <form class="form-form-control center-column" method="post">
                 <div class="box center-column">
                 {% csrf_token%}
                 {{form.name}}
@@ -15,7 +15,7 @@
                 {{form.subject}}
                 {{form.message}}
                 </div>
-                <button class="button is-small" type="submit">Send Message</button>
+                <button class="btn btn-outline-light" type="submit">Send Message</button>
             </form>
         </div>
     </section>

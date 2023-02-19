@@ -9,6 +9,7 @@ from django.urls import reverse
 from cloudinary.models import CloudinaryField
 from mapbox_location_field.models import LocationField 
 from django.core.files.storage import get_storage_class
+from django.utils import timezone
 
 
 # The creation of this User model and profile uses a post_save/Signal to create
@@ -96,8 +97,8 @@ class Entry(models.Model):
     title = models.CharField(max_length=200)
     body= models.CharField(max_length=2000)
     location = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True, editable=True)
-    updated_at = models.DateTimeField(default=datetime.now())
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     entry_privacy = models.IntegerField(default=0)
     image = models.ManyToManyField('Image',blank=True)
     is_archived = models.BooleanField(default=False)
@@ -114,6 +115,8 @@ class Entry(models.Model):
                 f"{self.title}"
                 f"({self.created_at:%Y-%m-%d %H:%M}:"
             )
+    def year(self):
+        return self.created_at.year
 
 class Comment(models.Model):
     comment = models.TextField()

@@ -1,36 +1,13 @@
-<section class="footer">
-
-    <div class="content has-text-centered">
-        <div class="columns is-mobile is-marginless">
-            <div class="column center">
-                
-                <a class="navbar-item" href="{% url 'core:dashboard' %}">Home</a>
+<section class="container footer">
+    <nav class="navbar navbar-dark">
             
-                <a class="navbar-item" href="{% url 'core:contact' %}">Contact</a>
-            
-                <a class="navbar-item" href="">Kelly Tate</a>
-            
-                <a class="navbar-item" href="">Megan Maple</a>
-            </div>
-        </div>
-    </div>
+        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+    
+        <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+    
+        <a class="nav-link" href="">Kelly Tate</a>
+    
+        <a class="nav-link" href="">Megan Maple</a>
+</nav>
+        
 </section>
-
-
-<!-- <ul>
-    <li>
-        <a href="{% url 'core:dashboard' %}">Home</a>
-    </li>
-    <li>
-        <a href="{% url 'core:contact' %}">Contact</a>
-    </li>
-    <li>
-        <img src="" alt="">
-    </li>
-    <li>
-        <a href="">Kelly Tate</a>
-    </li>
-    <li>
-        <a href="">Megan Maple</a>
-    </li>
-</ul> -->

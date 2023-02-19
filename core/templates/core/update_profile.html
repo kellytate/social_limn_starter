@@ -11,36 +11,50 @@
     <button type="button" data-dismiss="alert"></button>
     </div>
 {% endif %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form_group">
-        <label>Username:</label>
-        {{user_form.username}}
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    
+                    {{user_form.username}}
+                </div>
+                <div class="mb-3">
+                    {{ profile_form.email}}
+                </div>
+                    <div class="mb-3">
+                    {{profile_form.bio}}
+                </div>
+
+                    <div class="mb-3">
+                    {{profile_form.location}}
+                </div>
+
+                    <div class="mb-3">
+                    {{profile_form.profile_img}}
+                </div>
+                <button class="btn btn-outline-light" type="submit">Update Profile</button>
+                <button class="btn btn-outline-light" type="reset">Reset</button>
+                
+            </form>
+        </div>
+        <div class="col-2"></div>
     </div>
-    <div class="form_group">
-        <label>Email:</label>
-        {{ profile_form.email}}
-        <label>Bio:</label>
-        {{profile_form.bio}}
-        <label>Location:</label>
-        {{profile_form.location}}
-        <label>Image:</label>
-        {{profile_form.profile_img}}
-    </div>
-    <button type="submit">Update Profile</button>
-    <button type="reset">Reset</button>
+</div>
     
-</form>
 
 
-<div>
-    <h2>Delete Account</h2>
+<div class="container text-center">
+    <h3>Delete Account</h2>
     
     <form method="post" action="{% url 'core:remove' %}">
         {% csrf_token %}
-        <button type="submit">deactivate account</button>
+        <button class="btn btn-outline-light" type="submit">deactivate account</button>
     </form>
 
+</div>
 </div>
 {%endblock%}
 

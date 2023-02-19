@@ -2,20 +2,30 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<section class="hero">
+<section class="container">
 
-    <!-- .hero-head -->
-    <div class="hero center">
-
-    <h1>Limn Login</h1>
-    <form class="control center-column" method="POST">
-        <div class="box center-column">
-        {% csrf_token %}
-            {{form.username|attr:"placeholder: username"|attr:"class: control"|attr:"style: width: 250px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none"}}
-            {{form.password|attr:"placeholder: password"|attr:"class: control"|attr:"style: width: 250px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none"}}
+    <div class="row">
+    <div class="col"></div>
+    <div class="col">
+        <div class="row text-center">
+            <h1>Limn Login</h1>
         </div>
-        <button class="button is-small ">Login</button>
-    </form>
+        <div class="row">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                {{form.username|attr:"placeholder: username"|attr:"type: input"|attr:"class: form-control"|attr:"style: border-radius: 8px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none"}}
+                </div>
+                <div class="mb-3">
+                {{form.password|attr:"placeholder: password"|attr:"class: form-control"|attr:"style: border-radius: 8px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none"}}
+                </div>
+                <div class="mb-3">
+                <button type="submit" class="btn btn-outline-light">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+        <div class="col"></div>
     </div>
 </section>
 {% endblock %}

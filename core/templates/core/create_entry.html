@@ -1,65 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main class="hero center">
+<main class="container text-center">
     <h1>Create an Entry for {{journal.title}}</h1>
-    <section>
+    <div class="row">
+    <div class="col-2"></div>
+    
+    <div class="col">
 
-        <div class="center-column">
+        <div class="container">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="form_group">
-                    <div class="box">
+                <div class="row">
+                    <div class="mb-3">
                         {{ entryForm.title}}
+                    </div>
+                    <div class="mb-3">
                         {{ entryForm.location }}
                     </div>
                     <div>
-                        <div class="box">
+                        <div class="mb-3">
                             {{entryForm.body}}
                         </div>
-                        <div class="box">
-                            <input type="text" name="videoTitle" placeholder="Title">
+                        <div class="mb-3">
+                            <input class="form-control" type="text" name="videoTitle" placeholder="Video Title">
+                        </div>
+                        <div class="mb-3">
                             {{videoForm.source_url}}
                         </div>
-                        <div class="box">
+                        <div class="mb-3">
                             {{entryForm.image}}
-                            <label>Privacy:</label>{{entryForm.entry_privacy}}
                         </div>
-                        <button class="button is-small " type="submit">Submit</button>
+                        <div class="mb-3">
+                            {{entryForm.entry_privacy}}
+                        </div>
+                        <button class="btn btn-outline-light " type="submit">Submit</button>
                     </div>
                 </div>
             </form>
         </div>
 
-
-
-
-
-
-        <!-- <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form_group">
-                <label>Title:</label>
-                {{ entryForm.title}}
-                <label>Location:</label>
-                {{entryForm.location}}
-                <label>Entry:</label>
-                {{entryForm.body}}
-                <label>Privacy:</label>
-                {{entryForm.entry_privacy}}
-                <label>Entry Images:</label>
-                    {{entryForm.image}}
-            </div>
-            <div class="form_group">
-                <label>Video Title:</label>
-                {{ videoForm.title}}
-                <label>Video URL</label>
-                {{videoForm.source_url}}
-            </div>
-            <button type="submit">Submit</button>
-            </div>
-        </form> -->
-    </section>
+    </div>
+    <div class="col-2"></div>
+</div>
 </main>
 
 {% endblock %}

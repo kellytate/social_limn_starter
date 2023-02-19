@@ -3,18 +3,20 @@
 body {
     background-color: #262523;
     color: #d3d9d9;
-    display: flex;
+    display: column;
     min-height: 100vh;
-    flex-direction: column;
-    scrollbar-color: auto;
+    flex-direction: row;
+    scrollbar-color: black;
 }
 
-img {
+/* img {
     border-radius: 8px;
     width: 200px;
+} */
+
+li {
+    list-style: none;
 }
-
-
 
 .navbar, .footer {
     background-color: #262523;
@@ -24,9 +26,10 @@ img {
 
 a {
     color: #d3d9d9;
+    text-decoration: none;
 }
 
-.navbar a, .footer a {
+.footer a {
     color: #d3d9d9;
 }
 
@@ -35,7 +38,9 @@ a:hover, .navbar a:hover, .footer a:hover {
     color: #92A7A0;
 }
 
-
+/* .card {
+    background-color: #5A5943;
+} */
 
 
 /* button {
@@ -55,17 +60,13 @@ a:hover, .navbar a:hover, .footer a:hover {
 
 
 input[type=text]{
-	width: 250px; 
     color: #92A7A0; 
     background-color: #1f1e1d; 
     border-radius: 8px; padding: 5px; 
     border: none;
 }
 
-input{
-    outline: none;
-    border: none;
-} 
+
 /* 
 textarea:focus, input:focus {
     border-color: transparent !important;

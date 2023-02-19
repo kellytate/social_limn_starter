@@ -1,31 +1,38 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
 {% block content %}
-<main>
-    <section class="hero is-mobile is-marginless">
 
-            <div class="center-column">
-                <h1>Create New Account</h1>
-                <div>
-                    <!-- <div class="center-column"> -->
-                        <form class="control center-column" method="POST">
-                            <div class="box center-column">
-                            {% csrf_token %}
-                            {{form.username}}
-                            {{form.email}}
-                            {{form.password1}}
-                            {{form.password2}}
-                            </div>
-                            <button class="button is-small ">Sign Up</button>
-                            
-                        </form>
-                    <!-- </div> -->
-            
+<main>
+    <section class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div class="row text-center">
+                    <h1>Create New Account</h1>
+                </div>
+                <div class="row">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        {{form.username}}
+                        </div>
+                        <div class="mb-3">
+                        {{form.email}}
+                        </div>
+                        <div class="mb-3">
+                        {{form.password1}}
+                        </div>
+                        <div class="mb-3">
+                        {{form.password2}}
+                        </div>
+                        <div class="mb-3">
+                        <button type="submit" class="btn btn-outline-light ">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+            <div class="col"></div>
         <div>
-            <img src="" alt="">
-        </div>
-</section>
+    </section>
 </main>
 {% endblock %}

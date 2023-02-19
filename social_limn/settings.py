@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'location_field.apps.DefaultConfig',
     "mapbox_location_field",
     'widget_tweaks',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -181,6 +182,7 @@ SPOTIFY_LIMIT = 50
 IFRAME_KEY = env('IFRAME_KEY')
 SPOTIPY_CLIENT_ID = env('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = env('SPOTIPY_CLIENT_SECRET')
+SPOTIPY_REDIRECT_URI = env('SPOTIPY_REDIRECT_URI')
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
