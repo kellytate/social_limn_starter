@@ -81,18 +81,18 @@ WSGI_APPLICATION = 'social_limn.wsgi.application'
 
 load_dotenv(find_dotenv())
 
-# DATABASES = {'default': dj_database_url.config(default='django.db.backends.postgresql', conn_max_age=600, ssl_require=False)}
+DATABASES = {'default': dj_database_url.config(default='django.db.backends.postgresql', conn_max_age=600, ssl_require=False)}
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_USER_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DB_NAME'),
+#         'USER': os.getenv('DB_USER'),
+#         'PASSWORD': os.getenv('DB_USER_PASSWORD'),
+#         'HOST': os.getenv('DB_HOST'),
+#         'PORT': os.getenv('DB_PORT'),
+#     }
+# }
 
 
 # Password validation
