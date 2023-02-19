@@ -56,5 +56,6 @@ urlpatterns = [
     path('entries/<int:pk>/place/', views.add_place, name='add_place'),
     path('profiles/<int:pk>/reports/', views.reports, name='reports'),
     path('profiles/<int:pk>/reports/entries_by_day', views.onThisDayReport, name='day_reports'),
-    path('spotify_login', views.spotify_login, name="spotify_login")
-]
+    path('spotify_login', views.spotify_login, name="spotify_login"),
+    path('profiles/<int:pk>/reports/playlist', views.spotify_report, name='spotify_report'),
+    ]

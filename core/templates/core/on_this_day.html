@@ -9,22 +9,15 @@
         {{dateForm}}
         <input type="submit" value="Submit"/>
     </form>
-    {% if not token_info %}
-    <a href="{% url 'core:spotify_login' %}">Login to spotify for more features!</a>
-    {% endif %}
-    {% if playlist_url %}
-        <div class="iframely-embed">
-            <div class="iframely-responsive">
-                <a data-iframely-url href="{{playlist_url}}"></a>
-            </div>
-        </div>
-    {% endif %}
+  
+
     {% if entries %}
         <h3>{{date}} Moments</h3>
         {% for entry in entries %}
         <a href="{% url 'core:entry_landing' pk=entry.pk%}"><p>{{entry.title}} - {{entry.year}}</p></a>
         {% endfor %}
     {% endif %}
+    
     {% if map %}
         <h4>On this day you were here.</h4>
         <img src="{{map}}">

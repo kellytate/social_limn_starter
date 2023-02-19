@@ -51,8 +51,6 @@ INSTALLED_APPS = [
     'core',
     'cloudinary',
     'cloudinary_storage',
-    'location_field.apps.DefaultConfig',
-    "mapbox_location_field",
     'widget_tweaks',
     'bootstrap5',
 ]
@@ -194,15 +192,5 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': env('API_SECRET') 
 }
 
-LOCATION_FIELD = {
-    'map.provider': 'mapbox',
-    'map.zoom': 13,
-    # Mapbox
-    'provider.mapbox.access_token': env('MAP_KEY'),
-    'provider.mapbox.max_zoom': 18,
-    'provider.mapbox.id': 'mapbox.streets',
-}
-
-MAPBOX_KEY = env('MAP_KEY')
 
 LOCATIONIQ_API_KEY = env('LIQ')

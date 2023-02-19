@@ -194,6 +194,7 @@ class PlaceForm(forms.ModelForm):
 
 REPORT_TYPES = (
     ('onThisDay', 'Memories for this Day',),
+    ('spotify', 'Playlist for this Day',),
 )
 
 class ReportsForm(forms.Form):

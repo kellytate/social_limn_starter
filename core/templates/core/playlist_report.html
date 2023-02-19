@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h2>Select a date</h2>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{dateForm}}
+        <input type="submit" value="Submit"/>
+    </form>
+
+    {% if not token_info %}
+    <a href="{% url 'core:spotify_login' %}">Login to spotify for more features!</a>
+    {% endif %}
+    
+    {% if songs %}
+        <h2>Songs for {{date}}</h2>
+
+        {% for song in songs %}
+
+            <div class="iframely-embed">
+                <div class="iframely-responsive">
+                    <a data-iframely-url href="{{song}}"></a>
+                </div>
+            </div>
+
+        {% endfor %}
+        {% if playlist_url %}
+            
+            <h2>Playlist for {{date}}</h2>
+            <div class="iframely-embed">
+                <div class="iframely-responsive">
+                    <a data-iframely-url href="{{playlist_url}}"></a>
+                </div>
+            </div>
+
+        {%else%}
+
+        <form action="" method="POST">
+            {% csrf_token %}
+            <button name="makePlaylist">Make a Playlist of these songs!</button>
+        </form>
+
+        {% endif %}
+    {% endif %}
+
+
+
+    <script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
+
+
+</main>
+
+{% endblock %}
