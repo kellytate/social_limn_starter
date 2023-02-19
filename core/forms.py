@@ -197,6 +197,7 @@ REPORT_TYPES = (
     ('spotify', 'Playlist for this Day',),
 )
 
+
 class ReportsForm(forms.Form):
     search_type = forms.ChoiceField(label='Report Type',required=True,
                                     choices=REPORT_TYPES)

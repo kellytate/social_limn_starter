@@ -1,22 +1,22 @@
 {% load static %}
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #262523;">
+<nav class="navbar top navbar-expand-lg navbar-dark" style="background-color: #262523;">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">
-        <img src="https://res.cloudinary.com/limn/image/upload/v1676733492/media/logo/limn-light-logo-svg.svg" height="150">
+        <img src="https://res.cloudinary.com/limn/image/upload/v1676733492/media/logo/limn-light-logo-svg.svg" height="80">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
             </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         {% if user.is_authenticated %}
-            <div class="navbar-nav">
+            <div class="navbar-nav ms-auto">
                 <a class="nav-link active" aria-current="page" href="{% url 'core:dashboard' %}">Dashboard</a>
                 <a class="nav-link" href="{% url 'core:profile' pk=request.user.id %}">Profile</a>
                 <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             </div>
         {% else %}
-            <div class="navbar-nav">
+            <div class="navbar-nav ms-auto">
                 <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
                 <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
                 <a class="nav-link" href="{% url 'login' %}">Login</a>

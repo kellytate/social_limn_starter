@@ -1,4 +1,8 @@
 
+html, body {
+    padding:0px;
+    margin:0px;
+}
 
 body {
     background-color: #262523;
@@ -7,6 +11,38 @@ body {
     min-height: 100vh;
     scrollbar-color: black;
     padding-bottom: 25px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Della Respira', serif;
+}
+.homeHeader{
+    width: 100vw;
+    background: url('https://media1.giphy.com/media/hL8a3mIQK8Ehy/giphy.gif?cid=ecf05e47ebml444hx7knbft87nlgmsiwfzhrwl8fw6mb1f75&rid=giphy.gif&ct=g');
+    background-size: cover;
+    background-position: center;
+    
+}
+.homeHeader h1{
+    text-align: center;
+    width: 80%;
+    margin: auto;
+    padding-bottom: 10px;
+}
+.darkOverlay{
+    background-color: rgba(38, 37, 35, 0.75);
+}
+
+.homelogo{
+    width: 50%;
+    max-width: 250px;
+    height: auto;
+    margin: auto;
+}
+
+.top{
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .cover img {
