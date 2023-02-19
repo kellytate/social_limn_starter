@@ -3,98 +3,139 @@
 {% block content %}
 
 <main>
+    <h2>Select a date</h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{dateForm}}
+        <input type="submit" value="Submit"/>
+    </form>
+    {% if not token_info %}
+    <a href="{% url 'core:spotify_login' %}">Login to spotify for more features!</a>
+    {% endif %}
+    {% if playlist_url %}
+        <div class="iframely-embed">
+            <div class="iframely-responsive">
+                <a data-iframely-url href="{{playlist_url}}"></a>
+            </div>
+        </div>
+    {% endif %}
+    {% if entries %}
+        <h3>{{date}} Moments</h3>
+        {% for entry in entries %}
+        <a href="{% url 'core:entry_landing' pk=entry.pk%}"><p>{{entry.title}} - {{entry.year}}</p></a>
+        {% endfor %}
+    {% endif %}
 
+        <div id="chartdiv"></div>
+
+
+    {% if albums  %}
+    <section id="nanogallery2">
+
+    </section>
+    {% endif %}
+
+
+    <script>
+        // Create root
+        am5.ready(function() {
+        var root = am5.Root.new("chartdiv");
+        let textSource = '{{trends}}'
+        // Create series
+        var wc = root.container.children.push(am5wc.WordCloud.new(root, {
+          text: textSource,
+          excludeWords: ["i", "me", "my", "myself", "we", "our", "ours", 
+    "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", 
+    "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", 
+    "they", "them", "their", "theirs", "themselves", "what", "which", "who", 
+    "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", 
+    "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", 
+    "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until",
+    "while", "of", "at", "by", "for", "with", "about", "against", "between", 
+    "into", "through", "during", "before", "after", "above", "below", "to", 
+    "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", 
+    "further", "then", "once", "here", "there", "when", "where", "why", "how", 
+    "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", 
+    "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", 
+    "t", "can", "will", "just", "don", "should", "now"],
     
+        }));
+        })
+        </script>
+    <script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
+
+
     <script>
         $(document).ready(function () {
            const dataitems=[]
-           let data = {{items|safe}}
+           let data = {{albums|safe}}
            for (var i=0;i<data.length;i++) {
                dataitems.push(JSON.parse(data[i]))
            }
    
            jQuery("#nanogallery2").nanogallery2({
          items: dataitems,
-         galleryMosaic : [                       // default layout
-               { w: 2, h: 2, c: 1, r: 1 },
-               { w: 1, h: 1, c: 3, r: 1 },
-               { w: 1, h: 1, c: 3, r: 2 },
-               { w: 1, h: 2, c: 4, r: 1 },
-               { w: 2, h: 1, c: 5, r: 1 },
-               { w: 2, h: 2, c: 5, r: 2 },
-               { w: 1, h: 1, c: 4, r: 3 },
-               { w: 2, h: 1, c: 2, r: 3 },
-               { w: 1, h: 2, c: 1, r: 3 },
-               { w: 1, h: 1, c: 2, r: 4 },
-               { w: 2, h: 1, c: 3, r: 4 },
-               { w: 1, h: 1, c: 5, r: 4 },
-               { w: 1, h: 1, c: 6, r: 4 }
-             ],
-             galleryMosaicXS : [                     // layout for XS width
-               { w: 2, h: 2, c: 1, r: 1 },
-               { w: 1, h: 1, c: 3, r: 1 },
-               { w: 1, h: 1, c: 3, r: 2 },
-               { w: 1, h: 2, c: 1, r: 3 },
-               { w: 2, h: 1, c: 2, r: 3 },
-               { w: 1, h: 1, c: 2, r: 4 },
-               { w: 1, h: 1, c: 3, r: 4 }
-             ],
-             galleryMosaicSM : [                     // layout for SM width
-               { w: 2, h: 2, c: 1, r: 1 },
-               { w: 1, h: 1, c: 3, r: 1 },
-               { w: 1, h: 1, c: 3, r: 2 },
-               { w: 1, h: 2, c: 1, r: 3 },
-               { w: 2, h: 1, c: 2, r: 3 },
-               { w: 1, h: 1, c: 2, r: 4 },
-               { w: 1, h: 1, c: 3, r: 4 }
-             ],
-             galleryMaxRows: 1,
-             galleryDisplayMode: 'rows',
-             gallerySorting: 'random',
-             thumbnailDisplayOrder: 'random',
-   
-             thumbnailHeight: '180', thumbnailWidth: '220',
-             thumbnailAlignment: 'scaled',
-             thumbnailGutterWidth: 0, thumbnailGutterHeight: 0,
-             thumbnailBorderHorizontal: 0, thumbnailBorderVertical: 0,
-   
-             thumbnailToolbarImage: null,
-             thumbnailToolbarAlbum: null,
-             thumbnailLabel: { display: false },
-   
-             // DISPLAY ANIMATION
-             // for gallery
-             galleryDisplayTransitionDuration: 1500,
-             // for thumbnails
-             thumbnailDisplayTransition: 'imageSlideUp',
-             thumbnailDisplayTransitionDuration: 1200,
-             thumbnailDisplayTransitionEasing: 'easeInOutQuint',
-             thumbnailDisplayInterval: 60,
-   
-             // THUMBNAIL HOVER ANIMATION
-             thumbnailBuildInit2: 'image_scale_1.15',
-             thumbnailHoverEffect2: 'thumbnail_scale_1.00_1.05_300|image_scale_1.15_1.00',
-             touchAnimation: true,
-             touchAutoOpenDelay: 500,
-   
-             // LIGHTBOX
-             viewerToolbar: { display: false },
-             viewerTools:    {
-               topLeft:   'label',
-               topRight:  'shareButton, rotateLeft, rotateRight, fullscreenButton, closeButton'
-             },
-   
-             // GALLERY THEME
-             galleryTheme : { 
-               thumbnail: { background: '#111' },
-             },
-                       
-             // DEEP LINKING
-             locationHash: true
-   
-       });
+         galleryL1DisplayMode: 'fullContent',                // first level display mode -> fullContent
+          galleryDisplayMode: 'rows',                         // other levels display mode -> 4 rows
+          galleryMaxRows: 4,
+          gallerySorting: 'random',
+
+          // thumbnail on first gallery level
+          thumbnailL1Height: 400, thumbnailL1Width: 600,      // first level -> grid kayout
+          thumbnailL1GutterWidth: 20,
+          thumbnailL1GutterHeight: 20,
+          thumbnailL1BorderHorizontal: 0,
+          thumbnailL1BorderVertical: 0,
+
+          // thumbnail on other gallery level
+          thumbnailHeight: 400, thumbnailWidth: 'auto',       // other levels -> justified layout
+          thumbnailGutterWidth: 2,
+          thumbnailGutterHeight: 2,
+          thumbnailBorderHorizontal: 0,
+          thumbnailBorderVertical: 0,
+
+          thumbnailAlignment: 'fillWidth',
+
+          // THUMBNAIL TOOLS & LABEL
+          thumbnailToolbarImage : null,
+          thumbnailToolbarAlbum: null,
+          // first level label
+          <!-- thumbnailL1Label: { display: true, position:'overImageOnBottom', hideIcons: true, titleFontSize: '1em', align: 'center', titleMultiLine:true, displayDescription: false}, -->
+          thumbnailL1Label: { display: true, valign:'bottom', hideIcons: true, titleFontSize: '3em', align: 'left', titleMultiLine:true, displayDescription: false},
+          // other level label
+          thumbnailLabel: { display: true, position:'overImageOnBottom', hideIcons: true, titleFontSize: '1em', align: 'center', titleMultiLine:true, displayDescription: false},
+
+					// thumbnailToolbarAlbum: { topRight: 'counter' },
+
+          // DISPLAY ANIMATION
+          thumbnailL1DisplayTransition: 'flipUp',         // first level display animation
+          thumbnailDisplayTransition: 'slideDown',        // other levels display animation
+          thumbnailDisplayTransitionDuration: 500,
+          thumbnailDisplayInterval: 30,
+
+          // THUMBNAIL'S HOVER ANIMATION
+          // first level
+          <!-- thumbnailL1BuildInit2: 'title_font-weight_bold|image_scale_0.8|label_left_-5px|label_text-transform_uppercase|label_top_95%|label_rotateZ_-90deg|label_transform-origin_top left', -->
+          thumbnailL1BuildInit2: 'title_font-weight_bold|image_scale_0.8|label_left_-25px|label_top_95%|label_rotateZ_-90deg|label_transform-origin_top left',
+          thumbnailL1HoverEffect2: 'imageGrayOff|title_color_#46D6AB_#aaaaaa|labelOpacity50',
+          // other levels -> no hover effect
+
+          // touch handling
+          touchAnimation: false,
+          touchAutoOpenDelay: 800,
+
+          // GALLERY THEME
+          galleryTheme : { 
+            thumbnail: { background: '#111', titleShadow : '', descriptionShadow : 'none', titleColor: '#fff', borderColor: '#000' },
+            navigationBreadcrumb: { background : '#3C4B5B' },
+          },
+          
+          // DEEP LINKING
+          locationHash: false
+        });
      });
    </script>
+  
 </main>
 
 {% endblock %}

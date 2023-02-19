@@ -1,12 +1,13 @@
 import requests
 import json
-import os
-from .utils import Calendar
+import string
 import spotipy
+import spotipy.util as util
+from spotipy import oauth2
 import datetime
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -48,6 +49,14 @@ def dashboard(request):
     entries = Entry.objects.filter(
         journal__user__profile__follows__in=[request.user.id]
 ).exclude(is_archived=True).order_by('-created_at')
+    if request.GET.get("code"):
+        scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
+        auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
+                                scope=scope)
+        code = request.GET.get("code", "")
+        token = auth_manager.get_access_token(code=code)
+
+
     if request.method == "POST":
         form = JournalForm(request.POST, request.FILES)
         if form.is_valid():
@@ -796,8 +805,121 @@ def notify_endpoint():
 def reports(request, pk):
     profile = Profile.objects.get(pk=pk)
     reportsForm = ReportsForm()
+    if request.method == "POST":
+        reportsForm = ReportsForm(request.POST)
+        if reportsForm.is_valid():
+            if reportsForm.cleaned_data['search_type'] == 'onThisDay':
+                return redirect('core:day_reports', pk=profile.pk)
+
     return render(request, 'core/reports.html', {"reportsForm": reportsForm})
 
 def onThisDayReport(request,pk):
     profile = Profile.objects.get(pk=pk)
+    dateForm = OnThisDayForm()
+    entries = None
+    albums = []
+    date=None
+    songs = []
+    playlist_url = None
+    trends = ""
+    if request.method == "POST":
+        dateForm = OnThisDayForm(request.POST)
+        if dateForm.is_valid():
+            date = dateForm.cleaned_data['memory_date']
+            entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
+            count = 1
+
+            for entry in entries:
+                images = Image.objects.filter(entry=entry)
+                videos = Video.objects.filter(entry=entry)
+                song = Song.objects.filter(entry=entry).exclude(is_archived=True).first()
+                trends = trends + " " + entry.body
+
+                if images:
+                    for indx,image in enumerate(images):
+                        if indx == 0:
+                            albums.append(json.dumps({"src":image.image.url,
+                                            "title": entry.title,
+                                            "ID": count,	
+                                            "kind":'album'}))
+                        albums.append(json.dumps({
+                            "src": image.image.url,
+                        }))
+
+                    if videos:
+                        for video in videos:
+                            albums.append(json.dumps({
+                                "src": video.source_url, 
+                                "albumID": count
+                            }))
+                    
+                elif videos:
+                    for indx, video in enumerate(videos):
+                        if indx==0:
+                            albums.append(json.dumps({"src":video.source_url,
+                                                    "title": entry.title,
+                                                    "ID": count,	
+                                                    "kind":'album'}))
+
     
+
+                        albums.append(json.dumps({
+                            "src": video.source_url, 
+                            "albumID": count
+                        }))
+                if song:
+            
+                    songs.append(song.source_url)
+
+                count +=1
+    if trends:
+        new = trends.translate(str.maketrans('', '', string.punctuation)).strip()
+        new = new.replace('\n', ' ').replace('\r', ' ')
+        trends = new 
+    scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-modify-public playlist-read-private"
+    auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
+                                scope=scope)
+    sp = spotipy.Spotify(auth_manager=auth_manager)
+    token_info = auth_manager.get_cached_token()
+    print(token_info)
+    if token_info and songs:
+        #print(sp.me())
+        user_id = sp.me()['id']
+        playlist = sp.user_playlist_create(user_id, name=f'{request.user.username} {date.strftime("%B %d")} Playlist')
+        playlist_id = playlist['id']
+        print(playlist_id)
+        # sp.playlist_add_items(playlist_id, songs)
+        # playlist_url = playlist["external_urls"]["spotify"]
+    context={
+    "dateForm": dateForm, 
+    "entries":entries,
+    "albums" : albums,
+    "date":  date.strftime("%B %d") if date else date,
+    "songs" : songs,
+    "token-info":token_info, 
+    "playlist_url":playlist_url,
+    "frame_key":settings.IFRAME_KEY,
+    "trends": trends
+    }
+
+    return render(request, 'core/on_this_day.html', context)
+
+
+def spotify_login(request):
+    scope = "user-read-recently-played user-top-read playlist-modify-public user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
+    auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
+                                scope=scope)
+    redirect_url = auth_manager.get_authorize_url() # Note: You should parse this somehow. It may not be in a pretty format.
+    return redirect(redirect_url)
+    
+
+def word_count(astring):
+    ignore = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
+    new_string = astring.translate(str.maketrans('', '', string.punctuation)).capitlize()
+    
+
+    
+
+
+
+
