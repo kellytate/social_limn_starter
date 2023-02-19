@@ -37,7 +37,8 @@ between login/logout and signup.
 """
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
+    # path('', include(router.urls)),
+    path('', views.home, name='home'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('limn/', include('core.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

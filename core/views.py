@@ -99,7 +99,7 @@ def contact(request):
                 send_mail(subject, message, 'maple.megan333@gmail.com', ['maple.megan333@gmail.com'])
             except BadHeaderError:
                 return HttpResponse('Invalid header')
-            return redirect("core:home")
+            return redirect("home")
     form = ContactForm()
     return render(request, 'sitefront/contact.html', {'form':form})
 
