@@ -1,0 +1,115 @@
+
+
+body {
+    background-color: #262523;
+    color: #d3d9d9;
+    display: column;
+    min-height: 100vh;
+    scrollbar-color: black;
+    padding-bottom: 25px;
+}
+
+.cover img {
+    border-radius: 8px;
+    max-height: 200px;
+}
+.profile img {
+    border-radius: 8px;
+    width: 200px;
+}
+
+.profile-sm img {
+    border-radius:8px;
+    width: 100px;
+}
+
+li {
+    list-style: none;
+}
+
+.navbar, .footer {
+    background-color: #262523;
+    color: #d3d9d9;
+
+}
+
+a {
+    color: #d3d9d9;
+    text-decoration: none;
+}
+
+.footer {
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    background-color: #262523;
+}
+
+.footer a {
+    color: #d3d9d9;
+}
+
+a:hover, .navbar a:hover, .footer a:hover {
+    background-color: #262523;
+    color: #92A7A0;
+}
+
+/* .card {
+    background-color: #5A5943;
+} */
+
+
+/* button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    
+} */
+
+#wrapper {
+    flex: 1;
+}
+
+#chartdiv {
+    width: 60%;
+    height: 70vh;
+    }
+
+
+input[type=text]{
+    color: #92A7A0; 
+    background-color: #1f1e1d; 
+    border-radius: 8px; padding: 5px; 
+    border: none;
+}
+
+
+/* 
+textarea:focus, input:focus {
+    border-color: transparent !important;
+} */
+
+
+/* input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; }
+input:focus::-moz-placeholder { color:transparent; }
+input:focus:-ms-input-placeholder { color:transparent; }
+
+textarea:focus::-webkit-input-placeholder { color:transparent; }
+textarea:focus:-moz-placeholder { color:transparent; }
+textarea:focus::-moz-placeholder { color:transparent; }
+textarea:focus:-ms-input-placeholder { color:transparent; }
+
+input::-webkit-input-placeholder { color: #555555;}
+input:-moz-placeholder { color: #555555;}
+input::-moz-placeholder { color: #555555;}
+input:-ms-input-placeholder { color: #555555;}
+
+textarea::-webkit-input-placeholder { color: #555555;}
+textarea:-moz-placeholder { color: #555555;}
+textarea::-moz-placeholder { color: #555555;}
+textarea:-ms-input-placeholder { color: #555555;}  */

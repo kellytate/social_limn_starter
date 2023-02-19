@@ -19,6 +19,10 @@ ALLOWED_HOSTS = [
     'social-limn.herokuapp.com'
 ]
 
+load_dotenv(find_dotenv())
+
+DATABASES = {'default': dj_database_url.config(default='django.db.backends.postgresql', conn_max_age=600, ssl_require=False)}
+
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
 LOGGING = {
