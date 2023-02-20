@@ -22,48 +22,23 @@ from .serializers import *
 from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Video, Place
 from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-
 from cloudinary.forms import cl_init_js_callbacks
+
+## helper functions here. 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
+## all Front end views here. 
 
-# def index(request):
-#     return render(request, 'index.html')
-
-
-@login_required(login_url='login')
-
-def dashboard(request):
-    entries = Entry.objects.filter(
-        journal__user__profile__follows__in=[request.user.id]
-).exclude(is_archived=True).order_by('-created_at')
-    if request.GET.get("code"):
-        scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
-        auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
-                                scope=scope)
-        code = request.GET.get("code", "")
-        token = auth_manager.get_access_token(code=code)
-
-
-    if request.method == "POST":
-        form = JournalForm(request.POST, request.FILES)
-        if form.is_valid():
-            journal=form.save(commit=False)
-            journal.user=request.user
-            form.save()
-            return redirect("core:dashboard")
-    form=JournalForm()
-    journals = Journal.objects.filter(user=request.user).exclude(is_archived=True)
-    return render(request, 'dashboard.html', {'form':form, 'entries':entries, 'journals':journals})
+def home(request):
+    return render(request, 'sitefront/index.html')
 
 def signup(request):
     if request.method == "POST":
@@ -75,13 +50,6 @@ def signup(request):
         form = RegisterUserForm()
     return render(request, 'registration/signup.html', {'form':form})
 
-# @login_required(login_url='login_url')
-# def logout(request):
-#     auth.logout(request)
-#     return redirect('login_url')
-
-def home(request):
-    return render(request, 'sitefront/index.html')
 
 def contact(request):
     if request.method == 'POST':
@@ -102,6 +70,32 @@ def contact(request):
             return redirect("home")
     form = ContactForm()
     return render(request, 'sitefront/contact.html', {'form':form})
+
+@login_required(login_url='login')
+def dashboard(request):
+
+    entries = Entry.objects.filter(
+        journal__user__profile__follows__in=[request.user.id]
+).exclude(is_archived=True).order_by('-created_at')
+    
+
+    if request.GET.get("code"):
+        scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
+        auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
+                                scope=scope)
+        code = request.GET.get("code", "")
+        token = auth_manager.get_access_token(code=code)
+
+    if request.method == "POST":
+        form = JournalForm(request.POST, request.FILES)
+        if form.is_valid():
+            journal=form.save(commit=False)
+            journal.user=request.user
+            form.save()
+            return redirect("core:dashboard")
+    form=JournalForm()
+    journals = Journal.objects.filter(user=request.user).exclude(is_archived=True)
+    return render(request, 'dashboard.html', {'form':form, 'entries':entries, 'journals':journals})
 
 # Displays all available user (profiles), excluding the logged-in user
 @login_required(login_url='login')

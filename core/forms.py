@@ -11,6 +11,7 @@ from mapbox_location_field.forms import LocationField as FormLocationField
 # EMAIL_HOST_PASSWORD = 'your_password>'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
+
 class ContactForm(forms.Form):
     name = forms.CharField(max_length = 50, widget=forms.TextInput(attrs={
             'placeholder': 'Name',
@@ -28,6 +29,7 @@ class ContactForm(forms.Form):
                                     'placeholder': 'Share your thoughts...', 
                                     'class': 'form-control', 
                                     'style': 'height:60px; width:400px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
+
 
 class RegisterUserForm(UserCreationForm):
     # email = forms.EmailField(max_length=254,
