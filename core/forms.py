@@ -41,7 +41,7 @@ class RegisterUserForm(UserCreationForm):
         self.fields['username'].widget=forms.TextInput(attrs={
             'placeholder': 'username',
             'type': 'input',
-            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none;',
             'class': 'form-control'})
         self.fields['email'].widget=forms.EmailInput(attrs={
             'placeholder': 'email',
@@ -96,17 +96,17 @@ class JournalForm(forms.ModelForm):
     title = forms.CharField(required=True, 
         widget=forms.TextInput(attrs={
                                     'placeholder': 'Title', 
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 5px; padding: 5px; border: none;  border-bottom: 2px solid #92A7A0;',
                                     'class': 'form-control',}))
     location = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={
                                     'placeholder': 'Location',
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 5px; padding: 5px; border: none;  border-bottom: 2px solid #92A7A0;',
                                     'class': 'form-control'}))
     description = forms.CharField(required=False, widget=forms.Textarea(attrs={
                                     'placeholder': 'Description', 
                                     'class': 'form-control', 
-                                    'style': 'cols:10; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
+                                    'style': 'cols:10; color: #92A7A0; background-color: #1f1e1d; border-radius: 5px; padding: 5px; border: none;  border-bottom: 2px solid #92A7A0;',}))
     cover_img = forms.ImageField(required=False, widget=forms.FileInput(attrs={
                                     'type': 'file',
                                     'class': 'form-control form-control-sm',

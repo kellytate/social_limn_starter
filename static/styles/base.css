@@ -157,6 +157,9 @@ input[type=text]{
     border-radius: 8px; padding: 5px; 
     border: none;
 }
+input::placeholder {
+    color:  #92A7A0;
+}
 
 
 /* 

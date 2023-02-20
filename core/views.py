@@ -25,6 +25,11 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from cloudinary.forms import cl_init_js_callbacks
 
 ## helper functions here. 
+def spotify_auth():
+    scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
+    auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
+                                scope=scope)
+    return auth_manager
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -38,23 +43,34 @@ class UserViewSet(viewsets.ModelViewSet):
 ## all Front end views here. 
 
 def home(request):
+
     return render(request, 'sitefront/index.html')
 
 def signup(request):
+
     if request.method == "POST":
+
         form = RegisterUserForm(request.POST)
+    
         if form.is_valid():
+
             form.save()
             return redirect('login')
     else:
+
         form = RegisterUserForm()
+
     return render(request, 'registration/signup.html', {'form':form})
 
 
 def contact(request):
+
     if request.method == 'POST':
+
         form = ContactForm(request.POST)
-        if form.is_valid() :
+
+        if form.is_valid():
+
             subject = "Limn Message"
             body = {
                 "name": form.cleaned_data['name'],
@@ -63,13 +79,18 @@ def contact(request):
                 'message': form.cleaned_data['message'],
             }
             message = "\n".join(body.values())
+
             try: 
                 send_mail(subject, message, 'maple.megan333@gmail.com', ['maple.megan333@gmail.com'])
+            
             except BadHeaderError:
                 return HttpResponse('Invalid header')
+            
             return redirect("home")
+        
     form = ContactForm()
     return render(request, 'sitefront/contact.html', {'form':form})
+
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -78,11 +99,8 @@ def dashboard(request):
         journal__user__profile__follows__in=[request.user.id]
 ).exclude(is_archived=True).order_by('-created_at')
     
-
     if request.GET.get("code"):
-        scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
-        auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
-                                scope=scope)
+        auth_manager = spotify_auth()
         code = request.GET.get("code", "")
         token = auth_manager.get_access_token(code=code)
 
