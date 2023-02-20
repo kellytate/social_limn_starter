@@ -17,6 +17,16 @@ body {
 h1, h2, h3, h4, h5 {
     font-family: 'Della Respira', serif;
 }
+button{
+    border: 1px solid rgba(90, 89, 67, 0.92);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0);
+    width: 135px;
+    padding: 5px 0;
+
+}
 .homeHeader{
     width: 100vw;
     background: url('https://media1.giphy.com/media/hL8a3mIQK8Ehy/giphy.gif?cid=ecf05e47ebml444hx7knbft87nlgmsiwfzhrwl8fw6mb1f75&rid=giphy.gif&ct=g');
@@ -34,11 +44,20 @@ h1, h2, h3, h4, h5 {
     background-color: rgba(38, 37, 35, 0.75);
 }
 
+.col-md img{
+    width:100%;
+}
+
 .homelogo{
     width: 50%;
     max-width: 250px;
     height: auto;
     margin: auto;
+}
+
+.row {
+    margin-bottom: 15px;
+
 }
 
 .top{
