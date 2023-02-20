@@ -22,76 +22,130 @@
                         <a href="{% url 'core:update_profile' %}"><button >Update Profile</button></a>
                         <a href="{% url 'logout' %}"><button>Logout</button></a>
                     </div>
-                    <div class="text-center mb-3">
-                        <h5>Your Journals</h5>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <ul>
-                            {% for journal in journals %}
-                                <li>
-                                    <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">
-                                        <div class="card" style="width: 10rem; background-color: #1f1e1d;">
-                                            
-                                            {% if journal.cover_img %}
-                                                <img src="{{ journal.cover_img.url }}" class="card-img-top" alt="Journal cover image">
-                                            {% else %}
-                                                <img src="" class="card-img-top" alt="Journal cover image">
-                                            {% endif %}
-                                            
-                                            <div class="card-body">
-                                                
-                                                <h5 class="card-title">{{journal.title}}</h5>
-                                                {% if journal.description %}
-                                                    <p class="card-text">{{ journal.description }}</p>
-                                                {% else %}
-                                                    <p class="card-text">No description</p>
-                                                {% endif %}
-                                                
-                                            </div>
+                    <div class="accordion accordion-flush" id="accordion">
+                        <div class="accordion-item">
+                          <h5 class="accordion-header" id="flush-headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Your Journals
+                            </button>
+                          </h5>
+                          <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-center">
+                                    <ul>
+                                        {% for journal in journals %}
+                                            <li>
+                                                <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">
+                                                    {% if journal.cover_img %}
+                                                    <div class="background row" style="background-image: url('{{ journal.cover_img.url }}');">
+                                                        <div class="darkOverlay">
+                                                            <h6>{{journal.title}}</h6>
+                                                            {% if journal.description %}
+                                                                <p>{{ journal.description }}</p>
+                                                            {% else %}
+                                                                <p>No description</p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="background row" style="background-image: url('https://images.unsplash.com/photo-1528459061998-56fd57ad86e3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=370&q=80');">
+                                                        <div class="darkOverlay">
+                                                            <h6>{{journal.title}}</h6>
+                                                            {% if journal.description %}
+                                                                <p>{{ journal.description }}</p>
+                                                            {% else %}
+                                                                <p>No description</p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+
+                                                    {% endif %}
+
+                                                    
+
+    
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="accordion-item">
+                          <h5 class="accordion-header" id="flush-headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                              Create a New Journal
+                            </button>
+                          </h5>
+                          <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <form method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            {{ form.title}}
                                         </div>
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                                        <div class="mb-3">
+                                            {{ form.location }}
+                                        </div>
+                                        <div class="mb-3">
+                                            {{form.description}}
+                                        </div>
+                                        <div class="mb-3">
+                                            {{form.cover_img}}
+                                        </div>
+                                        <div class="mb-3">
+                                            {{form.default_privacy}}
+                                        </div>
+                                        <div class="row">
+                                            <button type="submit">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
                     </div>
-                    <div class="text-center mb-3">
-                        <h5>Create a New Journal</h5>
-                    </div>
-                    <div class="row">
-                        <form method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                {{ form.title}}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.location }}
-                            </div>
-                            <div class="mb-3">
-                                {{form.description}}
-                            </div>
-                            <div class="mb-3">
-                                {{form.cover_img}}
-                            </div>
-                            <div class="mb-3">
-                                {{form.default_privacy}}
-                            </div>
-                            <div class="row">
-                                <button class="btn btn-outline-light " type="submit">Submit</button>
-                            </div>
-                        </form>
-                    </div>
+    
 
                 </aside>
                 <article class="col-8">
 
-                    <div class="text-center mb-3">
-                        <h3>Followed Entries</h3>
+                    <div class="text-left mb-3">
+                        <h3>Memory Feed</h3>
                     </div>
                     <article>
                         {% for entry in entries %}
                             <a href="{% url 'core:entry_landing' pk=entry.id %}">
-                                <div>
-                                    <p>{{entry.journal.user.username}} - {{entry.created_at}}</p>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <img src="{{entry.journal.user.profile.profile_img.url}}" class="img-thumbnail" alt="">
+                                        <p>{{entry.journal.user.username}}</p>
+                                        <p>{{entry.created_at}}</p>
+                                    </div>
+                                <div class="col-8">
+                                    <h4>{{entry.title}}</h4>
+                                    <p>{{entry.journal.title}}</p>
+                                    {% if entry.image%}
+                                        {% for img in entry.image.all %}
+                                            {% if forloop.counter == 1%}
+                                                <img src="{{img.image.url}}" class="img-fluid">
+                                            {% endif%}
+                                        {% endfor %}
+                                    {% elif entry.entry_videos %}
+                                        {% for video in entry.entry_videos.all %}
+                                            {% if forloop.counter == 1%}
+                                            <div class="iframely-embed">
+                                                <div class="iframely-responsive">
+                                                    <a data-iframely-url href="{{video.source_url}}"></a>
+                                                </div>
+                                            </div>
+                                            {% endif%}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <p>{{ entry.body|truncatewords:30 }}</p>
+                                </div>
                                 </div>
                             </a>
                         {% endfor %}
@@ -101,7 +155,7 @@
                 
             </div>
         </div>
-        <div class="row">
+        <div class="row text-left">
             <div class="col">
     
             </div>
@@ -122,6 +176,7 @@
 
 {% endblock %}
 
+<script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
 
 <script type="text/javascript">
     const url = "https://api.cloudinary.com/v1_1/demo/image/upload";

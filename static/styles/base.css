@@ -14,20 +14,41 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Della Respira', serif;
 }
 
 button{
     border: 1px solid rgba(90, 89, 67, 0.92);
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    border-radius: 5px;
     color: #ffffff;
     background-color: rgba(0, 0, 0, 0);
     width: 135px;
     padding: 5px 0;
+    margin: 10px;
 
 }
+.accordion-button.collapsed, .accordion-body, .accordion-item {
+    color: #ffffff;
+    background-color: #262523;
+}
+
+
+.accordion-button:not(.collapsed){
+    background-color: #92A7A0;
+    color: #262523;
+}
+
+
+.accordion-button.collapsed {
+    border: 1px solid  #92A7A0;
+}
+
+.accordion-item{
+    padding: 5px;
+}
+
 .background{
     background-size: cover;
     background-position: center;
