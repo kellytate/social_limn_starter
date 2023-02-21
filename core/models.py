@@ -155,6 +155,7 @@ class Song(models.Model):
     artist = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
     is_archived = models.BooleanField(default=False)
+    is_album = models.BooleanField(default=False)
 
 class Video(models.Model):
     source_url = models.CharField(max_length=1000)

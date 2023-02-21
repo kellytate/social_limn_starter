@@ -6,7 +6,7 @@ from django.contrib.auth import logout as auth_logout, get_user_model
 from django.views.decorators.http import require_http_methods
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm, JournalSelectorForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm, JournalSelectorForm,OnThisDayRangeForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -881,6 +881,10 @@ def reports(request, pk):
                 return redirect('core:day_reports', pk=profile.pk)
             elif reportsForm.cleaned_data['search_type'] == 'spotify':
                 return redirect('core:spotify_report', pk=profile.pk)
+            elif reportsForm.cleaned_data['search_type'] == 'onThisDayRange':
+                return redirect('core:report_range', pk=profile.pk)
+            elif reportsForm.cleaned_data['search_type'] == 'spotify_range':
+                return redirect('core:spotify_report_range', pk=profile.pk)
 
     return render(request, 'core/reports.html', {"reportsForm": reportsForm})
 
@@ -893,9 +897,9 @@ def onThisDayReport(request,pk):
     date=None
     trends = ""
     map = ''
-    
+    print(dateForm)
     if request.method == "POST":
-        dateForm = OnThisDayForm(request.user, request.POST,)
+        dateForm = OnThisDayForm(request.user, request.POST)
         
         if dateForm.is_valid():
             date = dateForm.cleaned_data['memory_date']
@@ -992,6 +996,7 @@ def spotify_report(request, pk):
     token_info = auth_manager.get_cached_token()
     print(token_info)
 
+
     if request.method == "POST":
 
         dateForm = OnThisDayForm(request.user, request.POST)
@@ -1008,8 +1013,8 @@ def spotify_report(request, pk):
                 song = Song.objects.filter(entry=entry).exclude(is_archived=True).first()
                 
                 if song:
-                    songs.append(song.source_url)
-
+                    if not song.is_album:
+                        songs.append(song.source_url)
     if songs:
             #print(sp.me())
         user_id = sp.me()['id']
@@ -1077,3 +1082,151 @@ def spotify_callback(request):
         token = auth_manager.get_access_token(code=code)
 
     return redirect('core:dashboard')
+
+def memory_date_range(request,pk):
+   
+    profile = Profile.objects.get(pk=pk)
+    dateForm = OnThisDayRangeForm(user=request.user)
+    entries = None
+    albums = []
+    date=None
+    start_date=None
+    end_date = None
+    trends = ""
+    map = ''
+    if request.method == "POST":
+        dateForm = OnThisDayRangeForm(request.user, request.POST)
+        
+        if dateForm.is_valid():
+            start_date = dateForm.cleaned_data['start_date']
+            date=start_date
+            end_date = dateForm.cleaned_data['end_date']
+            journals = list(dateForm.cleaned_data['journals'])
+            if journals:
+                entries = Entry.objects.filter(journal__user=request.user).filter(journal__in=journals).filter(created_at__range=[start_date, end_date]).order_by('-created_at')
+            else:
+                entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__range=[start_date, end_date]).order_by('-created_at')
+            count = 1
+            print("entries")
+
+            for entry in entries:
+                images = Image.objects.filter(entry=entry)
+                videos = Video.objects.filter(entry=entry)
+                place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
+                trends = trends + " " + entry.body
+
+                if images:
+                    for indx,image in enumerate(images):
+                        if indx == 0:
+                            albums.append(json.dumps({"src":image.image.url,
+                                            "title": entry.title,
+                                            "ID": count,	
+                                            "kind":'album'}))
+                        albums.append(json.dumps({
+                            "src": image.image.url,
+                        }))
+
+                    if videos:
+                        for video in videos:
+                            albums.append(json.dumps({
+                                "src": video.source_url, 
+                                "albumID": count
+                            }))
+                    
+                elif videos:
+                    for indx, video in enumerate(videos):
+                        if indx==0:
+                            albums.append(json.dumps({"src":video.source_url,
+                                                    "title": entry.title,
+                                                    "ID": count,	
+                                                    "kind":'album'}))
+                        albums.append(json.dumps({
+                            "src": video.source_url, 
+                            "albumID": count
+                        }))      
+                
+                if place:
+                    if not map:
+                        map = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red'
+                    map = map + f'|{place.latitude},{place.longitude}'
+                
+                count +=1
+
+    if trends:
+        new = trends.translate(str.maketrans('', '', string.punctuation)).strip()
+        new = new.replace('\n', ' ').replace('\r', ' ')
+        trends = new 
+
+
+    context={
+    "dateForm": dateForm,
+    "entries":entries,
+    "albums" : albums,
+    "date":  f'{start_date.strftime("%B %d %Y")}-{end_date.strftime("%B %d %Y")}' if date else date,
+    "frame_key":settings.IFRAME_KEY,
+    "trends": trends,
+    "map": map
+    }
+
+    return render(request, 'core/on_this_date_range.html', context)
+
+def playlist_date_range(request,pk):
+    profile = Profile.objects.get(pk=pk)
+    dateForm = OnThisDayRangeForm(request.user)
+    entries = None
+    date=None
+    songs = []
+    playlist_url = None
+    token_info = None
+
+    
+    auth_manager = spotify_auth()
+    sp = spotipy.Spotify(auth_manager=auth_manager)
+    token_info = auth_manager.get_cached_token()
+    print(token_info)
+
+
+    if request.method == "POST":
+
+        dateForm = OnThisDayRangeForm(request.user, request.POST)
+        if dateForm.is_valid():
+            start_date = dateForm.cleaned_data['start_date']
+            date=start_date
+            end_date = dateForm.cleaned_data['end_date']
+            journals = list(dateForm.cleaned_data['journals'])
+            if journals:
+                entries = Entry.objects.filter(journal__user=request.user).filter(journal__in=journals).filter(created_at__range=[start_date, end_date]).order_by('-created_at')
+            else:
+                entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__range=[start_date, end_date]).order_by('-created_at')
+            count = 1
+
+            for entry in entries:
+                song = Song.objects.filter(entry=entry).exclude(is_archived=True).exclude(is_album=True).first()
+                
+                if song:
+                    songs.append(song.source_url)
+
+    if songs:
+            #print(sp.me())
+        user_id = sp.me()['id']
+        playlist = sp.user_playlist_create(user_id, name=f'{request.user.username} {start_date.strftime("%B %d %Y")}-{end_date.strftime("%B %d %Y")} Playlist')
+        playlist_id = playlist['id']
+
+        sp.playlist_add_items(playlist_id, songs)
+        playlist_url = playlist["external_urls"]["spotify"]
+
+            
+    context={
+    "dateForm": dateForm, 
+    "entries":entries,
+    "date":  f'{start_date.strftime("%B %d %Y")}-{end_date.strftime("%B %d %Y")}' if date else date,
+    "songs" : songs,
+    "token-info":token_info, 
+    "frame_key":settings.IFRAME_KEY,
+    "playlist_url": playlist_url
+    }
+
+    return render(request, 'core/playlist_range.html', context)
+
+def playlist_by_journal():
+    pass

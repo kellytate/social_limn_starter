@@ -33,14 +33,14 @@
     <section class="container">
         {% if place %}
             <img src="{{placeMap}}">
-            <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Entry Location</button></a>
+            <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Memory Location</button></a>
             <form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
                 {% csrf_token %}
-                <button name="archive" value="archive">Remove Place From Entry</button>
+                <button name="archive" value="archive">Remove Place From Memory</button>
             </form>
         {% else %}
             <div class="mb-3">
-                <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Entry Location</button></a>
+                <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Memory Location</button></a>
             </div>
         {% endif %}
     </section>
@@ -49,7 +49,7 @@
             <img src="{{image.image.url}}">
             <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
                 {% csrf_token %}
-                <button name="archive" value="archive">Remove Image From Entry</button>
+                <button name="archive" value="archive">Remove Image From Memory</button>
             </form>
         {% endfor %}
     </section>
@@ -63,15 +63,15 @@
         </div>
         <form action="{% url 'core:archive_song' pk=entrySong.id ok=entry.pk %}" method="POST">
             {% csrf_token %}
-            <button name="archive" value="archive">Remove Song From Entry</button>
+            <button name="archive" value="archive">Remove From Memory</button>
         </form>
 {% endwith %}
 <div class="mb-3">
-    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Entry Song</button></a>
+    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Music</button></a>
 </div>
 {% else %}
 <div class="mb-3">
-    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Entry Song</button></a>
+    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Music to Memory</button></a>
 </div>
 {% endif %}
 
@@ -102,7 +102,7 @@
         </div>
         <form action="{% url 'core:archive_video' pk=video.pk ok=entry.pk %}" method="POST">
             {% csrf_token %}
-            <button name="archive" value="archive">Remove Video From Entry</button>
+            <button name="archive" value="archive">Remove Video From Memory</button>
         </form>
         {% endfor %}
     {% endif %}

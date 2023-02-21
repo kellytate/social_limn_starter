@@ -5,12 +5,16 @@
 <main class="container">
   <div class="row">
     <div class="col">
-      <h2>Select a date</h2>
-      <div class="row">
+     <div class="row">
       <form action="" method="POST">
           {% csrf_token %}
           <div>
-            {{dateForm.memory_date}}
+            <h4>Start Date:</h4>
+            {{dateForm.start_date}}
+          </div>
+          <div>
+            <h4>End Date:</h4>
+            {{dateForm.end_date}}
           </div>
           <div>
             <h5>Select Journal</h5>
@@ -38,13 +42,14 @@
         <img class="img-fluid" src="{{map}}">
     {% endif %}
     </div>
-    {}
+    {%if placeMap%}
     <div class="row justify-content-center">
       <h4>Themes for {{date}}</h4>
       <div class="col lightOverlay justify-content-start">
         <div class="justify-self-center align-self-center"id="chartdiv"></div>
       </div>
     </div>
+    {%endif%}
     </div>
     {% if albums  %}
     <div class="row">

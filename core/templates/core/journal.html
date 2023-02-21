@@ -23,7 +23,7 @@
                     <div class="d-flex">
                         <form action="{% url 'core:journal_likes' pk=journal.pk %}">
                             {% csrf_token %}
-                            <button type="submit">Appreciate Entry</button>
+                            <button type="submit">Appreciate</button>
                         </form>
                         <form action="{% url 'core:journal_unlike' pk=journal.pk %}">
                             {% csrf_token %}
@@ -49,7 +49,7 @@
             <div class="d-flex">
                 <form action="{% url 'core:journal_likes' pk=journal.pk %}">
                     {% csrf_token %}
-                    <button type="submit">Appreciate Entry</button>
+                    <button type="submit">Appreciate</button>
                 </form>
                 <form action="{% url 'core:journal_unlike' pk=journal.pk %}">
                     {% csrf_token %}

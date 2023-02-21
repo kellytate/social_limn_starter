@@ -35,7 +35,7 @@
     <form action="{% url 'core:add_song' pk=entry.pk %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="title" value="{{item.name}}">
-        <button value="{{item.external_urls.spotify}}" name="source">Add Song To Entry</button>
+        <button value="{{item.external_urls.spotify}}" name="source">Add Music To Memory</button>
     </form>
     {%empty%}
     <h2>No results</h2>

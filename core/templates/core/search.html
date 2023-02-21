@@ -12,9 +12,9 @@
     </section>
     <section>
         <form action="{% url 'core:search_user_entries' %}" method="GET" value="{{request.GET.a}}">
-            <label>Search Your Entries</label>
-            <input type="text" name="a" value="{{request.GET.a}}" placeholder="Search Your Entries">
-            <input type="submit" name="submit" value="User Entry Search"/>
+            <label>Search Your Memories</label>
+            <input type="text" name="a" value="{{request.GET.a}}" placeholder="Search Your Memories">
+            <input type="submit" name="submit" value="User Memory Search"/>
         </form>
     </section>
     <section>
@@ -26,9 +26,9 @@
     </section>
     <section>
         <form action="{% url 'core:search_all_entries' %}" method="GET" value="{{request.GET.aa}}">
-            <label>Search All Entries</label>
-            <input type="text" name="aa" value="{{request.GET.aa}}" placeholder="Search All Entries">
-            <input type="submit" name="submit" value="Entry Search"/>
+            <label>Search All Memories</label>
+            <input type="text" name="aa" value="{{request.GET.aa}}" placeholder="Search All Memories">
+            <input type="submit" name="submit" value="Memory Search"/>
         </form>
     </section>
     <section>
@@ -52,7 +52,7 @@
             {% endfor %}
         {% endif %}
     {% endif %}
-    {% if submitButton == 'User Entry Search' %}
+    {% if submitButton == 'User Memory Search' %}
         {% if results %}
             <h2>Results for {{ request.GET.a}}</h2>
             {% for result in results %}
@@ -84,7 +84,7 @@
             {% endfor %}
         {% endif %}
     {% endif %}
-    {% if submitButton == 'Entry Search' %}
+    {% if submitButton == 'Memory Search' %}
         {% if results %}
             <h2>Results for {{ request.GET.a}}</h2>
             {% for result in results %}

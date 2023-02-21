@@ -4,17 +4,22 @@
 
 <main class="container">
     <div class="row">
-        <h2>Select a date</h2>
+        <h2>Select a Date Range</h2>
         <div class="row">
         <form action="" method="POST">
             {% csrf_token %}
             <div>
-              {{dateForm.memory_date}}
-            </div>
-            <div>
-              <h5>Select Journal</h5>
-              {{dateForm.journals}}
-            </div>
+                <h4>Start Date:</h4>
+                {{dateForm.start_date}}
+              </div>
+              <div>
+                <h4>End Date:</h4>
+                {{dateForm.end_date}}
+              </div>
+              <div>
+                <h5>Select Journal</h5>
+                {{dateForm.journals}}
+              </div>
             <button value="submit" type="submit">View Memories</button>
         </form>
       </div>

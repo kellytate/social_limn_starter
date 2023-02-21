@@ -212,6 +212,8 @@ class PlaceForm(forms.ModelForm):
 REPORT_TYPES = (
     ('onThisDay', 'Memories for this Day',),
     ('spotify', 'Playlist for this Day',),
+    ('spotify_range', 'Create a playlist for Date Range',),
+    ('onThisDayRange', 'View Memories for Date Range',),
 )
 class ReportsForm(forms.Form):
     search_type = forms.ChoiceField(label='Report Type',required=True,
@@ -220,16 +222,39 @@ class ReportsForm(forms.Form):
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+class JournalMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return "%s" % obj.title
+
+    
 class OnThisDayForm(forms.Form):
+    def label_from_instance(self, obj):
+        return f'{obj.title}'
+
     memory_date = forms.DateField(widget=DateInput)
     journals = forms.ModelMultipleChoiceField(
-        widget = forms.CheckboxSelectMultiple,
+        widget = forms.CheckboxSelectMultiple(),
         queryset = None
     )
     def __init__(self,user, *args, **kwargs): # Correctly obtains slug from url
-        super().__init__(*args, **kwargs) 
+        super(OnThisDayForm,self).__init__(*args, **kwargs) 
+        self.fields['journals'].label_from_instance = self.label_from_instance
         self.fields['journals'].queryset = Journal.objects.filter(user=user).exclude(is_archived=True)
 
+class OnThisDayRangeForm(forms.Form):
+    def label_from_instance(self, obj):
+        return f'{obj.title}'
+
+    start_date = forms.DateField(widget=DateInput)
+    end_date = forms.DateField(widget=DateInput)
+    journals = forms.ModelMultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple(),
+        queryset = None
+    )
+    def __init__(self,user, *args, **kwargs): # Correctly obtains slug from url
+        super(OnThisDayRangeForm,self).__init__(*args, **kwargs) 
+        self.fields['journals'].label_from_instance = self.label_from_instance
+        self.fields['journals'].queryset = Journal.objects.filter(user=user).exclude(is_archived=True)
 
 class JournalSelectorForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
