@@ -4,6 +4,7 @@ html, body {
     margin:0px;
 }
 
+
 body {
     background-color: #262523;
     color: #d3d9d9;
@@ -54,6 +55,10 @@ button{
     background-position: center;
     background-repeat: no-repeat;
 }
+.map{
+    height: 200px;
+    width: auto;
+}
 
 .contact{
     background-image: url('https://images.unsplash.com/photo-1531564701487-f238224b7ce3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80');
@@ -71,12 +76,24 @@ button{
     margin: auto;
     padding-bottom: 10px;
 }
+.topspace{
+    padding-top: 10px;
+}
+.top_spacer{
+    margin-top: 10px;
+}
 .darkOverlay{
     background-color: rgba(38, 37, 35, 0.75);
 }
 
 .darkOverlay h3{
     margin: 20px;
+}
+.makeSpace{
+    margin: 20vh 0; 
+}
+.sideDisplay{
+    max-height: 75vh;
 }
 
 .col-md img{
@@ -145,22 +162,6 @@ a:hover, .navbar a:hover, .footer a:hover {
     background-color: #262523;
     color: #92A7A0;
 }
-
-/* .card {
-    background-color: #5A5943;
-} */
-
-
-/* button {
-    background-color: black;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    
-} */
 
 #wrapper {
     flex: 1;
