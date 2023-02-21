@@ -234,7 +234,7 @@ def journal_profile(request,pk):
             return redirect("core:journal_profile", pk=journal.pk)
 
     commentForm=CommentForm()
-    entries = filter_function(Journal,{'journal':journal},exclude={'is_archived':True},order_by='-created_at')
+    entries = filter_function(Entry,{'journal':journal},exclude={'is_archived':True},order_by='-created_at')
     likes= filter_function(Like,{'journal':journal},{"like":False})
     comments = filter_function(Comment,{'journal':journal},order_by='-created_at')
 
@@ -252,7 +252,7 @@ def journal_dashboard(request,pk):
     if request.user != journal.user:
         return(redirect("core:journal_profile", pk=journal.pk))
 
-    entries = filter_function(Journal,{'journal':journal},exclude={'is_archived':True},order_by='-created_at')
+    entries = filter_function(Entry,{'journal':journal},exclude={'is_archived':True},order_by='-created_at')
     likes= filter_function(Like,{'journal':journal},{"like":False})
 
     cal= []
@@ -1069,3 +1069,11 @@ def journal_selector(request):
 
     return render(request, 'core/journal_selector.html', context)
 
+def spotify_callback(request):
+     
+    if request.GET.get("code"):
+        auth_manager = spotify_auth()
+        code = request.GET.get("code", "")
+        token = auth_manager.get_access_token(code=code)
+
+    return redirect('core:dashboard')

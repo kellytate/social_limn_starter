@@ -66,4 +66,5 @@ urlpatterns = [
     path('spotify_login', views.spotify_login, name="spotify_login"),
     path('profiles/<int:pk>/reports/playlist', views.spotify_report, name='spotify_report'),
     path('journal_selector/', views.journal_selector, name='journal_selector'),
+    path('callback/', views.spotify_callback, name='spotify_callback'),
     ]
