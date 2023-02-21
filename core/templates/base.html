@@ -1,37 +1,50 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://res.cloudinary.com/limn/image/upload/v1676650217/media/logo/limn-light-favicon.png" type="image/png">
-    <!-- Include the Bulma CSS framework for styling -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"> -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-    <script src="//cdn.amcharts.com/lib/5/index.js"></script>
-<script src="//cdn.amcharts.com/lib/5/wc.js"></script>
-<script src="//cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/css/nanogallery2.min.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/jquery.nanogallery2.min.js"></script>
-    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Open+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <title>Limn</title>
+  <head>
+    {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="https://res.cloudinary.com/limn/image/upload/v1676650217/media/logo/limn-light-favicon.png"
+      type="image/png"
+    />
 
-</head>
-<body>
-    <div id="wrapper">
-        {% include 'navbar.html'%}
-        {% block content %}
-        {% endblock %}
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"
+    ></script>
+    <script src="//cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="//cdn.amcharts.com/lib/5/wc.js"></script>
+    <script src="//cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/css/nanogallery2.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/nanogallery2@3/dist/jquery.nanogallery2.min.js"
+    ></script>
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Open+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>Limn</title>
+  </head>
+  <body class="bgBackground">
+    <div class="darkerOverlay">
+        <div id="wrapper">
+          {% include 'navbar.html'%} {% block content %} {% endblock %}
+        </div>
+        {% include 'footer.html' %}
+      </div>
     </div>
-    {% include 'footer.html' %}
-    
     <script src="{% static 'js/index.js' %}"></script>
-</body>
+  </body>
 </html>

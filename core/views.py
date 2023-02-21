@@ -6,13 +6,13 @@ from django.contrib.auth import logout as auth_logout, get_user_model
 from django.views.decorators.http import require_http_methods
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm, JournalSelectorForm,OnThisDayRangeForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm,OnThisDayRangeForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Q
@@ -23,7 +23,7 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import Profile, Journal, Entry, Image, Comment, Like, Song, Video, Place
 from rest_framework.decorators import api_view, renderer_classes
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+# from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from cloudinary.forms import cl_init_js_callbacks
 
 ## helper functions here.
@@ -61,9 +61,7 @@ def filter_function(cls, filter_dict, exclude=None, order_by=None):
 def gallery_json(objects, dict, altDict=None, albums=None, check=None):
     jsons = []
     if objects:
-
         if albums: 
-
             for obj in objects:
                 json_ready = {}
                 if len(jsons)== 0 & check==0:
@@ -102,10 +100,6 @@ def gallery_json(objects, dict, altDict=None, albums=None, check=None):
                 jsons.append(json.dumps(json_ready))
 
     return jsons
-                    
-
-        
-
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -115,25 +109,23 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
-## all Front end views here. 
+# Front end views. 
 
 def home(request):
 
     return render(request, 'sitefront/index.html')
 
+
 def signup(request):
 
     if request.method == "POST":
-
         form = RegisterUserForm(request.POST)
     
         if form.is_valid():
-
             form.save()
             return redirect('login')
+    
     else:
-
         form = RegisterUserForm()
 
     return render(request, 'registration/signup.html', {'form':form})
@@ -167,14 +159,14 @@ def contact(request):
     form = ContactForm()
     return render(request, 'sitefront/contact.html', {'form':form})
 
-#profile and user landing pages here
+# Profile and User landing pages.
 
 @login_required(login_url='login')
 def dashboard(request):
 
     entries = Entry.objects.filter(
-        journal__user__profile__follows__in=[request.user.id]
-).exclude(is_archived=True).order_by('-created_at')
+        journal__user__profile__follows__in=
+            [request.user.id]).exclude(is_archived=True).order_by('-created_at')
     
     if request.GET.get("code"):
         auth_manager = spotify_auth()
@@ -187,12 +179,15 @@ def dashboard(request):
             new_journal = easy_form(form, dict={'user':request.user})
             return redirect("core:dashboard")
         
-    form=JournalForm()
+    form = JournalForm()
     frame_key = settings.IFRAME_KEY
-    journals =filter_function(Journal,{'user':request.user}, {'is_archived': True})
-    return render(request, 'dashboard.html', {'form':form, 'entries':entries, 'journals':journals, "frame_key": frame_key})
+    journals = filter_function(Journal, {'user':request.user}, 
+            {'is_archived': True})
+    return render(request, 'dashboard.html', 
+            {'form':form, 'entries':entries, 'journals':journals, 'frame_key':frame_key})
 
-#edit user and profile
+# Edit user and profile pages.
+
 @login_required(login_url='login')
 def update_user(request):
 
@@ -205,13 +200,19 @@ def update_user(request):
             profile_form.save()
             messages.success(request, 'Your profile is updated successfully')
             return redirect(to='core:dashboard')
+    
     else:
         user_form=UpdateUserForm(instance=request.user)
         profile_form=UpdateProfileForm(instance=request.user.profile)
-    
-    return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form,})
 
-#Arcive account also found on the update_profile page. 
+    context = {
+        'user_form':user_form, 
+        'profile_form':profile_form,
+    }
+    
+    return render(request, 'core/update_profile.html', context)
+
+# Archive account also found on the update_profile page. 
 @login_required
 def remove_account(request):
     user_pk = request.user.pk
@@ -219,11 +220,11 @@ def remove_account(request):
     User = get_user_model()
     User.objects.filter(pk=user_pk).update(is_active=False)
     return redirect(to='core:dashboard')
-    # return Response({"Success": "User deactivated"}, status=status.HTTP_200_OK)
 
-#this will be the location for Journal Work 
+# Journal 
 @login_required(login_url='login')
 def journal_profile(request,pk):
+    
     journal = Journal.objects.get(pk=pk)
     
     if request.method=='POST':
@@ -243,10 +244,21 @@ def journal_profile(request,pk):
         count = Like.objects.filter(comment=comment).exclude(like = False).count()
         likeCounts[comment.id] = count
 
-    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'entries': entries})
-#journal Landing page 
+    context = {
+        'journal': journal, 
+        'commentForm':commentForm, 
+        'comments':comments, 
+        'likes':likes, 
+        'likeCounts':likeCounts, 
+        'entries': entries,
+    }
+
+    return render(request, 'core/journal.html', context)
+
+# Journal landing page.
 @login_required(login_url='login')
 def journal_dashboard(request,pk):
+
     journal = Journal.objects.get(pk=pk)
     
     if request.user != journal.user:
@@ -262,14 +274,22 @@ def journal_dashboard(request,pk):
         'start':entry.created_at.strftime('%Y-%m-%d'),
         'url': entry.get_html_url})
 
-    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes, 'cal':cal})
+    context = {
+        'journal': journal, 
+        'entries': entries, 
+        'likes':likes, 
+        'cal':cal,
+    }
+
+    return render(request, 'core/journal_dashboard.html', context)
 
 
-#This will be the locatin for Entry Work
+# Entry
 
-#entry create:
+# Entry Creation.
 @login_required(login_url='login')
 def create_entry(request,pk):
+
     journal= Journal.objects.get(pk=pk)
 
     if request.method == 'POST':
@@ -302,16 +322,22 @@ def create_entry(request,pk):
         
     entryForm = EntryForm()
     videoForm = VideoForm()
-    return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm, "videoForm":videoForm})
 
-#view entry 
+    context = {
+        'journal': journal, 
+        'entryForm': entryForm, 
+        'videoForm': videoForm,
+    }
+    return render(request, 'core/create_entry.html', context)
+
+# Entry landing page.
 def entry_landing(request, pk):
+
     entry = Entry.objects.get(pk=pk)
     items = []
     likeCounts = {}
     frame_key = settings.IFRAME_KEY
     placeMap=None
-
 
     if request.method=='POST':
         commentForm=CommentForm(request.POST)
@@ -336,13 +362,26 @@ def entry_landing(request, pk):
     for comment in comments:
         likeCounts[comment.id] = filter_function(Like, {'comment':comment}, exclude={'like':False}).count()
     
-    return render(request, 'core/entry_landing.html', 
-        {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 
-        'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos, 
-        "place":place, 'placeMap':placeMap, "items":items})
+    context = {
+        'entry': entry, 
+        'commentForm': commentForm, 
+        'comments': comments, 
+        'likes': likes, 
+        'likeCounts': likeCounts, 
+        'images': images, 
+        'song': song, 
+        'frame_key': frame_key, 
+        'videos': videos, 
+        'place': place, 
+        'placeMap': placeMap, 
+        'items': items,
+    }
 
-#Comment stuff goes here:
+    return render(request, 'core/entry_landing.html', context)
+
+# Comment
 def edit_comment(request, pk):
+
     comment=Comment.objects.get(pk=pk)
 
     if request.user != comment.user:
@@ -350,6 +389,7 @@ def edit_comment(request, pk):
 
     if request.method == 'POST':
         commentForm=CommentForm(request.POST, instance=comment)
+        
         if commentForm.is_valid():
             commentForm.save()
             
@@ -360,11 +400,16 @@ def edit_comment(request, pk):
                 return redirect('core:entry_landing', pk=comment.entry.pk)
     
             commentForm = CommentForm(instance=comment)
-    return render(request, 'core/edit_comment.html', {'commentForm':commentForm, 'comment': comment})
 
-#place functionality
+    context = {
+        'commentForm': commentForm,
+        'comment': comment,
+    }
+    return render(request, 'core/edit_comment.html', context)
 
+# Place
 def add_place(request,pk):
+
     entry = Entry.objects.get(pk=pk)
     places = filter_function(Place,{'entry':entry}, exclude={'is_archived':True})
     
@@ -380,9 +425,10 @@ def add_place(request,pk):
         new_place.longitude = request.POST.get('lon')
         new_place.latitude = request.POST.get('lat')
         new_place.save()
+
     return redirect('core:entry_landing', pk=entry.pk)
 
-#searching 
+# Search
 def location_search(request, pk):
     
     results = None
@@ -409,9 +455,6 @@ def location_search(request, pk):
             response = requests.get(path, params=query_params)
             response_content = response.json()
             results=response_content
-            # Deal with any strange responses from Spotify
-            #
-            print(response_content)
         
             result_count = len(response_content)
             paginator = Paginator(
@@ -428,8 +471,6 @@ def location_search(request, pk):
     else:
         form = LocationForm()
 
-    #player =requests.get('iframe.ly/api/iframely?url=https://open.spotify.com/album/4E4NBueuClmsr8tVkZgV0K&api_key=7c27dc4b622df14eeffcf7')
-
     context = {
         'search_results': results,
         'form': form,
@@ -439,7 +480,7 @@ def location_search(request, pk):
     return render(request, 'core/location_search.html', context)
 
 
-#Search
+# Profile
 
 # Displays all available user (profiles), excluding the logged-in user
 @login_required(login_url='login')
@@ -471,9 +512,11 @@ def profile(request, pk):
         current_user.save()
     return render(request, 'core/profile.html', {'profile': profile, 'journals': journals})
 
-#journal profile and dashboard views
+
+# Journal updates
 
 def update_journal(request, pk):
+
     journal = Journal.objects.get(pk=pk)
 
     if request.user != journal.user:
@@ -484,11 +527,15 @@ def update_journal(request, pk):
         if form.is_valid():
             form.save()
             return redirect("core:dashboard")
+
     form=JournalForm(instance=journal)
+
     return render(request, 'core/update_journal.html', {'form':form})
 
 def delete_journal(request, pk):
+
     journal = Journal.objects.get(pk=pk)
+
     if request.method=="POST":
         journal.is_archived = True
         journal.save()
@@ -498,27 +545,27 @@ def delete_journal(request, pk):
     
         return redirect('core:dashboard')
 
-
-
-
-
-#update entry
+# Entry update
 def update_entry(request, pk):
     entry = Entry.objects.get(pk=pk)
 
     if request.user != entry.journal.user:
         return(redirect("core:entry_landing", pk=entry.pk))
+
     if request.method == 'POST':
         entryForm = EntryForm(request.POST, request.FILES, instance=entry)
+        
         if entryForm.is_valid():
             new_entry=entryForm.save()
             files = request.FILES.getlist('image')
+            
             for f in files:
                 img = Image(image=f)
                 img.save()
                 new_entry.image.add(img)
                 new_entry.save()
             return redirect(to='core:entry_landing', pk=entry.pk)
+
     entryForm = EntryForm(instance=entry)
     song=Song.objects.filter(entry=entry).exclude(is_archived=True)
     frame_key = settings.IFRAME_KEY
@@ -527,30 +574,41 @@ def update_entry(request, pk):
     videoForm=VideoForm()
     place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
     placeMap=None
+
     if place:
         placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{place.latitude},{place.longitude}'
-    return render(request, 'core/update_entry.html', {'entryForm': entryForm, 'entry':entry, 'images':images, 'song':song, "frame_key":frame_key, "videos":videos, "videoForm":videoForm, "place":place, "placeMap":placeMap})
+    
+    context = {
+        'entryForm': entryForm, 
+        'entry': entry, 
+        'images': images, 
+        'song': song, 
+        'frame_key': frame_key, 
+        'videos': videos, 
+        'videoForm': videoForm, 
+        'place': place, 
+        'placeMap': placeMap
+    }
+    
+    return render(request, 'core/update_entry.html', context)
 
-## add a delete video button.
+# Video
+
 def another_video(request, pk):
+
     if request.method=="POST":
         videoForm = VideoForm(request.POST)
+
         if videoForm.is_valid():
             video = videoForm.save(commit=False)
             entry = Entry.objects.get(pk=pk)
             video.entry=entry
             video.save()
             entry.save()
-    return redirect('core:update_entry', pk=pk)
-#delete image:
-def delete_image(request, pk,ok):
-    image = Image.objects.get(pk=pk)
-    if request.method=="POST":
-        image.is_archived = True
-        image.save()
-    return redirect('core:update_entry', pk=ok)
 
-#video
+    return redirect('core:update_entry', pk=pk)
+
+
 def delete_video(request, pk,ok):
     video = Video.objects.get(pk=pk)
     if request.method=="POST":
@@ -558,7 +616,7 @@ def delete_video(request, pk,ok):
         video.save()
     return redirect('core:update_entry', pk=ok)
 
-#delete place:
+
 def delete_song(request, pk,ok):
     song = Song.objects.get(pk=pk)
     if request.method=="POST":
@@ -566,7 +624,15 @@ def delete_song(request, pk,ok):
         song.save()
     return redirect('core:update_entry', pk=ok)
 
-#delete image:
+
+def delete_image(request, pk,ok):
+    image = Image.objects.get(pk=pk)
+    if request.method=="POST":
+        image.is_archived = True
+        image.save()
+    return redirect('core:update_entry', pk=ok)
+
+
 def delete_place(request, pk,ok):
     place = Place.objects.get(pk=pk)
     if request.method=="POST":
@@ -574,7 +640,7 @@ def delete_place(request, pk,ok):
         place.save()
     return redirect('core:update_entry', pk=ok)
 
-#delete entry
+
 def delete_entry(request, pk):
     entry = Entry.objects.get(pk=pk)
     if request.method=="POST":
@@ -583,10 +649,9 @@ def delete_entry(request, pk):
     
         return redirect('core:journal_dashboard', pk=entry.journal.pk)
 
-#edit comment
-@login_required(login_url='login')
 
-#delete Comment:
+# Comments
+@login_required(login_url='login')
 def delete_comment(request, pk):
     comment = Comment.objects.get(pk=pk)
     if request.method=="POST":
@@ -596,6 +661,7 @@ def delete_comment(request, pk):
                 return redirect('core:journal_profile', pk=comment.journal.pk)
         else:
                 return redirect('core:entry_landing', pk=comment.entry.pk)
+
 
 def reply_comment(request, pk):
     parent_comment = Comment.objects.get(pk=pk)
@@ -628,6 +694,7 @@ def image_upload(request):
         form = ImageForm()
     return render(request, 'core/image_upload.html', {'form': form})
 
+
 @login_required(login_url='login')
 def entry_likes(request,pk):
     entry = Entry.objects.get(pk=pk)
@@ -642,6 +709,7 @@ def entry_likes(request,pk):
         new_like.save()
     return redirect('core:entry_landing', pk=entry.pk)
 
+
 def entry_unlike(request,pk):
     entry = Entry.objects.get(pk=pk)
     for islike in entry.entry_likes.all():
@@ -649,6 +717,7 @@ def entry_unlike(request,pk):
             islike.like= False
             islike.save()
     return redirect('core:entry_profile', pk=entry.pk)
+
 
 @login_required(login_url='login')
 def journal_likes(request,pk):
@@ -664,6 +733,7 @@ def journal_likes(request,pk):
         new_like.save()
     return redirect('core:journal_profile', pk=journal.pk)
 
+
 def journal_unlike(request,pk):
     journal = Journal.objects.get(pk=pk)
     for islike in journal.journal_likes.all():
@@ -671,6 +741,7 @@ def journal_unlike(request,pk):
             islike.like= False
             islike.save()
     return redirect('core:journal_profile', pk=journal.pk)  
+
 
 @login_required(login_url='login')
 def comment_likes(request,pk):
@@ -688,6 +759,7 @@ def comment_likes(request,pk):
         return redirect('core:entry_landing', pk=comment.entry.pk)
     return redirect('core:journal_profile', pk=comment.journal.pk)
 
+
 def comment_unlike(request,pk):
     comment = Comment.objects.get(pk=pk)
     for islike in comment.comment_likes.all():
@@ -698,8 +770,10 @@ def comment_unlike(request,pk):
         return redirect('core:entry_landing', pk=comment.entry.pk) 
     return redirect('core:journal_profile', pk=comment.journal.pk)
 
+
 def search_page(request):
     return render(request, 'core/search.html')
+
 
 def searchUsers(request):
     if request.method=='GET':
@@ -714,6 +788,7 @@ def searchUsers(request):
 
     return render(request, 'core/search.html')
 
+
 def searchUserEntries(request):
     if request.method=='GET':
         query=request.GET.get('a')
@@ -727,6 +802,7 @@ def searchUserEntries(request):
 
     return render(request, 'core/search.html')
 
+
 def searchUserJournals(request):
     if request.method=='GET':
         query=request.GET.get('j')
@@ -737,7 +813,9 @@ def searchUserJournals(request):
             checking = Q(title__icontains=query) | Q(description__icontains=query)
             results=Journal.objects.filter(user=request.user).filter(checking)
             return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
+    
     return render(request, 'core/search.html')
+
 
 def searchAllEntries(request):
     if request.method=='GET':
@@ -752,6 +830,7 @@ def searchAllEntries(request):
 
     return render(request, 'core/search.html')
 
+
 def searchAllJournals(request):
     if request.method=='GET':
         query=request.GET.get('jj')
@@ -763,6 +842,7 @@ def searchAllJournals(request):
             results=Journal.objects.filter(checking)
             return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
     return render(request, 'core/search.html')
+
 
 RESULT_KEY_MAP = (
     ('artist', 'artists',),
@@ -781,6 +861,7 @@ def search_spotify(request, pk):
     spotipyid = settings.SPOTIPY_CLIENT_ID
     spotipySecret = settings.SPOTIPY_CLIENT_SECRET
     my_creds = SpotifyClientCredentials(client_id=spotipyid, client_secret=spotipySecret)
+    
     if not request.method == 'POST' and 'page' in request.GET:
         if 'search-post' in request.session:
             request.POST = request.session['search-post']
@@ -798,7 +879,7 @@ def search_spotify(request, pk):
             response_content = spotify.search(q=search_string, type=search_type, limit=20)
             # Deal with any strange responses from Spotify
             #
-            print(response_content)
+
             result_key = dict(RESULT_KEY_MAP)[search_type]
             search_results=[]
             if result_key == 'artist':
@@ -828,9 +909,6 @@ def search_spotify(request, pk):
     else:
         form = SpotifySearchForm()
 
-    
-    #player =requests.get('iframe.ly/api/iframely?url=https://open.spotify.com/album/4E4NBueuClmsr8tVkZgV0K&api_key=7c27dc4b622df14eeffcf7')
-
     context = {
         'search_results': results,
         'form': form,
@@ -839,6 +917,7 @@ def search_spotify(request, pk):
         'entry': Entry.objects.get(pk=pk)
     }
     return render(request, 'core/spotify_search.html', context)
+
 
 @login_required(login_url='login')
 def add_song(request,pk):
@@ -856,6 +935,7 @@ def add_song(request,pk):
         new_song.save()
     return redirect('core:entry_landing', pk=entry.pk)
 
+
 def upload(request):
     context = dict(backend_form = ImageForm())
 
@@ -867,9 +947,6 @@ def upload(request):
 
     return render(request, 'core/upload.html', context)
 
-
-# def image(request, pk):
-#     image = Image.objects.get(pk=pk)
 
 def reports(request, pk):
     profile = Profile.objects.get(pk=pk)
@@ -888,6 +965,7 @@ def reports(request, pk):
 
     return render(request, 'core/reports.html', {"reportsForm": reportsForm})
 
+
 def onThisDayReport(request,pk):
 
     profile = Profile.objects.get(pk=pk)
@@ -897,7 +975,7 @@ def onThisDayReport(request,pk):
     date=None
     trends = ""
     map = ''
-    print(dateForm)
+    
     if request.method == "POST":
         dateForm = OnThisDayForm(request.user, request.POST)
         
@@ -958,7 +1036,6 @@ def onThisDayReport(request,pk):
         new = trends.translate(str.maketrans('', '', string.punctuation)).strip()
         new = new.replace('\n', ' ').replace('\r', ' ')
         trends = new 
-
 
     context={
     "dateForm": dateForm,
@@ -980,6 +1057,7 @@ def spotify_login(request):
     redirect_url = auth_manager.get_authorize_url() # Note: You should parse this somehow. It may not be in a pretty format.
     return redirect(redirect_url)
 
+
 def spotify_report(request, pk):
     profile = Profile.objects.get(pk=pk)
     dateForm = OnThisDayForm(request.user)
@@ -994,8 +1072,6 @@ def spotify_report(request, pk):
                                 scope=scope)
     sp = spotipy.Spotify(auth_manager=auth_manager)
     token_info = auth_manager.get_cached_token()
-    print(token_info)
-
 
     if request.method == "POST":
 
@@ -1016,15 +1092,13 @@ def spotify_report(request, pk):
                     if not song.is_album:
                         songs.append(song.source_url)
     if songs:
-            #print(sp.me())
+
         user_id = sp.me()['id']
         playlist = sp.user_playlist_create(user_id, name=f'{request.user.username} {date.strftime("%B %d")} Playlist')
         playlist_id = playlist['id']
-        print(playlist_id)
         sp.playlist_add_items(playlist_id, songs)
         playlist_url = playlist["external_urls"]["spotify"]
 
-            
     context={
     "dateForm": dateForm, 
     "entries":entries,
@@ -1033,49 +1107,13 @@ def spotify_report(request, pk):
     "token-info":token_info, 
     "frame_key":settings.IFRAME_KEY,
     "playlist_url": playlist_url
-  
     }
 
     return render(request, 'core/playlist_report.html', context)
 
-def journal_selector(request):
-    results = None
-    journals = []
-    selected_journals = []
-    form = None
-    if request.method=='GET':
-        query=request.GET.get('q')
-        
-        if query is not None:
-            checking = Q(username__iexact=query)
-            results=User.objects.filter(checking)
-            if results:
-                journals = Journal.objects.filter(user_id=results[0].profile.id).exclude(is_archived=True)
-            
-                form = JournalSelectorForm(user=results[0].profile.id)
-                if request.method=='POST':
-                    if form.is_valid():
-                        # temp = form.cleaned_data.get('journals')
-
-                    # selected_journals = request.POST.getlist('journals')
-                    # for journal in temp:
-                    #     if Journal.objects.filter(id=journal).exists():
-                    #         journal = Journal.objects.get(id=journal)
-                    #         selected_journals.append(journal)
-                        selected_journals = Journal.objects.filter(pk__in=request.POST.getlist('journals'))
-        
-            
-    context = {
-        'form': form,
-        'results': results,
-        'journals': journals,
-        'selected_journals': selected_journals,
-    }
-
-    return render(request, 'core/journal_selector.html', context)
 
 def spotify_callback(request):
-     
+
     if request.GET.get("code"):
         auth_manager = spotify_auth()
         code = request.GET.get("code", "")
@@ -1084,7 +1122,7 @@ def spotify_callback(request):
     return redirect('core:dashboard')
 
 def memory_date_range(request,pk):
-   
+
     profile = Profile.objects.get(pk=pk)
     dateForm = OnThisDayRangeForm(user=request.user)
     entries = None
@@ -1094,6 +1132,7 @@ def memory_date_range(request,pk):
     end_date = None
     trends = ""
     map = ''
+
     if request.method == "POST":
         dateForm = OnThisDayRangeForm(request.user, request.POST)
         
@@ -1107,7 +1146,6 @@ def memory_date_range(request,pk):
             else:
                 entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__range=[start_date, end_date]).order_by('-created_at')
             count = 1
-            print("entries")
 
             for entry in entries:
                 images = Image.objects.filter(entry=entry)
@@ -1157,7 +1195,6 @@ def memory_date_range(request,pk):
         new = new.replace('\n', ' ').replace('\r', ' ')
         trends = new 
 
-
     context={
     "dateForm": dateForm,
     "entries":entries,
@@ -1171,6 +1208,7 @@ def memory_date_range(request,pk):
     return render(request, 'core/on_this_date_range.html', context)
 
 def playlist_date_range(request,pk):
+
     profile = Profile.objects.get(pk=pk)
     dateForm = OnThisDayRangeForm(request.user)
     entries = None
@@ -1179,12 +1217,9 @@ def playlist_date_range(request,pk):
     playlist_url = None
     token_info = None
 
-    
     auth_manager = spotify_auth()
     sp = spotipy.Spotify(auth_manager=auth_manager)
     token_info = auth_manager.get_cached_token()
-    print(token_info)
-
 
     if request.method == "POST":
 
@@ -1207,7 +1242,7 @@ def playlist_date_range(request,pk):
                     songs.append(song.source_url)
 
     if songs:
-            #print(sp.me())
+            
         user_id = sp.me()['id']
         playlist = sp.user_playlist_create(user_id, name=f'{request.user.username} {start_date.strftime("%B %d %Y")}-{end_date.strftime("%B %d %Y")} Playlist')
         playlist_id = playlist['id']
@@ -1215,7 +1250,6 @@ def playlist_date_range(request,pk):
         sp.playlist_add_items(playlist_id, songs)
         playlist_url = playlist["external_urls"]["spotify"]
 
-            
     context={
     "dateForm": dateForm, 
     "entries":entries,
@@ -1227,6 +1261,3 @@ def playlist_date_range(request,pk):
     }
 
     return render(request, 'core/playlist_range.html', context)
-
-def playlist_by_journal():
-    pass

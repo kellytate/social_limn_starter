@@ -68,6 +68,5 @@ urlpatterns = [
     path('profiles/<int:pk>/reports/playlist/range', views.playlist_date_range, name='spotify_report_range'),
     path('profiles/<int:pk>/reports/range', views.memory_date_range, name='report_range'),
     
-    path('journal_selector/', views.journal_selector, name='journal_selector'),
     path('callback/', views.spotify_callback, name='spotify_callback'),
     ]

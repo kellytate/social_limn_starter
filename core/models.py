@@ -43,12 +43,10 @@ class Profile(models.Model):
     spotify_auth = models.CharField(max_length=500, blank=True)
     is_archived = models.BooleanField(default=False)
 
-
     def __str__(self):
         return self.user.username
 
 class Image(models.Model):
-    # image = models.ImageField(upload_to='images/', blank=True, null=True)
     image = CloudinaryField('image', blank=True, null=True)
     title = models.CharField(max_length=100, blank=False)
     description = models.TextField(blank=True)
@@ -60,15 +58,11 @@ class Image(models.Model):
     def get_html_url(self):
         return'{}{}'.format(settings.CLOUDINARY_ROOT_URL,self.image)
         
-
-    
     def __str__(self):
         return self.title
     
 class Journal(models.Model):
-    '''
-    default privacy: 0 - private; 1 - followers; 2 - public
-    '''
+    #  default privacy: 0 - private; 1 - followers; 2 - public
 
     user = models.ForeignKey(User,
     related_name="user_journals",
@@ -108,15 +102,15 @@ class Entry(models.Model):
         url = reverse('core:entry_landing', args=(self.id,))
         return url
 
-    
+    def year(self):
+        return self.created_at.year
+
     def _str_(self):
             return(
                 f"{self.journal.user.username}"
                 f"{self.title}"
                 f"({self.created_at:%Y-%m-%d %H:%M}:"
             )
-    def year(self):
-        return self.created_at.year
 
 class Comment(models.Model):
     comment = models.TextField()

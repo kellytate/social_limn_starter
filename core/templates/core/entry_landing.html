@@ -6,83 +6,81 @@
         <h1>This Memory is no longer available</h1>
     {% else %}
     <article class="container">
-    <header class="row">
-        <div class="col-sm-4">
-            
-            <h1>{{entry.title}}</h1>
-                <p>By: <a href="{% url 'core:profile' pk=entry.journal.user.id %}">{{entry.journal.user.username}}</a> - Created On: {{entry.created_at}} - 
-                    <a href="{% url 'core:journal_profile' pk=entry.journal.id %}"> Journal: {{entry.journal.title}}
-                </p>
-                <p>Likes: {{likes.count}}</p>
-                <div class="d-flex">
-                <form action="{% url 'core:entry_likes' pk=entry.pk %}">
-                    {% csrf_token %}
-                    <button type="submit">Appreciate</button>
-                </form>
-                <form action="{% url 'core:entry_unlike' pk=entry.pk %}">
-                    {% csrf_token %}
-                <button type="submit">Unappreciate</button>
-                </form>
-                </div>
-    
-            {% if request.user == entry.journal.user %}
-                <div class="d-flex">
-                    <a href="{% url 'core:update_entry' pk=entry.id %}">
-                        <button>Update Memory</button>
-                    </a>
-
-                    <form  action="{% url 'core:archive_entry' pk=entry.pk %}" method="POST">
-                        {% csrf_token %}
-                        <button  name="archive" value="archive">Archive Memory</button>
-                    </form>
-                </div>
-
-            {% endif %}
-            <div class="accordion accordion-flush" id="accordion">
-                {% if place %}
-                <div class="accordion-item">
-                    <h5 class="accordion-header" id="flush-headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                        Location: {{place.name}}
-                    </button>
-                  </h5>
-                  <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">
-                        <div class="d-flex justify-content-center">
-                            <img class="map" src="{{placeMap}}"> 
+        <header class="row">
+            <div class="col-md-4">
+                <h1>{{entry.title}}</h1>
+                    <p>By: <a href="{% url 'core:profile' pk=entry.journal.user.id %}">{{entry.journal.user.username}}</a> - Created On: {{entry.created_at}} - 
+                        <a href="{% url 'core:journal_profile' pk=entry.journal.id %}"> Journal: {{entry.journal.title}}
+                    </p>
+                    <p>Likes: {{likes.count}}</p>
+                    <div class="d-flex">
+                        <form action="{% url 'core:entry_likes' pk=entry.pk %}">
+                            {% csrf_token %}
+                            <button type="submit">Appreciate</button>
+                        </form>
+                        <form action="{% url 'core:entry_unlike' pk=entry.pk %}">
+                            {% csrf_token %}
+                        <button type="submit">Unappreciate</button>
+                        </form>
+                    </div>
+        
+                    {% if request.user == entry.journal.user %}
+                    <div class="d-flex">
+                        <a href="{% url 'core:update_entry' pk=entry.id %}">
+                            <button>Update Memory</button>
+                        </a>
+                        <form  action="{% url 'core:archive_entry' pk=entry.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button  name="archive" value="archive">Archive Memory</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                    
+                <div class="accordion accordion-flush" id="accordion">
+                    {% if place %}
+                    <div class="accordion-item">
+                        <h5 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            Location: {{place.name}}
+                        </button>
+                    </h5>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class="d-flex justify-content-center">
+                                <img class="map" src="{{placeMap}}"> 
+                            </div>
                         </div>
                     </div>
-                  </div>
-                </div>
-                {%endif%}
-                {% if song %}
-                <div class="accordion-item">
-                  <h5 class="accordion-header" id="flush-headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                        Memory Music
-                    </button>
-                  </h5>
-                  <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">
-                        {% with song.all|first as entrySong %}
-                            <div class="iframely-embed">
-                                <div class="iframely-responsive">
-                                    <a data-iframely-url href="{{entrySong.source_url}}"></a>
-                                </div>
-                            </div>
-                            {% endwith %}
                     </div>
-                  </div>
+                    {%endif%}
+                    {% if song %}
+                    <div class="accordion-item">
+                    <h5 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            Memory Music
+                        </button>
+                    </h5>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            {% with song.all|first as entrySong %}
+                                <div class="iframely-embed">
+                                    <div class="iframely-responsive">
+                                        <a data-iframely-url href="{{entrySong.source_url}}"></a>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                        </div>
+                    </div>
+                    </div>
+                    {%endif%}
                 </div>
-                {%endif%}
             </div>
-        </div>
-        <div class="col">
-            <h2>Capture:</h2>
-            <p>{{entry.body}}</p>
-        </div>
+            <div class="col">
+                <h2>Capture:</h2>
+                <p>{{entry.body}}</p>
+            </div>
 
-    </header>
+        </header>
     </article>
 
     {% if images.count > 0 %}
@@ -260,94 +258,94 @@
 };
 </script> -->
 <script>
-     $(document).ready(function () {
-        const dataitems=[]
-        let data = {{items|safe}}
-        for (var i=0;i<data.length;i++) {
-            dataitems.push(JSON.parse(data[i]))
-        }
+    $(document).ready(function () {
+    const dataitems=[]
+    let data = {{items|safe}}
+    for (var i=0;i<data.length;i++) {
+        dataitems.push(JSON.parse(data[i]))
+    }
 
-        jQuery("#nanogallery2").nanogallery2({
-      items: dataitems,
-      galleryMosaic : [                       // default layout
-            { w: 2, h: 2, c: 1, r: 1 },
-            { w: 1, h: 1, c: 3, r: 1 },
-            { w: 1, h: 1, c: 3, r: 2 },
-            { w: 1, h: 2, c: 4, r: 1 },
-            { w: 2, h: 1, c: 5, r: 1 },
-            { w: 2, h: 2, c: 5, r: 2 },
-            { w: 1, h: 1, c: 4, r: 3 },
-            { w: 2, h: 1, c: 2, r: 3 },
-            { w: 1, h: 2, c: 1, r: 3 },
-            { w: 1, h: 1, c: 2, r: 4 },
-            { w: 2, h: 1, c: 3, r: 4 },
-            { w: 1, h: 1, c: 5, r: 4 },
-            { w: 1, h: 1, c: 6, r: 4 }
-          ],
-          galleryMosaicXS : [                     // layout for XS width
-            { w: 2, h: 2, c: 1, r: 1 },
-            { w: 1, h: 1, c: 3, r: 1 },
-            { w: 1, h: 1, c: 3, r: 2 },
-            { w: 1, h: 2, c: 1, r: 3 },
-            { w: 2, h: 1, c: 2, r: 3 },
-            { w: 1, h: 1, c: 2, r: 4 },
-            { w: 1, h: 1, c: 3, r: 4 }
-          ],
-          galleryMosaicSM : [                     // layout for SM width
-            { w: 2, h: 2, c: 1, r: 1 },
-            { w: 1, h: 1, c: 3, r: 1 },
-            { w: 1, h: 1, c: 3, r: 2 },
-            { w: 1, h: 2, c: 1, r: 3 },
-            { w: 2, h: 1, c: 2, r: 3 },
-            { w: 1, h: 1, c: 2, r: 4 },
-            { w: 1, h: 1, c: 3, r: 4 }
-          ],
-          galleryMaxRows: 1,
-          galleryDisplayMode: 'rows',
-          gallerySorting: 'random',
-          thumbnailDisplayOrder: 'random',
+    jQuery("#nanogallery2").nanogallery2({
+    items: dataitems,
+    galleryMosaic : [                       // default layout
+        { w: 2, h: 2, c: 1, r: 1 },
+        { w: 1, h: 1, c: 3, r: 1 },
+        { w: 1, h: 1, c: 3, r: 2 },
+        { w: 1, h: 2, c: 4, r: 1 },
+        { w: 2, h: 1, c: 5, r: 1 },
+        { w: 2, h: 2, c: 5, r: 2 },
+        { w: 1, h: 1, c: 4, r: 3 },
+        { w: 2, h: 1, c: 2, r: 3 },
+        { w: 1, h: 2, c: 1, r: 3 },
+        { w: 1, h: 1, c: 2, r: 4 },
+        { w: 2, h: 1, c: 3, r: 4 },
+        { w: 1, h: 1, c: 5, r: 4 },
+        { w: 1, h: 1, c: 6, r: 4 }
+        ],
+        galleryMosaicXS : [                     // layout for XS width
+        { w: 2, h: 2, c: 1, r: 1 },
+        { w: 1, h: 1, c: 3, r: 1 },
+        { w: 1, h: 1, c: 3, r: 2 },
+        { w: 1, h: 2, c: 1, r: 3 },
+        { w: 2, h: 1, c: 2, r: 3 },
+        { w: 1, h: 1, c: 2, r: 4 },
+        { w: 1, h: 1, c: 3, r: 4 }
+        ],
+        galleryMosaicSM : [                     // layout for SM width
+        { w: 2, h: 2, c: 1, r: 1 },
+        { w: 1, h: 1, c: 3, r: 1 },
+        { w: 1, h: 1, c: 3, r: 2 },
+        { w: 1, h: 2, c: 1, r: 3 },
+        { w: 2, h: 1, c: 2, r: 3 },
+        { w: 1, h: 1, c: 2, r: 4 },
+        { w: 1, h: 1, c: 3, r: 4 }
+        ],
+        galleryMaxRows: 1,
+        galleryDisplayMode: 'rows',
+        gallerySorting: 'random',
+        thumbnailDisplayOrder: 'random',
 
-          thumbnailHeight: '180', thumbnailWidth: '220',
-          thumbnailAlignment: 'scaled',
-          thumbnailGutterWidth: 0, thumbnailGutterHeight: 0,
-          thumbnailBorderHorizontal: 0, thumbnailBorderVertical: 0,
+        thumbnailHeight: '180', thumbnailWidth: '220',
+        thumbnailAlignment: 'scaled',
+        thumbnailGutterWidth: 0, thumbnailGutterHeight: 0,
+        thumbnailBorderHorizontal: 0, thumbnailBorderVertical: 0,
 
-          thumbnailToolbarImage: null,
-          thumbnailToolbarAlbum: null,
-          thumbnailLabel: { display: false },
+        thumbnailToolbarImage: null,
+        thumbnailToolbarAlbum: null,
+        thumbnailLabel: { display: false },
 
-          // DISPLAY ANIMATION
-          // for gallery
-          galleryDisplayTransitionDuration: 1500,
-          // for thumbnails
-          thumbnailDisplayTransition: 'imageSlideUp',
-          thumbnailDisplayTransitionDuration: 1200,
-          thumbnailDisplayTransitionEasing: 'easeInOutQuint',
-          thumbnailDisplayInterval: 60,
+        // DISPLAY ANIMATION
+        // for gallery
+        galleryDisplayTransitionDuration: 1500,
+        // for thumbnails
+        thumbnailDisplayTransition: 'imageSlideUp',
+        thumbnailDisplayTransitionDuration: 1200,
+        thumbnailDisplayTransitionEasing: 'easeInOutQuint',
+        thumbnailDisplayInterval: 60,
 
-          // THUMBNAIL HOVER ANIMATION
-          thumbnailBuildInit2: 'image_scale_1.15',
-          thumbnailHoverEffect2: 'thumbnail_scale_1.00_1.05_300|image_scale_1.15_1.00',
-          touchAnimation: true,
-          touchAutoOpenDelay: 500,
+        // THUMBNAIL HOVER ANIMATION
+        thumbnailBuildInit2: 'image_scale_1.15',
+        thumbnailHoverEffect2: 'thumbnail_scale_1.00_1.05_300|image_scale_1.15_1.00',
+        touchAnimation: true,
+        touchAutoOpenDelay: 500,
 
-          // LIGHTBOX
-          viewerToolbar: { display: false },
-          viewerTools:    {
-            topLeft:   'label',
-            topRight:  'shareButton, rotateLeft, rotateRight, fullscreenButton, closeButton'
-          },
+        // LIGHTBOX
+        viewerToolbar: { display: false },
+        viewerTools:    {
+        topLeft:   'label',
+        topRight:  'shareButton, rotateLeft, rotateRight, fullscreenButton, closeButton'
+        },
 
-          // GALLERY THEME
-          galleryTheme : { 
-            thumbnail: { background: '#111' },
-          },
-					
-          // DEEP LINKING
-          locationHash: true
+        // GALLERY THEME
+        galleryTheme : { 
+        thumbnail: { background: '#111' },
+        },
+                
+        // DEEP LINKING
+        locationHash: true
 
     });
-  });
+});
 </script>
 
 </main>
