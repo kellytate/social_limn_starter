@@ -19,6 +19,26 @@ ALLOWED_HOSTS = [
     'social-limn.herokuapp.com'
 ]
 
+# Password validation
+# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+
+
+# These are commented out for development purposes only ** UNCOMMENT FOR PRODUCTION!! **
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
 load_dotenv(find_dotenv())
 
 DATABASES = {'default': dj_database_url.config(default='django.db.backends.postgresql', conn_max_age=600, ssl_require=False)}

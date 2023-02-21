@@ -222,13 +222,23 @@ class DateInput(forms.DateInput):
 
 class OnThisDayForm(forms.Form):
     memory_date = forms.DateField(widget=DateInput)
+    journals = forms.ModelMultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple,
+        queryset = None
+    )
+    def __init__(self,user, *args, **kwargs): # Correctly obtains slug from url
+        super().__init__(*args, **kwargs) 
+        self.fields['journals'].queryset = Journal.objects.filter(user=user).exclude(is_archived=True)
+
 
 class JournalSelectorForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super(JournalSelectorForm, self).__init__(*args, **kwargs)
-        self.journals = forms.ModelMultipleChoiceField(queryset=Journal.objects.filter(user_id=user).exclude(is_archived=True), widget=forms.CheckboxSelectMultiple)
+        self.journals = forms.ModelMultipleChoiceField(queryset=Journal.objects.filter(user=user).exclude(is_archived=True), widget=forms.CheckboxSelectMultiple)
 
         class Meta:
             model = Journal
             fields = ['journals']
             
+
+    

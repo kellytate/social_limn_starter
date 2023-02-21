@@ -76,27 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'social_limn.wsgi.application'
 
-
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
-
-
-# These are commented out for development purposes only ** UNCOMMENT FOR PRODUCTION!! **
-AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    # },
-]
-
 # White listing the localhost:3000 port
 # for React
 CORS_ORIGIN_WHITELIST = (

@@ -887,7 +887,7 @@ def reports(request, pk):
 def onThisDayReport(request,pk):
 
     profile = Profile.objects.get(pk=pk)
-    dateForm = OnThisDayForm()
+    dateForm = OnThisDayForm(user=request.user)
     entries = None
     albums = []
     date=None
@@ -895,10 +895,15 @@ def onThisDayReport(request,pk):
     map = ''
     
     if request.method == "POST":
-        dateForm = OnThisDayForm(request.POST)
+        dateForm = OnThisDayForm(request.user, request.POST,)
+        
         if dateForm.is_valid():
             date = dateForm.cleaned_data['memory_date']
-            entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
+            journals = list(dateForm.cleaned_data['journals'])
+            if journals:
+                entries = Entry.objects.filter(journal__user=request.user).filter(journal__in=journals).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
+            else:
+                entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
             count = 1
 
             for entry in entries:
@@ -952,7 +957,7 @@ def onThisDayReport(request,pk):
 
 
     context={
-    "dateForm": dateForm, 
+    "dateForm": dateForm,
     "entries":entries,
     "albums" : albums,
     "date":  date.strftime("%B %d") if date else date,
@@ -973,7 +978,7 @@ def spotify_login(request):
 
 def spotify_report(request, pk):
     profile = Profile.objects.get(pk=pk)
-    dateForm = OnThisDayForm()
+    dateForm = OnThisDayForm(request.user)
     entries = None
     date=None
     songs = []
@@ -989,10 +994,15 @@ def spotify_report(request, pk):
 
     if request.method == "POST":
 
-        dateForm = OnThisDayForm(request.POST)
+        dateForm = OnThisDayForm(request.user, request.POST)
         if dateForm.is_valid():
             date = dateForm.cleaned_data['memory_date']
-            entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
+            journals = list(dateForm.cleaned_data['journals'])
+            if journals:
+                entries = Entry.objects.filter(journal__user=request.user).filter(journal__in=journals).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
+            else:
+                entries = Entry.objects.filter(journal__user=request.user).exclude(is_archived=True).filter(created_at__month=date.month).filter(created_at__day=date.day).order_by('-created_at')
+            
 
             for entry in entries:
                 song = Song.objects.filter(entry=entry).exclude(is_archived=True).first()
@@ -1018,6 +1028,7 @@ def spotify_report(request, pk):
     "token-info":token_info, 
     "frame_key":settings.IFRAME_KEY,
     "playlist_url": playlist_url
+  
     }
 
     return render(request, 'core/playlist_report.html', context)
