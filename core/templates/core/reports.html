@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load widget_tweaks %}
 
-<main>
-    <h2>Select Report Type</h2>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{reportsForm}}
-        <input type="submit" value="Submit"/>
-    </form>
+<main class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+        <h2>Select Report Type</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ reportsForm }}
+            <input type="submit" value="Submit"/>
+        </form>
+        </div>
+        <div class="col"></div>
+    </div>
 </main>
 
 {% endblock %}

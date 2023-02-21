@@ -14,7 +14,7 @@
             <div class="row">
                 <aside class="col-4 text-center">
         
-                        <div class="profile-sm">
+                        <div class="profile">
                             <img src="{{ user.profile.profile_img.url }}">
                         </div>
 
@@ -119,7 +119,7 @@
                         {% for entry in entries %}
                             <a href="{% url 'core:entry_landing' pk=entry.id %}">
                                 <div class="row">
-                                    <div class="col-3">
+                                    <div class="col-3 profile-sm">
                                         <img src="{{entry.journal.user.profile.profile_img.url}}" class="img-thumbnail" alt="">
                                         <p>{{entry.journal.user.username}}</p>
                                         <p>{{entry.created_at}}</p>

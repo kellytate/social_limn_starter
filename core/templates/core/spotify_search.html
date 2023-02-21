@@ -2,19 +2,28 @@
 
 {% block content %}
 
-<form action="" method="POST">
-    {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Submit"/>
-</form>
+<div class="row">
+    <div class="col"></div>
+    <div class="col">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form}}
+            <button type="submit" value="Submit">Search for music</button>
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
 
 {%for item in search_results%}
-<div>
-    <div>
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-7">
+    <div class="row">
+    <div class="d-flex mini justify-content-start align-items-center">
         {% if item.images %}
         {% for image in item.images %}
             {% if image.height == 64 and image.width == 64 %}
-            <a target="_blank" href="{{ item.external_urls.spotify }}">
+            <a class="mini" target="_blank" href="{{ item.external_urls.spotify }}">
                 <img src="{{image.url}}">
             </a>
             {% endif %}
@@ -22,21 +31,24 @@
         {%else%}
         {% for image in item.album.images %}
             {% if image.height == 64 and image.width == 64 %}
-            <a target="_blank" href="{{ item.external_urls.spotify }}">
+            <a class="mini" target="_blank" href="{{ item.external_urls.spotify }}">
                 <img src="{{image.url}}">
             </a>
             {% endif %}
         {% endfor %}
         {% endif %}
+        <a lass="mini" href="{{ item.external_urls.spotify }}">
+            {{ item.name }}
+        </a>
+        <form action="{% url 'core:add_song' pk=entry.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="title" value="{{item.name}}">
+            <button value="{{item.external_urls.spotify}}" name="source">Add Music To Memory</button>
+        </form>
     </div>
-    <a  href="{{ item.external_urls.spotify }}">
-        {{ item.name }}
-    </a>
-    <form action="{% url 'core:add_song' pk=entry.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="title" value="{{item.name}}">
-        <button value="{{item.external_urls.spotify}}" name="source">Add Music To Memory</button>
-    </form>
+    </div>
+    </div>
+    <div class="col"></div>
     {%empty%}
     <h2>No results</h2>
 </div>
@@ -52,5 +64,6 @@
     {%endif%}
 </ul>
 {%endif%}
+</main>
 
 {% endblock %}

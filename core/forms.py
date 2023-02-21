@@ -84,7 +84,12 @@ class UpdateProfileForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'placeholder': 'location',
                                     'class': 'form-control',
                                     'styles': 'border-bottom: 2px solid #92A7A0'}))
-    profile_img = forms.ImageField(required=False)
+    profile_img = forms.ImageField(required=False, widget=forms.FileInput(attrs={
+                                    'type': 'file',
+                                    'class': 'form-control form-control-sm',
+                                    'id': 'formFile',
+                                    'style': 'background-color: #1f1e1d; color: #d3d9d9',
+    }))
     
     class Meta:
         model = Profile
@@ -137,7 +142,11 @@ class UpdateJournalForm(forms.ModelForm):
                                     'class': 'form-control',
                                     'styles': 'border-bottom: 2px solid #92A7A0',
                                     'rows': 5}))
-    cover_img = forms.ImageField(required=False)
+    cover_img = forms.ImageField(required=False, widget=forms.FileInput(attrs={
+                                    'type': 'file',
+                                    'class': 'form-control form-control-sm',
+                                    'id': 'formFile',
+                                    'style': 'background-color: #1f1e1d; color: #d3d9d9'}))
     default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'form-control','style': 'color: #d3d9d9; border: none; background-color: #1f1e1d'}))
 
     class Meta:
@@ -153,13 +162,19 @@ class EntryForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'placeholder': 'Location', 
                                     'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none; border-bottom: 2px solid #92A7A0',
                                     'class': 'form-control'}))
-    body = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'Tell your story...', 
+    body = forms.CharField(required=True, widget=forms.Textarea(attrs={
+                                    'placeholder': 'Tell your story...', 
                                     'class': 'form-control', 
                                     'style': 'color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px; border-bottom: 2px solid #92A7A0'}))
-    entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'form-control','style': 'color: #d3d9d9; border: none; background-color: #1f1e1d'}))
+    entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={
+                                    'class': 'form-control',
+                                    'style': 'color: #d3d9d9; border: none; border-bottom: 2px solid #92A7A0; background-color: #1f1e1d'}))
 
     image = forms.ImageField(required=False,widget=forms.ClearableFileInput(attrs={
-    'multiple': True, 'style': 'background-color: #1f1e1d; class: button' }))
+                                    'multiple': True,
+                                    'type': 'file',
+                                    'class': 'form-control form-control-sm',
+                                    'style': 'color: #d3d9d9; background-color: #1f1e1d; class: form-control form-control-sm;' }))
     class Meta: 
         model = Entry
         fields = ['title', 'location', 'body', 'entry_privacy']
@@ -217,7 +232,8 @@ REPORT_TYPES = (
 )
 class ReportsForm(forms.Form):
     search_type = forms.ChoiceField(label='Report Type',required=True,
-                                    choices=REPORT_TYPES)
+                                    choices=REPORT_TYPES
+                                    )
 
 class DateInput(forms.DateInput):
     input_type = 'date'

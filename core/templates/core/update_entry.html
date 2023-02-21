@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main class="text-center">
+<main class="container text-center">
     <h1>Edit {{entry.title}} </h1>
-    <section class="container">
-        <div class="col"></div>
+    <section class="row">
         <div class="col">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -28,11 +27,15 @@
                 </div>
             </form>
         </div>
-        <div class="mb-3"></div>
+    
     </section>
-    <section class="container">
+    <section class="row">
+        <div class="col-md">
         {% if place %}
+            <div class="row">
             <img src="{{placeMap}}">
+            </div>
+            <div class="d-inline-flex">
             <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Memory Location</button></a>
             <form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
                 {% csrf_token %}
@@ -43,37 +46,64 @@
                 <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Memory Location</button></a>
             </div>
         {% endif %}
-    </section>
-    <section class="container">
-        {% for image in images %}
-            <img src="{{image.image.url}}">
-            <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
-                {% csrf_token %}
-                <button name="archive" value="archive">Remove Image From Memory</button>
-            </form>
-        {% endfor %}
-    </section>
-
-{% if song %}
-{% with song.all|first as entrySong %}
-        <div class="iframely-embed">
-            <div class="iframely-responsive">
-                <a data-iframely-url href="{{entrySong.source_url}}"></a>
             </div>
         </div>
+        <div class="col-md">
+            {% if song %}
+{% with song.all|first as entrySong %}
+        <div class="row">
+            <div class="iframely-embed">
+                <div class="iframely-responsive">
+                    <a data-iframely-url href="{{entrySong.source_url}}"></a>
+                </div>
+            </div>
+        </div>
+        <div class="d-inline-flex">
         <form action="{% url 'core:archive_song' pk=entrySong.id ok=entry.pk %}" method="POST">
             {% csrf_token %}
             <button name="archive" value="archive">Remove From Memory</button>
         </form>
-{% endwith %}
-<div class="mb-3">
-    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Music</button></a>
-</div>
-{% else %}
-<div class="mb-3">
-    <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Music to Memory</button></a>
-</div>
-{% endif %}
+        {% endwith %}
+        <div class="mb-3">
+            <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Change Music</button></a>
+        </div>
+        {% else %}
+        <div class="mb-3">
+            <a href="{% url 'core:search_spotify' pk=entry.pk %}"><button>Add Music to Memory</button></a>
+        </div>
+        {% endif %}
+        </div>
+        </div>
+    </section>
+    <section class="row">
+            {% if images %}
+             <div class="row">
+              {% for image in images %}
+                  {% if forloop.first %}
+                  <div class="row">
+                  {% endif %}
+                  <div class="col">
+                    <img class="img-fluid" src="{{image.image.url}}">
+                    <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button name="archive" value="archive">Remove Image From Memory</button>
+                    </form>
+                  </div>
+              {% if forloop.counter|divisibleby:2 %}
+                  </div>
+                  <div class="row">
+              {% endif %}
+              {% if forloop.last %}
+                  </div>
+              {% endif %}
+          {% endfor %}
+          </div>
+          {%endif%}
+        {% for image in images %}
+           
+        {% endfor %}
+    </section>
+
 
 <div class="container">
     <h3>
