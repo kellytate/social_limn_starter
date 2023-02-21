@@ -32,10 +32,7 @@ class ContactForm(forms.Form):
 
 
 class RegisterUserForm(UserCreationForm):
-    # email = forms.EmailField(max_length=254,
-    #     help_text='Required. Enter a valid email address.',
-    #     widget=forms.TextInput(attrs={'class': 'form-control'}))
-
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget=forms.TextInput(attrs={
@@ -83,7 +80,6 @@ class UpdateProfileForm(forms.ModelForm):
         model = Profile
         fields = ['email', 'bio', 'location', 'profile_img']
     
-    
 class ImageForm(forms.ModelForm):
     """Form for the image model"""
     class Meta:
@@ -117,8 +113,6 @@ class JournalForm(forms.ModelForm):
     class Meta:
         model = Journal
         fields=['title','location','description', 'cover_img', 'default_privacy']  
-
-
 
 class UpdateJournalForm(forms.ModelForm):
     title = forms.CharField(required=False, 
@@ -154,7 +148,8 @@ class EntryForm(forms.ModelForm):
         fields = ['title', 'location', 'body', 'entry_privacy']
 
 class CommentForm(forms.ModelForm):
-    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Share your thoughts', 'class': 'form-control', 'style': 'color: 92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
+            
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Share your thoughts', 'class': 'form-control', 'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',}))
 
     class Meta:
         model = Comment
@@ -165,6 +160,7 @@ SEARCH_TYPES = (
     ('artist', 'Artist',),
     ('track', 'Track',),
 )
+
 class SpotifySearchForm(forms.Form):
     search_type = forms.ChoiceField(label='Filter',required=True,
                                     choices=SEARCH_TYPES)
@@ -184,11 +180,9 @@ class VideoForm(forms.ModelForm):
         model = Video
         fields = ['title', 'source_url']
 
-
 class LocationForm(forms.Form):
     search_string = forms.CharField(label='',max_length=100)
 
-    
 class PlaceForm(forms.ModelForm):
     class Meta:
         model = Place
@@ -198,8 +192,6 @@ REPORT_TYPES = (
     ('onThisDay', 'Memories for this Day',),
     ('spotify', 'Playlist for this Day',),
 )
-
-
 class ReportsForm(forms.Form):
     search_type = forms.ChoiceField(label='Report Type',required=True,
                                     choices=REPORT_TYPES)
@@ -209,3 +201,13 @@ class DateInput(forms.DateInput):
 
 class OnThisDayForm(forms.Form):
     memory_date = forms.DateField(widget=DateInput)
+
+class JournalSelectorForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(JournalSelectorForm, self).__init__(*args, **kwargs)
+        self.journals = forms.ModelMultipleChoiceField(queryset=Journal.objects.filter(user_id=user).exclude(is_archived=True), widget=forms.CheckboxSelectMultiple)
+
+        class Meta:
+            model = Journal
+            fields = ['journals']
+            

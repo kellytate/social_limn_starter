@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+
+<div class="container">
+    <div class="row">
+        <section>
+            <form action="{% url 'core:journal_selector' %}" method="GET" value="{{request.GET.q}}">
+                
+                <input type="text" name="q" value="{{request.GET.q}}" placeholder="Get User">
+                <input type="submit" name="submit"/>
+            </form>
+        </section>
+    </div>
+    
+        {% if results %}
+            <h2>Results for {{ request.GET.q}}</h2>
+            {% for result in results %}
+                <img src="{{ result.profile.profile_img.url }}"/>
+                <a href="{% url 'core:profile' pk=result.profile.id %}">
+                    <p>{{result.username}}</p>
+                </a>
+                <div class="row">
+                    {% if journals %}
+                      <form action="{% url 'core:journal_selector' %}" method="POST">
+                      {% csrf_token %}
+                      
+                      {% for journal in journals %}
+                          <label  for="ts1">{{journal.title}}</label>
+                          <input type="checkbox" name="journals" value="{{ journal.pk }}">
+                        {% endfor %}
+                        <input type="submit" name="submit"/>
+                      </form>
+                    {% endif %}
+                </div>
+                <!-- {% if selected_journals %} -->
+                
+                <!-- {% endif %} -->
+            {% endfor %}
+            
+        {% endif %}
+        
+        
+
+</div>
+<div>
+  {% for j in selected_journals %}
+    {{ j.title }}
+  {% endfor %}
+</div>
+{% endblock %}
+
+<script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
+
+<script type="text/javascript">
+    const url = "https://api.cloudinary.com/v1_1/demo/image/upload";
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+    const files = document.querySelector("[type=file]").files;
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+        formData.append("file", file);
+        formData.append("upload_preset", "docs_upload_example_us_preset");
+
+    fetch(url, {
+        method: "POST",
+        body: formData
+    })
+    .then((response) => {
+        return response.text();
+    })
+    .then((data) => {
+        document.getElementById("data").innerHTML += data;
+    });
+    }
+});
+</script>

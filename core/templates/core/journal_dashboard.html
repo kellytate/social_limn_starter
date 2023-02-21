@@ -7,62 +7,112 @@
         <h1>This journal is no longer available</h1>
     
         {% else %}
-        <header class="container">
+        <header class="row">
             {% if journal.cover_img %}
-                <div class="col text-center">
-                    <div class="cover">
-                        <img src="{{ journal.cover_img.url }}">
+            <div class="row background" style="background-image: url('{{ journal.cover_img.url }}')">
+                <div class=" row darkOverlay">
+                    <div class="col"></div>
+                    <div class="col">
+                        <h1>{{journal.title}}</h1>
+                        <p>by <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a></p>
+                        <p>{{journal.description}}</p>
+                    </div>
+                    <div class="col"></div>
+                    <div class="d-flex justify-content-center">
+                            <a href="{% url 'core:update_journal' journal.pk %}">
+                                <button>
+                                    Edit Journal
+                                </button>
+                            </a> 
+                            <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button name="archive" value="archive">Delete Journal</button>
+                            </form>
+                            <a href="{% url 'core:create_entry' journal.pk %}">
+                                <button >
+                                    Add Journal Entry
+                                </button>
+                            </a> 
                     </div>
                 </div>
-            {% endif %}
-            <h1>{{journal.title}}</h1>
-            <p>by <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a></p>
-            <p>{{journal.description}}</p>
-        </header>
-        <section class="container justify-content-space-evenly">
-            <div class="row">
-                <div class="col">
-            <a href="{% url 'core:update_journal' journal.pk %}">
-                <button class="btn btn-outline-light ">
-                    Edit Journal
-                </button>
-            </a> 
-        </div>
-        <div class="col">
-            <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
-                {% csrf_token %}
-                <button class="btn btn-outline-light " name="archive" value="archive">Delete Journal</button>
-            </form>
-        </div>
-        <div class="col">
-            <a href="{% url 'core:create_entry' journal.pk %}">
-                <button class="btn btn-outline-light ">
-                    Add Journal Entry
-                </button>
-            </a> 
-        </div>
-        </section class="container">
-        <div class="row">
-            <h3>Entry Log:</h3>
-            <div id='calendar'></div>
-        </div>
+            </div>
+            {%else%}
+            <div class="col"></div>
+                <div class="col-5">
+                    <h1>{{journal.title}}</h1>
+                    <p>by <a href="{% url 'core:profile' journal.user.profile.pk %}">{{journal.user.username}}</a></p>
+                    <p>{{journal.description}}</p>
+                </div>
+            <div class="col"></div>
+            <div class="d-flex justify-content-center">
+                
+                    <a href="{% url 'core:update_journal' journal.pk %}">
+                        <button>
+                            Edit Journal
+                        </button>
+                    </a> 
+            
+                
+                    <form action="{% url 'core:delete_journal' pk=journal.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button  name="archive" value="archive">Delete Journal</button>
+                    </form>
         
-        <section>
-            {% for entry in entries %}
-                <a href="{% url 'core:entry_landing' pk=entry.pk %}"><div>
-                <h4>{{entry.title}}</h4>
-                    {% for img in entry.image.all %}
-                        {% if forloop.counter == 1%}
-                            <img src="{{img.image.url}}" height="200">
-                        {% endif%}
-                    {% endfor %}
-                
-                    </div>
-                </div></a>
-                
-            {% endfor %}
+                    <a href="{% url 'core:create_entry' journal.pk %}">
+                        <button>
+                            Add Journal Entry
+                        </button>
+                    </a> 
+            </div>
+            {%endif%}
 
+            
+        </header>
+
+
+         
+        <article class="container">
+        <div class="row">
+            <div class="col sticky_top">
+                <h5>Entry Log:</h5>
+                <div id='calendar'></div>
+            </div>
+        
+        
+        <section class="col">
+            {% for entry in entries %}
+                {% if forloop.first %}
+                <div class="row">
+                {% endif %}
+                {% if entry.image %}
+                    {% with entry.image.all|first as image %}
+                        <div class="col background" style="background-image: url('{{image.image.url}}');">
+                        <div class="row darkOverlay">
+                        <div class="col">
+                    {% endwith%}
+                {%else%}
+                    <div class="col-xs-4">
+                        <div>
+                            <div>
+                {%endif%}
+                <a href="{% url 'core:entry_landing' pk=entry.pk %}">
+                    <h5>{{entry.title}}</h5>
+                    </a>
+                    <p>{{entry.created_at}}</p> 
+
+                </div></div></div>
+            {% if forloop.counter|divisibleby:3 %}
+                </div>
+                <div class="row">
+            {% endif %}
+            {% if forloop.last %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        
+        </div>
         </section>
+    </article>
     {% endif %}
 
 </main>

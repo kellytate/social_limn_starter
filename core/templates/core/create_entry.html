@@ -2,47 +2,65 @@
 
 {% block content %}
 <main class="container text-center">
-    <h1>Hello {{journal.user.username}} curate an entry for {{journal.title}}</h1>
     <div class="row">
-    <div class="col-2"></div>
-    
-    <div class="col">
 
-        <div class="container">
+        <div class="col-md order-2 order-md-1">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="mb-3">
+                            {{ entryForm.title}}
+                        </div>
+                        <div class="mb-3">
+                            {{ entryForm.location }}
+                        </div>
+                        <div>
+                            <div class="mb-3">
+                                {{entryForm.body}}
+                            </div>
+                            
+                            <div  class="row g-3">
+                                <div class="col-auto">
+                                    {{videoForm.source_url}}
+                                </div>
 
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="mb-3">
-                        {{ entryForm.title}}
+                                <div class="col-auto">
+                                    <input class="form-control" type="text" name="videoTitle" placeholder="Video Title">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{entryForm.image}}
+                            </div>
+                            <div class="mb-3">
+                                {{entryForm.entry_privacy}}
+                            </div>
+                            <button type="submit">Submit</button>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        {{ entryForm.location }}
-                    </div>
-                    <div>
-                        <div class="mb-3">
-                            {{entryForm.body}}
-                        </div>
-                        <div class="mb-3">
-                            <input class="form-control" type="text" name="videoTitle" placeholder="Video Title">
-                        </div>
-                        <div class="mb-3">
-                            {{videoForm.source_url}}
-                        </div>
-                        <div class="mb-3">
-                            {{entryForm.image}}
-                        </div>
-                        <div class="mb-3">
-                            {{entryForm.entry_privacy}}
-                        </div>
-                        <button class="btn btn-outline-light " type="submit">Submit</button>
-                    </div>
+                </form>
+            </div>
+
+
+    {% if journal.cover_img %}
+        <div class="col-md order-1 order-md-2 top_spacer sticky-md-top align-self-start topspace contact sideDisplay background text-center" style="background-image: url('{{ journal.cover_img.url }}'); min-height: 50vh;">
+            <div class="row justify-content-center align-items-center">
+                <div class="darkOverlay">
+                <h2 class="makeSpace" >Curate an Entry for {{journal.title}}</h2>
                 </div>
-            </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-md order-1 order-md-2 top_spacer sticky-md-top align-self-start topspace contact sideDisplay background text-center" style="background-image: url('https://images.unsplash.com/photo-1500051638674-ff996a0ec29e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=918&q=80')">
+            <div class="row justify-content-center">
+                <div class="col-8  darkOverlay">
+                <h2 class="makeSpace">Curate an Entry for {{journal.title}}</h2>
+                </div>
+            </div>
         </div>
 
-    </div>
-    <div class="col-2"></div>
+        
+    {% endif %}
 </div>
 </main>
 

@@ -2,9 +2,11 @@ import requests
 import json
 import string
 import spotipy
+from django.contrib.auth import logout as auth_logout, get_user_model
+from django.views.decorators.http import require_http_methods
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm
+from .forms import RegisterUserForm, ContactForm, UpdateProfileForm, UpdateUserForm, ImageForm, JournalForm, UpdateJournalForm, EntryForm, CommentForm, SpotifySearchForm, VideoForm, PlaceForm, LocationForm, ReportsForm, OnThisDayForm, JournalSelectorForm
 from django.core.mail import send_mail, BadHeaderError
 from django.contrib import messages
 from django.conf import settings
@@ -24,12 +26,86 @@ from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from cloudinary.forms import cl_init_js_callbacks
 
-## helper functions here. 
+## helper functions here.
+# spotify auth object creation 
 def spotify_auth():
     scope = "user-read-recently-played playlist-modify-public user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-private playlist-modify-private playlist-read-private"
     auth_manager = spotipy.oauth2.SpotifyOAuth(settings.SPOTIPY_CLIENT_ID, settings.SPOTIPY_CLIENT_SECRET, settings.SPOTIPY_REDIRECT_URI,
                                 scope=scope)
     return auth_manager
+
+#easy form 
+def easy_form(form, dict=None):
+    new_thing=form.save(commit=False)
+    for key,value in dict.items():
+        setattr(new_thing, key, value)
+    
+    new_thing.save()
+    return new_thing
+
+#filter_function
+def filter_function(cls, filter_dict, exclude=None, order_by=None):
+    if exclude:
+
+        if order_by:
+            return cls.objects.filter(**filter_dict).exclude(**exclude).order_by(order_by)
+        
+        return cls.objects.filter(**filter_dict).exclude(**exclude)
+    
+    if order_by:
+            return cls.objects.filter(**filter_dict).order_by(order_by)
+    
+    return cls.objects.filter(**filter_dict)
+    
+#image gallery
+def gallery_json(objects, dict, altDict=None, albums=None, check=None):
+    jsons = []
+    if objects:
+
+        if albums: 
+
+            for obj in objects:
+                json_ready = {}
+                if len(jsons)== 0 & check==0:
+                    album_def = {}
+
+                    for key,value in altDict.items():
+                        if value == "image":
+                            album_def=obj.image.url
+                        elif key=='src':
+                            album_def[key] = obj.source_url
+                        else:
+                            album_def[key]=value
+
+                    jsons.append(json.dumps(album_def))
+
+                for key,value in dict.items():
+                    if value == "image":
+                        json_ready[key] = obj.image.url
+                    elif key =='src':
+                        json_ready[key] = obj.source_url
+                    else:
+                        json_ready[key]=value
+                jsons.append(json.dumps(json_ready))
+            
+        else:
+            for obj in objects:
+                json_ready={}
+                for key,value in dict.items():
+                    if value == "image":
+                        json_ready[key] = obj.image.url
+                    elif key =='src':
+                        json_ready[key] = obj.source_url
+                    else:
+                        json_ready[key]=value
+                        
+                jsons.append(json.dumps(json_ready))
+
+    return jsons
+                    
+
+        
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -91,6 +167,7 @@ def contact(request):
     form = ContactForm()
     return render(request, 'sitefront/contact.html', {'form':form})
 
+#profile and user landing pages here
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -107,13 +184,142 @@ def dashboard(request):
     if request.method == "POST":
         form = JournalForm(request.POST, request.FILES)
         if form.is_valid():
-            journal=form.save(commit=False)
-            journal.user=request.user
-            form.save()
+            new_journal = easy_form(form, dict={'user':request.user})
             return redirect("core:dashboard")
+        
     form=JournalForm()
-    journals = Journal.objects.filter(user=request.user).exclude(is_archived=True)
-    return render(request, 'dashboard.html', {'form':form, 'entries':entries, 'journals':journals})
+    frame_key = settings.IFRAME_KEY
+    journals =filter_function(Journal,{'user':request.user}, {'is_archived': True})
+    return render(request, 'dashboard.html', {'form':form, 'entries':entries, 'journals':journals, "frame_key": frame_key})
+
+#edit user and profile
+@login_required(login_url='login')
+def update_user(request):
+
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect(to='core:dashboard')
+    else:
+        user_form=UpdateUserForm(instance=request.user)
+        profile_form=UpdateProfileForm(instance=request.user.profile)
+    
+    return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form,})
+
+#Arcive account also found on the update_profile page. 
+@login_required
+def remove_account(request):
+    user_pk = request.user.pk
+    auth_logout(request)
+    User = get_user_model()
+    User.objects.filter(pk=user_pk).update(is_active=False)
+    return redirect(to='core:dashboard')
+    # return Response({"Success": "User deactivated"}, status=status.HTTP_200_OK)
+
+#this will be the location for Journal Work 
+
+#This will be the locatin for Entry Work
+
+#entry create:
+@login_required(login_url='login')
+def create_entry(request,pk):
+    journal= Journal.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        entryForm = EntryForm(request.POST,request.FILES)
+        videoForm = VideoForm(request.POST)
+
+        if entryForm.is_valid():
+            new_entry = easy_form(entryForm,
+                                {'journal':journal,
+                                "title": entryForm.cleaned_data["title"]})
+            
+            if videoForm.is_valid():
+                url = videoForm.cleaned_data["source_url"]
+    
+                if url:
+                    title = request.POST.get('videoTitle')
+                    newVideo = Video(title=title, entry=new_entry, source_url=url)
+                    newVideo.save()
+                    new_entry.save()
+
+            files = request.FILES.getlist('image')
+    
+            for f in files:
+                img = Image(image=f)
+                img.save()
+                new_entry.image.add(img)
+                new_entry.save()
+
+            return redirect(to= 'core:journal_dashboard', pk=journal.pk)
+        
+    entryForm = EntryForm()
+    videoForm = VideoForm()
+    return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm, "videoForm":videoForm})
+
+#view entry 
+def entry_landing(request, pk):
+    entry = Entry.objects.get(pk=pk)
+    items = []
+    likeCounts = {}
+    frame_key = settings.IFRAME_KEY
+    placeMap=None
+
+
+    if request.method=='POST':
+        commentForm=CommentForm(request.POST)
+        if commentForm.is_valid():
+            comment = easy_form(commentForm,{'user':request.user, 'entry':entry,})
+            return redirect("core:entry_landing", pk=entry.pk)
+    
+    likes= filter_function(Like,{'entry':entry},{"like":False})
+    comments = filter_function(Comment,{'entry':entry},order_by='-created_at')
+    images = filter_function(Image,{'entry':entry}, exclude={'is_archived':True})
+    song = filter_function(Song,{'entry':entry}, exclude={'is_archived':True})
+    videos = filter_function(Video,{'entry':entry}, exclude={'is_archived':True})
+    place = filter_function(Place,{'entry':entry}, exclude={'is_archived':True}).first()
+    commentForm=CommentForm()
+
+    items = items + gallery_json(images, {'src': "image"})
+    items = items + gallery_json(videos, {'src': "source_url"})
+
+    if place:
+        placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{place.latitude},{place.longitude}'
+
+    for comment in comments:
+        likeCounts[comment.id] = filter_function(Like, {'comment':comment}, exclude={'like':False}).count()
+    
+    return render(request, 'core/entry_landing.html', 
+        {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 
+        'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos, 
+        "place":place, 'placeMap':placeMap, "items":items})
+
+#Comment stuff goes here:
+def edit_comment(request, pk):
+    comment=Comment.objects.get(pk=pk)
+
+    if request.user != comment.user:
+        return
+
+    if request.method == 'POST':
+        commentForm=CommentForm(request.POST, instance=comment)
+        if commentForm.is_valid():
+            commentForm.save()
+            
+            if comment.journal:
+                return redirect('core:journal_profile', pk=comment.journal.pk)
+            
+            else:
+                return redirect('core:entry_landing', pk=comment.entry.pk)
+    
+            commentForm = CommentForm(instance=comment)
+    return render(request, 'core/edit_comment.html', {'commentForm':commentForm, 'comment': comment})
+
 
 # Displays all available user (profiles), excluding the logged-in user
 @login_required(login_url='login')
@@ -212,79 +418,9 @@ def delete_journal(request, pk):
     
         return redirect('core:dashboard')
 
-#entry create:
-@login_required(login_url='login')
-def create_entry(request,pk):
-    journal= Journal.objects.get(pk=pk)
-    if request.method == 'POST':
-        entryForm = EntryForm(request.POST,request.FILES)
-        videoForm = VideoForm(request.POST)
-        if entryForm.is_valid():
-            new_entry = entryForm.save(commit=False)
-            new_entry.journal=journal
-            new_entry.title = entryForm.cleaned_data["title"]
-            new_entry.save()
-            if videoForm.is_valid():
-                url = videoForm.cleaned_data["source_url"]
-                if url:
-                    title = request.POST.get('videoTitle')
-                    newVideo = Video(title=title, entry=new_entry, source_url=url)
-                    new_entry.save()
-            files = request.FILES.getlist('image')
-            for f in files:
-                img = Image(image=f)
-                img.save()
-                new_entry.image.add(img)
-                new_entry.save()
-            return redirect(to= 'core:journal_dashboard', pk=journal.pk)
-    entryForm = EntryForm()
-    videoForm = VideoForm()
-    return render(request, 'core/create_entry.html', {'journal': journal, 'entryForm': entryForm, "videoForm":videoForm})
 
-#view entry 
-def entry_landing(request, pk):
-    entry = Entry.objects.get(pk=pk)
 
-    if request.method=='POST':
-        commentForm=CommentForm(request.POST)
-        if commentForm.is_valid():
-            user = request.user
-            comment = commentForm.save(commit=False)
-            comment.user=user
-            comment.entry=entry
-            comment.save()
-            return redirect("core:entry_landing", pk=entry.pk)
-    likes= Like.objects.filter(entry=entry).exclude(like = False)
-    comments = Comment.objects.filter(entry=entry).order_by('-created_at')
-    images = Image.objects.filter(entry=entry).exclude(is_archived=True)
-    items = []
-    if images:
-        for image in images:
-            items.append(json.dumps({
-                "src": image.image.url,
-            }))
-    likeCounts = {}
-    song = Song.objects.filter(entry=entry).exclude(is_archived=True)
-    videos = Video.objects.filter(entry=entry).exclude(is_archived=True)
-    if videos:
-        for video in videos:
-            items.append(json.dumps({
-                "src": video.source_url
-            }))
-    frame_key = settings.IFRAME_KEY
-    place = Place.objects.filter(entry=entry).exclude(is_archived=True).first()
-    placeMap=None
-    if place:
-        placeMap = f'https://maps.locationiq.com/v3/staticmap?key={settings.LOCATIONIQ_API_KEY}&markers=size:small|color:red|{place.latitude},{place.longitude}'
 
-    for comment in comments:
-        count = Like.objects.filter(comment=comment).exclude(like = False).count()
-        likeCounts[comment.id] = count
-    commentForm=CommentForm()
-    return render(request, 'core/entry_landing.html', 
-        {'entry': entry, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 
-        'likeCounts':likeCounts, 'images':images, 'song':song, "frame_key":frame_key, "videos": videos, 
-        "place":place, 'placeMap':placeMap, "items":items})
 
 #update entry
 def update_entry(request, pk):
@@ -369,22 +505,6 @@ def delete_entry(request, pk):
 
 #edit comment
 @login_required(login_url='login')
-def edit_comment(request, pk):
-    comment=Comment.objects.get(pk=pk)
-
-    if request.user != comment.user:
-        return
-
-    if request.method == 'POST':
-        commentForm=CommentForm(request.POST, instance=comment)
-        if commentForm.is_valid():
-            commentForm.save()
-            if comment.journal:
-                return redirect('core:journal_profile', pk=comment.journal.pk)
-            else:
-                return redirect('core:entry_landing', pk=comment.entry.pk)
-    commentForm = CommentForm(instance=comment)
-    return render(request, 'core/edit_comment.html', {'commentForm':commentForm, 'comment': comment})
 
 #delete Comment:
 def delete_comment(request, pk):
@@ -415,23 +535,6 @@ def reply_comment(request, pk):
                 comment.save()
                 return redirect('core:entry_landing', pk=parent_comment.entry.pk)
 
-#edit user and profile
-@login_required(login_url='login')
-def update_user(request):
-
-    if request.method == 'POST':
-        user_form = UpdateUserForm(request.POST, instance=request.user)
-        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Your profile is updated successfully')
-            return redirect(to='core:dashboard')
-    else:
-        user_form=UpdateUserForm(instance=request.user)
-        profile_form=UpdateProfileForm(instance=request.user.profile)
-    return render(request, 'core/update_profile.html', {'user_form':user_form, 'profile_form':profile_form,})
 
 @login_required(login_url='login')
 def image_upload(request):
@@ -514,41 +617,6 @@ def comment_unlike(request,pk):
     if comment.entry:
         return redirect('core:entry_landing', pk=comment.entry.pk) 
     return redirect('core:journal_profile', pk=comment.journal.pk)
-# @api_view(('GET',))
-# @login_required(login_url='login')
-# def delete_user(request, pk):
-#     # context = {}
-
-#     try:
-#         current_user = request.user
-#         current_user.delete()
-#         # print('User has been deleted')
-#     except User.DoesNotExist:
-#         messages.info(request, 'User does not exist')
-
-from django.contrib.auth import logout as auth_logout, get_user_model
-from django.views.decorators.http import require_http_methods
-@login_required
-# @api_view(('POST',))
-# @require_http_methods(['POST'])
-def remove_account(request):
-    user_pk = request.user.pk
-    auth_logout(request)
-    User = get_user_model()
-    User.objects.filter(pk=user_pk).update(is_active=False)
-    return redirect(to='core:dashboard')
-    # return Response({"Success": "User deactivated"}, status=status.HTTP_200_OK)
-
-@login_required
-@api_view(('POST',))
-@require_http_methods(['POST'])
-def delete_account(request):
-    user_pk = request.user.pk
-    auth_logout(request)
-    User = get_user_model()
-    User.objects.filter(pk=user_pk).delete()
-    return Response({"Success": "User deleted"}, status=status.HTTP_200_OK)
-
 
 def search_page(request):
     return render(request, 'core/search.html')
@@ -603,7 +671,6 @@ def searchAllEntries(request):
             return render(request, 'core/search.html', {'results':results, 'submitButton':submitButton})
 
     return render(request, 'core/search.html')
-
 
 def searchAllJournals(request):
     if request.method=='GET':
@@ -795,9 +862,6 @@ def add_place(request,pk):
         new_place.save()
     return redirect('core:entry_landing', pk=entry.pk)
 
-def notify_endpoint():
-    return
-
 # def image(request, pk):
 #     image = Image.objects.get(pk=pk)
 
@@ -951,4 +1015,40 @@ def spotify_report(request, pk):
     }
 
     return render(request, 'core/playlist_report.html', context)
+
+def journal_selector(request):
+    results = None
+    journals = []
+    selected_journals = []
+    form = None
+    if request.method=='GET':
+        query=request.GET.get('q')
+        
+        if query is not None:
+            checking = Q(username__iexact=query)
+            results=User.objects.filter(checking)
+            if results:
+                journals = Journal.objects.filter(user_id=results[0].profile.id).exclude(is_archived=True)
+            
+                form = JournalSelectorForm(user=results[0].profile.id)
+                if request.method=='POST':
+                    if form.is_valid():
+                        # temp = form.cleaned_data.get('journals')
+
+                    # selected_journals = request.POST.getlist('journals')
+                    # for journal in temp:
+                    #     if Journal.objects.filter(id=journal).exists():
+                    #         journal = Journal.objects.get(id=journal)
+                    #         selected_journals.append(journal)
+                        selected_journals = Journal.objects.filter(pk__in=request.POST.getlist('journals'))
+        
+            
+    context = {
+        'form': form,
+        'results': results,
+        'journals': journals,
+        'selected_journals': selected_journals,
+    }
+
+    return render(request, 'core/journal_selector.html', context)
 
