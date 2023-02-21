@@ -9,13 +9,20 @@
       <form action="" method="POST">
           {% csrf_token %}
           {{dateForm}}
-          <button value="submit" type="submit"></button>
+          <select class="form-control" id="journal" name='selected_journal'>
+            {% for car in allCars %}
+                <option value='{{car.id}}'>{{ car.make }}</option>
+            {% endfor %}
+        </select>
+        
+          
+          <button value="submit" type="submit">View Memories</button>
       </form>
     </div>
     <div class="col"></div>
   </div>
   <div class="row">
-    <div class="col">
+    <div class="col-sm">
       {% if entries %}
         <h3>{{date}} Moments</h3>
           {% for entry in entries %}
@@ -24,19 +31,28 @@
           {% endfor %}
       {% endif %}
     </div>
-    <div class="col">
+    <div class="col-sm">
     {% if map %}
         <h5>On this day you were here.</h5>
-        <img src="{{map}}">
+        <img class="img-fluid" src="{{map}}">
     {% endif %}
-
-        <div id="chartdiv"></div>
+    </div>
+    <div class="row justify-content-center">
+      <h4>Themes for {{date}}</h4>
+  
+      <div class="col lightOverlay justify-content-start">
+        <div class="justify-self-center align-self-center"id="chartdiv"></div>
+      </div>
     </div>
     </div>
     {% if albums  %}
-    <section id="nanogallery2">
-
+    <div class="row">
+      <h4>Gallery's for {{date}}</h4>
+      <div class="col">
+        <section id="nanogallery2">
+      </div>
     </section>
+    </div>
     {% endif %}
 
 
