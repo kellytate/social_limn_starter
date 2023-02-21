@@ -14,10 +14,10 @@
             <form method="POST">
                 {% csrf_token %}
                 <div class="mb-3">
-                {{form.username|attr:"placeholder: username"|attr:"type: input"|attr:"class: form-control"|attr:"style: border-radius: 8px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none"}}
+                {{form.username|attr:"placeholder: username"|attr:"type: input"|attr:"class: form-control"|attr:"style: border-radius: 8px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none; border-bottom: 2px solid #92A7A0;"}}
                 </div>
                 <div class="mb-3">
-                {{form.password|attr:"placeholder: password"|attr:"class: form-control"|attr:"style: border-radius: 8px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none"}}
+                {{form.password|attr:"placeholder: password"|attr:"class: form-control"|attr:"style: border-radius: 8px; padding: 8px; color: #92A7A0; background-color: #1f1e1d; border: none; border-bottom: 2px solid #92A7A0;"}}
                 </div>
                 <div class="mb-3">
                 <button type="submit" >Login</button>

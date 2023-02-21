@@ -15,20 +15,20 @@ from mapbox_location_field.forms import LocationField as FormLocationField
 class ContactForm(forms.Form):
     name = forms.CharField(max_length = 50, widget=forms.TextInput(attrs={
             'placeholder': 'Name',
-            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none, border-bottom: 2px solid #92A7A0',
             'class': 'form-control'}))
     subject = forms.CharField(max_length = 50, widget=forms.TextInput(attrs={
             'placeholder': 'Subject',
-            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
             'class': 'form-control'}))
     email_address = forms.EmailField(max_length = 150, widget=forms.TextInput(attrs={
             'placeholder': 'Email',
-            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
             'class': 'form-control'}))
     message = forms.CharField(max_length = 2000, widget=forms.Textarea(attrs={
                                     'placeholder': 'Share your thoughts...', 
                                     'class': 'form-control', 
-                                    'style': 'height:60px; width:400px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
+                                    'style': 'height:60px; width:400px; color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px; border-bottom: 2px solid #92A7A0'}))
 
 
 class RegisterUserForm(UserCreationForm):
@@ -38,19 +38,19 @@ class RegisterUserForm(UserCreationForm):
         self.fields['username'].widget=forms.TextInput(attrs={
             'placeholder': 'username',
             'type': 'input',
-            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none;',
+            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
             'class': 'form-control'})
         self.fields['email'].widget=forms.EmailInput(attrs={
             'placeholder': 'email',
-            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
             'class': 'form-control'})
         self.fields['password1'].widget=forms.PasswordInput(attrs={
             'placeholder': 'password',
-            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
             'class': 'form-control'})
         self.fields['password2'].widget=forms.PasswordInput(attrs={
             'placeholder': 'confirm password',
-            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',
+            'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
             'class': 'form-control'})
     
     class Meta:
@@ -60,7 +60,9 @@ class RegisterUserForm(UserCreationForm):
 class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(max_length=100,
         required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={
+                                    'class': 'form-control',
+                                    'styles': 'border-bottom: 2px solid #92A7A0'}))
 
     class Meta:
         model = User
@@ -68,12 +70,20 @@ class UpdateUserForm(forms.ModelForm):
 
 class UpdateProfileForm(forms.ModelForm):
     email = forms.EmailField(required=False, 
-        widget=forms.TextInput(attrs={'placeholder': 'Email','class': 'form-control'}))
+        widget=forms.TextInput(attrs={
+                                    'placeholder': 'Email',
+                                    'class': 'form-control',
+                                    'styles': 'border-bottom: 2px solid #92A7A0'}))
 
-    bio = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'bio','style': 'color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
+    bio = forms.CharField(required=False, widget=forms.Textarea(attrs={
+                                    'class': 'form-control',
+                                    'placeholder': 'bio',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px; border-bottom: 2px solid #92A7A0'}))
     location = forms.CharField(max_length=100,
         required=False, 
-        widget=forms.TextInput(attrs={'placeholder': 'location','class': 'form-control'}))
+        widget=forms.TextInput(attrs={'placeholder': 'location',
+                                    'class': 'form-control',
+                                    'styles': 'border-bottom: 2px solid #92A7A0'}))
     profile_img = forms.ImageField(required=False)
     
     class Meta:
@@ -116,10 +126,17 @@ class JournalForm(forms.ModelForm):
 
 class UpdateJournalForm(forms.ModelForm):
     title = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={
+                                    'class': 'form-control',
+                                    'styles': 'border-bottom: 2px solid #92A7A0'}))
     location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    description = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+        widget=forms.TextInput(attrs={
+                                    'class': 'form-control',
+                                    'styles': 'border-bottom: 2px solid #92A7A0'}))
+    description = forms.CharField(required=False, widget=forms.Textarea(attrs={
+                                    'class': 'form-control',
+                                    'styles': 'border-bottom: 2px solid #92A7A0',
+                                    'rows': 5}))
     cover_img = forms.ImageField(required=False)
     default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'form-control','style': 'color: #d3d9d9; border: none; background-color: #1f1e1d'}))
 
@@ -130,15 +147,15 @@ class UpdateJournalForm(forms.ModelForm):
 class EntryForm(forms.ModelForm):
     title = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={'placeholder': 'Title', 
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none; border-bottom: 2px solid #92A7A0',
                                     'class': 'form-control'}))
     location = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={'placeholder': 'Location', 
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none; border-bottom: 2px solid #92A7A0',
                                     'class': 'form-control'}))
     body = forms.CharField(required=True, widget=forms.Textarea(attrs={'placeholder': 'Tell your story...', 
                                     'class': 'form-control', 
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px'}))
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border: none; padding: 5px; border-radius: 8px; border-bottom: 2px solid #92A7A0'}))
     entry_privacy = forms.IntegerField(label='Select Entry Privacy Level', widget=forms.Select(choices=PRIVACY, attrs={'class': 'form-control','style': 'color: #d3d9d9; border: none; background-color: #1f1e1d'}))
 
     image = forms.ImageField(required=False,widget=forms.ClearableFileInput(attrs={
@@ -149,7 +166,11 @@ class EntryForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
             
-    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Share your thoughts', 'class': 'form-control', 'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none',}))
+    comment = forms.CharField(widget=forms.Textarea(attrs={
+                                    'rows': '3', 
+                                    'placeholder': 'Share your thoughts', 
+                                    'class': 'form-control', 
+                                    'style': 'width: 400px; color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',}))
 
     class Meta:
         model = Comment
@@ -169,11 +190,11 @@ class SpotifySearchForm(forms.Form):
 class VideoForm(forms.ModelForm):
     title = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={'placeholder': 'Video Title', 
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none; border-bottom: 2px solid #92A7A0',
                                     'class': 'form-control'}))
     source_url = forms.CharField(required=False, 
         widget=forms.TextInput(attrs={'placeholder': 'Video URL', 
-                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none',
+                                    'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 5px; border: none; border-bottom: 2px solid #92A7A0',
                                     'class': 'form-control'}))
     
     class Meta:

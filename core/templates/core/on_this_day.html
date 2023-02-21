@@ -2,30 +2,37 @@
 
 {% block content %}
 
-<main>
-    <h2>Select a date</h2>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{dateForm}}
-        <input type="submit" value="Submit"/>
-    </form>
-  
-
-    {% if entries %}
+<main class="container">
+  <div class="row">
+    <div class="col">
+      <h2>Select a date</h2>
+      <form action="" method="POST">
+          {% csrf_token %}
+          {{dateForm}}
+          <button value="submit" type="submit"></button>
+      </form>
+    </div>
+    <div class="col"></div>
+  </div>
+  <div class="row">
+    <div class="col">
+      {% if entries %}
         <h3>{{date}} Moments</h3>
-        {% for entry in entries %}
-        <a href="{% url 'core:entry_landing' pk=entry.pk%}"><p>{{entry.title}} - {{entry.year}}</p></a>
-        {% endfor %}
-    {% endif %}
-    
+          {% for entry in entries %}
+          <a href="{% url 'core:entry_landing' pk=entry.pk%}"><p>{{entry.title}} - {{entry.year}}</p></a>
+          <a href="{% url 'core:journal_profile' pk=entry.journal.pk %}"><p>Journal: {{entry.journal.title}}</p></a>
+          {% endfor %}
+      {% endif %}
+    </div>
+    <div class="col">
     {% if map %}
-        <h4>On this day you were here.</h4>
+        <h5>On this day you were here.</h5>
         <img src="{{map}}">
     {% endif %}
 
         <div id="chartdiv"></div>
-
-
+    </div>
+    </div>
     {% if albums  %}
     <section id="nanogallery2">
 

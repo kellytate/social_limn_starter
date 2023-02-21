@@ -3,23 +3,33 @@
 {% block content %}
 
 
-<form action="" method="POST">
-    {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Submit"/>
-</form>
+<article class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div clas="col">
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{form}}
+            <button type="submit" value="submit" >Find your Location</button>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
 {%for item in search_results%}
-<div>
-    <div>      
+<div class="row">
+    <div class="col d-flex">      
         {{ item.display_name }}
     <form action="{% url 'core:add_place' pk=entry.pk %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="title" value="{{item.display_name}}">
         <input type="hidden" name="lon" value="{{item.lon}}">
         <input type="hidden" name="lat" value="{{item.lat}}">
-
-        <button name="source">Add Place To Entry</button>
+        <button name="source">Select Place</button>
     </form>
+    </div>
+    <div class="col"></div>
+    
+</div>
     {%empty%}
     <h2>No results</h2>
 </div>
@@ -34,6 +44,7 @@
     <li><a href="?page={{ search_results.next_page_number }}">Next</a></li>
     {%endif%}
 </ul>
+</article>
 {%endif%}
 
 {% endblock %}

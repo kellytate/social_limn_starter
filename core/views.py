@@ -222,6 +222,48 @@ def remove_account(request):
     # return Response({"Success": "User deactivated"}, status=status.HTTP_200_OK)
 
 #this will be the location for Journal Work 
+@login_required(login_url='login')
+def journal_profile(request,pk):
+    journal = Journal.objects.get(pk=pk)
+    
+    if request.method=='POST':
+        commentForm=CommentForm(request.POST)
+
+        if commentForm.is_valid():
+            comment = easy_form(commentForm,{'user':request.user, 'journal':journal,})
+            return redirect("core:journal_profile", pk=journal.pk)
+
+    commentForm=CommentForm()
+    entries = filter_function(Journal,{'journal':journal},exclude={'is_archived':True},order_by='-created_at')
+    likes= filter_function(Like,{'journal':journal},{"like":False})
+    comments = filter_function(Comment,{'journal':journal},order_by='-created_at')
+
+    likeCounts = {}
+    for comment in comments:
+        count = Like.objects.filter(comment=comment).exclude(like = False).count()
+        likeCounts[comment.id] = count
+
+    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'entries': entries})
+#journal Landing page 
+@login_required(login_url='login')
+def journal_dashboard(request,pk):
+    journal = Journal.objects.get(pk=pk)
+    
+    if request.user != journal.user:
+        return(redirect("core:journal_profile", pk=journal.pk))
+
+    entries = filter_function(Journal,{'journal':journal},exclude={'is_archived':True},order_by='-created_at')
+    likes= filter_function(Like,{'journal':journal},{"like":False})
+
+    cal= []
+    for entry in entries:
+        cal.append({'id': entry.pk,
+        'title': entry.title,
+        'start':entry.created_at.strftime('%Y-%m-%d'),
+        'url': entry.get_html_url})
+
+    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes, 'cal':cal})
+
 
 #This will be the locatin for Entry Work
 
@@ -320,6 +362,84 @@ def edit_comment(request, pk):
             commentForm = CommentForm(instance=comment)
     return render(request, 'core/edit_comment.html', {'commentForm':commentForm, 'comment': comment})
 
+#place functionality
+
+def add_place(request,pk):
+    entry = Entry.objects.get(pk=pk)
+    places = filter_function(Place,{'entry':entry}, exclude={'is_archived':True})
+    
+    if places:
+        for place in places:
+            place.is_archived=True
+            place.save()
+    
+    if request.method=="POST":
+        new_place=Place()
+        new_place.entry=entry
+        new_place.name = request.POST.get('title')
+        new_place.longitude = request.POST.get('lon')
+        new_place.latitude = request.POST.get('lat')
+        new_place.save()
+    return redirect('core:entry_landing', pk=entry.pk)
+
+#searching 
+def location_search(request, pk):
+    
+    results = None
+    result_count = None
+
+    if not request.method == 'POST' and 'page' in request.GET:
+        if 'search-post' in request.session:
+            request.POST = request.session['search-post']
+            request.method = 'POST'
+
+    if request.method == 'POST':
+        form = LocationForm(request.POST)
+
+        if form.is_valid():
+            search_string = form.cleaned_data['search_string']
+
+            path = "https://us1.locationiq.com/v1/search.php"
+            query_params = {
+                "key": settings.LOCATIONIQ_API_KEY,
+                "q": search_string,
+                "format": "json"
+            }
+
+            response = requests.get(path, params=query_params)
+            response_content = response.json()
+            results=response_content
+            # Deal with any strange responses from Spotify
+            #
+            print(response_content)
+        
+            result_count = len(response_content)
+            paginator = Paginator(
+                results, settings.SEARCH_RESULTS_PER_PAGE
+            )
+
+            page = request.GET.get('page')
+            try:
+                results = paginator.page(page)
+            except PageNotAnInteger:
+                results = paginator.page(1)
+            except EmptyPage:
+                results = paginator.page(paginator.num_pages)
+    else:
+        form = LocationForm()
+
+    #player =requests.get('iframe.ly/api/iframely?url=https://open.spotify.com/album/4E4NBueuClmsr8tVkZgV0K&api_key=7c27dc4b622df14eeffcf7')
+
+    context = {
+        'search_results': results,
+        'form': form,
+        'result_count': result_count,
+        'entry': Entry.objects.get(pk=pk)
+    }
+    return render(request, 'core/location_search.html', context)
+
+
+#Search
 
 # Displays all available user (profiles), excluding the logged-in user
 @login_required(login_url='login')
@@ -352,46 +472,6 @@ def profile(request, pk):
     return render(request, 'core/profile.html', {'profile': profile, 'journals': journals})
 
 #journal profile and dashboard views
-@login_required(login_url='login')
-def journal_profile(request,pk):
-    journal = Journal.objects.get(pk=pk)
-    
-    if request.method=='POST':
-        commentForm=CommentForm(request.POST)
-        if commentForm.is_valid():
-            user = request.user
-            comment = commentForm.save(commit=False)
-            comment.user=user
-            comment.journal=journal
-            comment.save()
-            return redirect("core:journal_profile", pk=journal.pk)
-    comments = Comment.objects.filter(journal=journal).order_by('-created_at')
-    commentForm=CommentForm()
-    likeCounts = {}
-    for comment in comments:
-        count = Like.objects.filter(comment=comment).exclude(like = False).count()
-        likeCounts[comment.id] = count
-    likes = Like.objects.filter(journal=journal).exclude(like = False)
-    entries = Entry.objects.filter(journal=journal).exclude(is_archived=True).exclude(entry_privacy=0)
-    return render(request, 'core/journal.html', {'journal': journal, 'commentForm':commentForm, 'comments':comments, 'likes':likes, 'likeCounts':likeCounts, 'entries': entries})
-
-@login_required(login_url='login')
-def journal_dashboard(request,pk):
-    journal = Journal.objects.get(pk=pk)
-    
-    if request.user != journal.user:
-        return(redirect("core:journal_profile", pk=journal.pk))
-
-    entries = Entry.objects.filter(journal=journal).exclude(is_archived=True)
-    cal= []
-    for entry in entries:
-        cal.append({'id': entry.pk,
-        'title': entry.title,
-        'start':entry.created_at.strftime('%Y-%m-%d'),
-        'url': entry.get_html_url})
-        
-    likes = Like.objects.filter(journal=journal).exclude(like = False)
-    return render(request, 'core/journal_dashboard.html', {'journal': journal, 'entries': entries, 'likes':likes, 'cal':cal})
 
 def update_journal(request, pk):
     journal = Journal.objects.get(pk=pk)
@@ -787,80 +867,6 @@ def upload(request):
 
     return render(request, 'core/upload.html', context)
 
-def location_search(request, pk):
-    
-    results = None
-    result_count = None
-    # We will lose the POST data every time we use pagination
-    # One way of keeping this data is to add it to a session
-    # Make sure we only add this data when we're actually using pagination
-    ## ('page' in request.GET)
-    if not request.method == 'POST' and 'page' in request.GET:
-        if 'search-post' in request.session:
-            request.POST = request.session['search-post']
-            request.method = 'POST'
-
-    if request.method == 'POST':
-        form = LocationForm(request.POST)
-
-        if form.is_valid():
-            search_string = form.cleaned_data['search_string']
-
-            path = "https://us1.locationiq.com/v1/search.php"
-            query_params = {
-                "key": settings.LOCATIONIQ_API_KEY,
-                "q": search_string,
-                "format": "json"
-            }
-
-            response = requests.get(path, params=query_params)
-            response_content = response.json()
-            results=response_content
-            # Deal with any strange responses from Spotify
-            #
-            print(response_content)
-        
-            result_count = len(response_content)
-            paginator = Paginator(
-                results, settings.SEARCH_RESULTS_PER_PAGE
-            )
-
-            page = request.GET.get('page')
-            try:
-                results = paginator.page(page)
-            except PageNotAnInteger:
-                results = paginator.page(1)
-            except EmptyPage:
-                results = paginator.page(paginator.num_pages)
-    else:
-        form = LocationForm()
-
-    
-    #player =requests.get('iframe.ly/api/iframely?url=https://open.spotify.com/album/4E4NBueuClmsr8tVkZgV0K&api_key=7c27dc4b622df14eeffcf7')
-
-    context = {
-        'search_results': results,
-        'form': form,
-        'result_count': result_count,
-        'entry': Entry.objects.get(pk=pk)
-    }
-    return render(request, 'core/location_search.html', context)
-
-def add_place(request,pk):
-    entry = Entry.objects.get(pk=pk)
-    places = Place.objects.filter(entry=entry).exclude(is_archived=True)
-    if places:
-        for place in places:
-            place.is_archived=True
-            place.save()
-    if request.method=="POST":
-        new_place=Place()
-        new_place.entry=entry
-        new_place.name = request.POST.get('name')
-        new_place.longitude = request.POST.get('lon')
-        new_place.latitude = request.POST.get('lat')
-        new_place.save()
-    return redirect('core:entry_landing', pk=entry.pk)
 
 # def image(request, pk):
 #     image = Image.objects.get(pk=pk)
