@@ -105,7 +105,7 @@
     </section>
 
 
-<div class="container">
+<div class="row">
     <h3>
         Add a Video
     </h3>
@@ -123,19 +123,39 @@
         </div>
     </form>
 </div>
-{% if videos %}
-    {% for video in videos %}
-        <div class="iframely-embed">
-            <div class="iframely-responsive">
-                <a data-iframely-url href="{{video.source_url}}"></a>
+<section class="row">
+    {% if videos %}
+     <div class="row">
+      {% for video in videos %}
+          {% if forloop.first %}
+          <div class="row">
+          {% endif %}
+          <div class="col">
+            <div class="iframely-embed">
+                <div class="iframely-responsive">
+                    <a data-iframely-url href="{{video.source_url}}"></a>
+                </div>
             </div>
-        </div>
-        <form action="{% url 'core:archive_video' pk=video.pk ok=entry.pk %}" method="POST">
-            {% csrf_token %}
-            <button name="archive" value="archive">Remove Video From Memory</button>
-        </form>
-        {% endfor %}
-    {% endif %}
+            <form action="{% url 'core:archive_video' pk=video.pk ok=entry.pk %}" method="POST">
+                {% csrf_token %}
+                <button name="archive" value="archive">Remove Video From Memory</button>
+            </form>
+          </div>
+      {% if forloop.counter|divisibleby:2 %}
+          </div>
+          <div class="row">
+      {% endif %}
+      {% if forloop.last %}
+          </div>
+      {% endif %}
+  {% endfor %}
+  </div>
+  {%endif%}
+{% for image in images %}
+   
+{% endfor %}
+</section>
+
 
 <script async src="//cdn.iframe.ly/embed.js?api_key={{frame_key}}"></script>
     

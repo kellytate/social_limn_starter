@@ -3,65 +3,59 @@
 {% block content %}
 <main class="container text-center">
     <div class="row">
-
         <div class="col-md order-2 order-md-1">
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="mb-3">
-                            {{ entryForm.title}}
-                        </div>
-                        <div class="mb-3">
-                            {{ entryForm.location }}
-                        </div>
-                        <div>
-                            <div class="mb-3">
-                                {{entryForm.body}}
-                            </div>
-                            
-                            <div  class="row g-3">
-                                <div class="col-auto">
-                                    {{videoForm.source_url}}
-                                </div>
-
-                                <div class="col-auto">
-                                    <input class="form-control" type="text" name="videoTitle" placeholder="Video Title">
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                {{entryForm.image}}
-                            </div>
-                            <div class="mb-3">
-                                {{entryForm.entry_privacy}}
-                            </div>
-                            <button type="submit">Submit</button>
-                        </div>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="mb-3">
+                        {{ entryForm.title}}
                     </div>
-                </form>
-            </div>
+                    <div class="mb-3">
+                        {{ entryForm.location }}
+                    </div>
+                    <div>
+                        <div class="mb-3">
+                            {{entryForm.body}}
+                        </div>
+                        <div  class="row g-3">
+                            <div class="col-auto">
+                                {{videoForm.source_url}}
+                            </div>
+                            <div class="col-auto">
+                                <input class="form-control" type="text" name="videoTitle" placeholder="Video Title">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{entryForm.image}}
+                        </div>
+                        <div class="mb-3">
+                            {{entryForm.entry_privacy}}
+                        </div>
+                        <button type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-
-    {% if journal.cover_img %}
+        {% if journal.cover_img %}
         <div class="col-md order-1 order-md-2 top_spacer sticky-md-top align-self-start topspace contact sideDisplay background text-center" style="background-image: url('{{ journal.cover_img.url }}'); min-height: 50vh;">
             <div class="row justify-content-center align-items-center">
                 <div class="darkOverlay">
-                <h2 class="makeSpace" >Create a Memory for {{journal.title}}</h2>
+                    <h2 class="makeSpace" >Create a Memory for {{journal.title}}</h2>
                 </div>
             </div>
         </div>
-    {% else %}
+        {% else %}
         <div class="col-md order-1 order-md-2 top_spacer sticky-md-top align-self-start topspace contact sideDisplay background text-center" style="background-image: url('https://images.unsplash.com/photo-1500051638674-ff996a0ec29e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=918&q=80')">
             <div class="row justify-content-center">
                 <div class="col-8  darkOverlay">
-                <h2 class="makeSpace">Create a Memory for {{journal.title}}</h2>
+                    <h2 class="makeSpace">Create a Memory for {{journal.title}}</h2>
                 </div>
             </div>
         </div>
+        {% endif %}
 
-        
-    {% endif %}
-</div>
+    </div>
 </main>
 
 {% endblock %}

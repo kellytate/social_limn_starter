@@ -2,9 +2,10 @@
 {%block content%}
 {% load cloudinary %}
 
-<section class="container">
+<section class="row">
+    <h1 class="top_spacer">Update Journal</h1>
     <div class="col"></div>
-    <div class="col">
+    <div class="col-6">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
@@ -29,6 +30,7 @@
             </div>
         </form>
     </div>
+    <div class="col"></div>
 
 {% endblock %}
 
