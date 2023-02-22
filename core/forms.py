@@ -140,7 +140,7 @@ class JournalForm(forms.ModelForm):
     
     default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level',
             widget=forms.Select(choices=PRIVACY, attrs={
-                'class': 'form-control','style': 'color: #d3d9d9; border: none; background-color: #1f1e1d'}))
+                'class': 'form-control','style': 'color: #d3d9d9; border: none; border-bottom: 2px solid #92A7A0; background-color: #1f1e1d'}))
 
     class Meta:
         model = Journal
@@ -170,7 +170,7 @@ class UpdateJournalForm(forms.ModelForm):
 
     default_privacy = forms.IntegerField(label='Select Journal Default Privacy Level',
             widget=forms.Select(choices=PRIVACY, attrs={
-                'class': 'form-control','style': 'color: #d3d9d9; border: none; background-color: #1f1e1d'}))
+                'class': 'form-control','style': 'color: #d3d9d9; border: none; border-bottom: 2px solid #92A7A0; background-color: #1f1e1d'}))
 
     class Meta:
         model = Journal
