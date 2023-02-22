@@ -30,7 +30,7 @@
     
     </section>
     <section class="row">
-        <div class="col-md">
+        <div class="col">
         {% if place %}
             <div class="row">
             <img src="{{placeMap}}">
@@ -48,7 +48,7 @@
         {% endif %}
             </div>
         </div>
-        <div class="col-md">
+        <div class="col">
             {% if song %}
 {% with song.all|first as entrySong %}
         <div class="row">
@@ -77,31 +77,31 @@
     </section>
     <section class="row">
             {% if images %}
-             <div class="row">
-              {% for image in images %}
-                  {% if forloop.first %}
-                  <div class="row">
-                  {% endif %}
-                  <div class="col">
-                    <img class="img-fluid" src="{{image.image.url}}">
-                    <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
-                        {% csrf_token %}
-                        <button name="archive" value="archive">Remove Image From Memory</button>
-                    </form>
-                  </div>
-              {% if forloop.counter|divisibleby:2 %}
-                  </div>
-                  <div class="row">
-              {% endif %}
-              {% if forloop.last %}
-                  </div>
-              {% endif %}
-          {% endfor %}
-          </div>
-          {%endif%}
-        {% for image in images %}
-           
-        {% endfor %}
+                <div class="row">
+                {% for image in images %}
+                    {% if forloop.first %}
+                    <div class="row">
+                    {% endif %}
+                    <div class="col">
+                        <img class="img-fluid" src="{{image.image.url}}">
+                        <form action="{% url 'core:archive_image' pk=image.pk ok=entry.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button name="archive" value="archive">Remove Image From Memory</button>
+                        </form>
+                    </div>
+                {% if forloop.counter|divisibleby:2 %}
+                    </div>
+                    <div class="row">
+                {% endif %}
+                {% if forloop.last %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            {%endif%}
+            {% for image in images %}
+            
+            {% endfor %}
     </section>
 
 
@@ -125,12 +125,12 @@
 </div>
 <section class="row">
     {% if videos %}
-     <div class="row">
-      {% for video in videos %}
-          {% if forloop.first %}
-          <div class="row">
-          {% endif %}
-          <div class="col">
+    <div class="row">
+    {% for video in videos %}
+        {% if forloop.first %}
+        <div class="row">
+        {% endif %}
+        <div class="col">
             <div class="iframely-embed">
                 <div class="iframely-responsive">
                     <a data-iframely-url href="{{video.source_url}}"></a>
@@ -140,19 +140,19 @@
                 {% csrf_token %}
                 <button name="archive" value="archive">Remove Video From Memory</button>
             </form>
-          </div>
-      {% if forloop.counter|divisibleby:2 %}
-          </div>
-          <div class="row">
-      {% endif %}
-      {% if forloop.last %}
-          </div>
-      {% endif %}
-  {% endfor %}
-  </div>
-  {%endif%}
+        </div>
+    {% if forloop.counter|divisibleby:2 %}
+        </div>
+        <div class="row">
+    {% endif %}
+    {% if forloop.last %}
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+{%endif%}
 {% for image in images %}
-   
+
 {% endfor %}
 </section>
 
