@@ -7,7 +7,7 @@ body {
 body {
   color: #d3d9d9;
   display: column;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   scrollbar-color: black;
   overflow-x: hidden;
   font-family: "Open Sans", sans-serif;
@@ -185,6 +185,7 @@ a:hover,
 
 #wrapper {
   flex: 1;
+  min-height: 90vh;
 }
 
 #chartdiv {
