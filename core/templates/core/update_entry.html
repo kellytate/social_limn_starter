@@ -33,18 +33,18 @@
         <div class="col">
         {% if place %}
             <div class="row">
-            <img src="{{placeMap}}">
+                <img src="{{placeMap}}">
             </div>
             <div class="d-inline-flex">
-            <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Memory Location</button></a>
-            <form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
+                <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Change Memory Location</button></a>
+                <form action="{% url 'core:archive_place' pk=place.pk ok=entry.pk %}" method="POST">
                 {% csrf_token %}
-                <button name="archive" value="archive">Remove Place From Memory</button>
-            </form>
+                    <button name="archive" value="archive">Remove Place From Memory</button>
+                </form>
         {% else %}
             <div class="mb-3">
                 <a href="{% url 'core:search_location' pk=entry.pk %}"><button>Add Memory Location</button></a>
-            </div>
+            
         {% endif %}
             </div>
         </div>

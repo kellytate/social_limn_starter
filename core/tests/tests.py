@@ -5,28 +5,13 @@ from core.views import *
 from core.tests.test_limn_fixtures import *
 
 
-# Example from pytest-django docs
-# def test_with_authenticated_client(client, django_user_model):
-#     username = "user1"
-#     password = "bar"
-#     user = django_user_model.objects.create_user(username=username, password=password)
-#     # Use this:
-#     client.force_login(user)
-#     # Or this:
-#     client.login(username=username, password=password)
-#     response = client.get('/private')
-#     assert response.content == 'Protected Area'
-
-
 # testing client
 from django.urls import reverse
-# this works
 @pytest.mark.django_db
 def test_view(client):
     url = reverse('login')
     response = client.get(url)
     assert response.status_code == 200
-
 
 
 # Logs in a user and gets dashboard (authenticated) view
@@ -61,11 +46,3 @@ def test_view_no_auth_does_not_render_auth_dashboard(client):
     print(response.content)
     assert 'dashboard' not in str(response.content)
     assert response.status_code == 302
-
-# @pytest.mark.django_db
-# def test_view_no_auth_does_not_render_dashboard(client):
-#     url = reverse('core:dashboard')
-#     response = client.get(url)
-#     print(response.content)
-#     assert 'dashboard' not in str(response.content)
-#     assert response.status_code == 200
