@@ -185,6 +185,7 @@ a:hover,
 
 #wrapper {
   flex: 1;
+  min-height: 90vh;
 }
 
 #chartdiv {
