@@ -716,7 +716,7 @@ def entry_unlike(request,pk):
         if islike.user == request.user:
             islike.like= False
             islike.save()
-    return redirect('core:entry_profile', pk=entry.pk)
+    return redirect('core:entry_landing', pk=entry.pk)
 
 
 @login_required(login_url='login')
