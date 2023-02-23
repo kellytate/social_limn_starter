@@ -165,7 +165,7 @@ def contact(request):
 def dashboard(request):
 
     entries = Entry.objects.filter(
-        journal__user__profile__follows__in=
+        journal__user__profile__followed_by__in=
             [request.user.id]).exclude(is_archived=True).order_by('-created_at')
     
     if request.GET.get("code"):
