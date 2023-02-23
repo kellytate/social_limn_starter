@@ -5,23 +5,23 @@
 <main class="container">
   <div class="row">
     <div class="col">
-     <div class="row">
-      <form action="" method="POST">
-          {% csrf_token %}
-          <div>
-            <h4>Start Date:</h4>
-            {{dateForm.start_date}}
-          </div>
-          <div>
-            <h4>End Date:</h4>
-            {{dateForm.end_date}}
-          </div>
-          <div>
-            <h5>Select Journal</h5>
-            {{dateForm.journals}}
-          </div>
-          <button value="submit" type="submit">View Memories</button>
-      </form>
+      <div class="row">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <div>
+              <h4>Start Date:</h4>
+              {{dateForm.start_date}}
+            </div>
+            <div>
+              <h4>End Date:</h4>
+              {{dateForm.end_date}}
+            </div>
+            <div>
+              <h5>Select Journal</h5>
+              {{dateForm.journals}}
+            </div>
+            <button value="submit" type="submit">View Memories</button>
+        </form>
     </div>
     </div>
     <div class="col"></div>
@@ -42,7 +42,7 @@
         <img class="img-fluid" src="{{map}}">
     {% endif %}
     </div>
-    {%if placeMap%}
+    {% if date %}
     <div class="row justify-content-center">
       <h4>Themes for {{date}}</h4>
       <div class="col lightOverlay justify-content-start">

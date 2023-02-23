@@ -27,3 +27,8 @@ Dependencies:
 - Nanogallery2
 - amCharts 5
 - FullCalendar
+- Heroku
+
+Usage:
+
+The web app is deployed on Heroku at https://social-limn.herokuapp.com.
