@@ -107,20 +107,6 @@
     </article>
         
     
-</div>
-</div>
-<div class="row text-left">
-<div class="col">
-
-</div>
-<div class="col">
-
-</div>
-<div class="col">
-    
-</div>
-</div>
-       </div>
     <section class="container">
         <div class="row justify-content-center">
         <div class="col"></div>
@@ -140,7 +126,7 @@
     {% if comments.count > 0 %}
         {% for comment in comments %}
         {% if comment.is_parent %}
-        <div class="row">
+        <div class="row commentEnd">
 
             {% if comment.is_archived is True %}
                 <div class="row">  
@@ -204,7 +190,7 @@
                 <div class="col"></div>
             </div>
             {% for child_comment in comment.children %}
-            <div class="row">
+            <div class="row commentEnd">
                 {% if child_comment.is_archived is True %}
                     <div class="row">  
                         <div class="col"></div>

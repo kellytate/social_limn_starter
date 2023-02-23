@@ -93,73 +93,70 @@
  
     <section class="container">
         <div class="row justify-content-center">
-        <div class="col"></div>
-        <div class="col justify-content-start">
+            <div class="col"></div>
+            <div class="col justify-content-start">
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{commentForm.as_p}}
                     <button type="submit" value="submit">Submit</button>
                 </form>
+            </div>
+            <div class="col"></div>
         </div>
-        <div class="col">
-        </div>
-    </div>
     </section>
 
     <section class="container">
     {% if comments.count > 0 %}
         {% for comment in comments %}
         {% if comment.is_parent %}
-        <div class="row">
+        <div class="row commentEnd">
 
-            {% if comment.is_archived is True %}
-                <div class="row">  
-                    <div class="col"></div>
-                        <div class="col">
-                        <h6>This comment has been deleted</h6>
-                        </div>
-                    <div class="col"></div>
+        {% if comment.is_archived is True %}
+            <div class="row">  
+                <div class="col"></div>
+                <div class="col">
+                    <h6>This comment has been deleted</h6>
                 </div>
-            {%else%}
-                    <div class="col-4">
-                        <div class="profile-sm">
-                            <a href="{% url 'core:profile' pk=comment.user.profile.pk %}">
-                                <img src="{{comment.user.profile_img.url}}">
-                            </a>
-                        </div>
-                        <h6>{{comment.user.username}}</h6>
-                        <p>{{ comment.created_at }}</p>
-                    </div>
-                    <div class="col-8">
-                        <h5>Comment:</h5>
-                        <p>{{comment.comment}}</p>
-                    </div>
-                    <div class="row">
-                        {% for key, value in likeCounts.items %}
-                            {% if key == comment.id %}
-                                <p>Likes: {{value}}</p>
-                            {% endif %}
-                        {% endfor %}
-                        <div class="d-flex">
-                            <form action="{% url 'core:comment_likes' pk=comment.pk %}">
-                                {% csrf_token %}
-                                <button type="submit">Appreciate</button>
-                            </form>
-                            <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
-                                {% csrf_token %}
-                                <button type="submit">Unappreciate</button>
-                            </form>
-                            {% if request.user == comment.user %}
-
-                                <form action="{% url 'core:archive_comment' pk=comment.pk %}" method="POST">
-                                    {% csrf_token %}
-                                    <button name="archive" value="archive">Archive</button>
-                                </form>
-                                <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit</button></a>
-
+                <div class="col"></div>
+            </div>
+        {%else%}
+            <div class="col-4">
+                <div class="profile-sm">
+                    <a href="{% url 'core:profile' pk=comment.user.profile.pk %}">
+                        <img src="{{comment.user.profile_img.url}}">
+                    </a>
+                </div>
+                    <h6>{{comment.user.username}}</h6>
+                    <p>{{ comment.created_at }}</p>
+            </div>
+            <div class="col-8">
+                <h5>Comment:</h5>
+                <p>{{comment.comment}}</p>
+            </div>
+            <div class="row">
+                {% for key, value in likeCounts.items %}
+                    {% if key == comment.id %}
+                        <p>Likes: {{value}}</p>
                     {% endif %}
-                        </div>
-                    </div>
+                {% endfor %}
+                <div class="d-flex">
+                    <form action="{% url 'core:comment_likes' pk=comment.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">Appreciate</button>
+                    </form>
+                    <form action="{% url 'core:comment_unlike' pk=comment.pk %}">
+                        {% csrf_token %}
+                        <button type="submit">Unappreciate</button>
+                    </form>
+                    {% if request.user == comment.user %}
+                        <form action="{% url 'core:archive_comment' pk=comment.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button name="archive" value="archive">Archive</button>
+                        </form>
+                        <a href="{% url 'core:edit_comment' pk=comment.pk %}"><button>Edit</button></a>
+                    {% endif %}
+                </div>
+            </div>
                     
             {%endif%}
             <div class="row">
@@ -174,7 +171,7 @@
                 <div class="col"></div>
             </div>
             {% for child_comment in comment.children %}
-            <div class="row">
+            <div class="row commentEnd">
                 {% if child_comment.is_archived is True %}
                     <div class="row">  
                         <div class="col"></div>
@@ -225,13 +222,11 @@
 
                             {% endif %}
                         </div>
-                        </div>
+                    </div>
                     </div>
                 {%endif%}
                 </div>
-            </div>
         </div>
-    </div>  
 
         {% endfor %}
         {% endif %}
