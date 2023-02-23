@@ -52,7 +52,7 @@ class RegisterUserForm(UserCreationForm):
                 'class': 'form-control'})
 
         self.fields['password1'].widget=forms.PasswordInput(attrs={
-                'placeholder': 'password',
+                'placeholder': 'password: min 8 char',
                 'style': 'color: #92A7A0; background-color: #1f1e1d; border-radius: 8px; padding: 8px; border: none; border-bottom: 2px solid #92A7A0',
                 'class': 'form-control'})
 
