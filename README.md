@@ -10,7 +10,10 @@ Feature Set:
 - Add and view entry locations on a map.
 - Add images to visually enhance your memory entries.
 - Add songs from Spotify.
+- Create playlists from a date range of memories.
 - Add linked videos.
+- View memory entries on a calendar.
+- View reports on data gathered from memories.
 
 Dependencies:
 
