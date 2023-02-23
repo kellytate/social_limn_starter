@@ -493,8 +493,8 @@ def profile_list(request):
 def profile(request, pk):
     profile = Profile.objects.get(pk=pk)
 
-    journals_followers = Journal.objects.filter(user__profile__follows__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0)
-    journals_public = Journal.objects.filter(user__profile__follows__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0).exclude(default_privacy=1).order_by('-created_at')
+    journals_followers = Journal.objects.filter(user__profile__followed_by__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0)
+    journals_public = Journal.objects.filter(user__profile__followed_by__in=[request.user.id]).filter(user=profile.user).exclude(is_archived=True).exclude(default_privacy=0).exclude(default_privacy=1).order_by('-created_at')
 
     journals = journals_public
     
