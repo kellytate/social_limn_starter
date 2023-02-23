@@ -91,7 +91,7 @@
         <ul>
             {% for journal in journals %}
                 <li>
-                    <a href="{% url 'core:journal_dashboard' pk=journal.pk %}">
+                    <a href="{% url 'core:journal' pk=journal.pk %}">
                         {% if journal.cover_img %}
                         <div class="background row" style="background-image: url('{{ journal.cover_img.url }}');">
                             <div class="darkOverlay">
