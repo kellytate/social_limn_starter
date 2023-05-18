@@ -10,7 +10,7 @@
                 <h3>Hello, {{ user.username }}!</h3>
                 <p>This is your dashboard!</p>
             </div> -->
-            <div class="profile-sm">
+            <div class="profile-sm user-header">
                 <div>
                     <img src="{{ user.profile.profile_img.url }}">
                     {{user.username}}
@@ -122,7 +122,7 @@
                                     <div class="profile-sm">
                                         <div>
                                             <img src="{{entry.journal.user.profile.profile_img.url}}" class="img-thumbnail" alt="">
-                                            <p>{{entry.journal.user.username}}</p>
+                                            {{entry.journal.user.username}}
                                             
                                         </div>
                                             <div>
