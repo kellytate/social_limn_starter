@@ -6,21 +6,23 @@
 <div class="container">
     {% if user.is_authenticated %}
         <div class="row">
-            <div class="row text-left">
+            <!-- <div class="row text-left">
                 <h3>Hello, {{ user.username }}!</h3>
                 <p>This is your dashboard!</p>
+            </div> -->
+            <div class="profile-sm">
+                <div>
+                    <img src="{{ user.profile.profile_img.url }}">
+                    {{user.username}}
+                </div>
             </div>
 
             <div class="row">
-                <aside class="col-4 text-center">
-        
-                        <div class="profile">
-                            <img src="{{ user.profile.profile_img.url }}">
-                        </div>
+                <aside class="col-4 text-center profile-col">
 
                     <div class="mb-3">
-                        <a href="{% url 'core:update_profile' %}"><button >Update Profile</button></a>
-                        <a href="{% url 'logout' %}"><button>Logout</button></a>
+                        <!-- <a href="{% url 'core:update_profile' %}"><button >Update Profile</button></a> -->
+                        <!-- <a href="{% url 'logout' %}"><button>Logout</button></a> -->
                     </div>
                     <div class="accordion accordion-flush" id="accordion">
                         <div class="accordion-item">
@@ -103,27 +105,35 @@
                             </div>
                           </div>
                         </div>
+                        
                     </div>
     
 
                 </aside>
-                <article class="col-8">
+                <article class="col memory-feed">
 
-                    <div class="text-left mb-3">
+                    <!-- <div class="text-center mb-3 memory-title">
                         <h3>Memory Feed</h3>
-                    </div>
+                    </div> -->
                     <article>
                         {% for entry in entries %}
-                            <a href="{% url 'core:entry_landing' pk=entry.id %}">
-                                <div class="row">
-                                    <div class="col-3 profile-sm">
-                                        <img src="{{entry.journal.user.profile.profile_img.url}}" class="img-thumbnail" alt="">
-                                        <p>{{entry.journal.user.username}}</p>
-                                        <p>{{entry.created_at}}</p>
+                            
+                                <div class="row entry-row">
+                                    <div class="profile-sm">
+                                        <div>
+                                            <img src="{{entry.journal.user.profile.profile_img.url}}" class="img-thumbnail" alt="">
+                                            <p>{{entry.journal.user.username}}</p>
+                                            
+                                        </div>
+                                            <div>
+                                                <p>{{entry.created_at}}</p>
+                                            </div>
+                                        
+
+                                        
                                     </div>
-                                <div class="col-9">
-                                    <h4>{{entry.title}}</h4>
-                                    <p>{{entry.journal.title}}</p>
+                                    <a href="{% url 'core:entry_landing' pk=entry.id %}">
+                                <div class="row">
                                     {% if entry.image%}
                                         {% for img in entry.image.all %}
                                             {% if forloop.counter == 1%}
@@ -141,8 +151,11 @@
                                             {% endif%}
                                         {% endfor %}
                                     {% endif %}
+                                    <h4>{{entry.title}}</h4>
+                                    <p>{{entry.journal.title}}</p>
                                     <p>{{ entry.body|truncatewords:30 }}</p>
                                 </div>
+                            </a>
                                 </div>
                             </a>
                         {% endfor %}
